@@ -13,6 +13,7 @@ import com.mediamonks.mylikes.data.usecase.StorePhotosUseCase;
 import com.mediamonks.mylikes.data.util.PhotoUtil;
 import com.mediamonks.mylikes.data.vo.db.PhotoEntity;
 import com.mediamonks.mylikes.data.vo.tumblr.TumblrLikeVO;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -52,7 +54,14 @@ public class MainActivity extends AppCompatActivity {
         long time = new Date().getTime() / 1000;
         Log.d(TAG, "onStart: " + time);
 
-        loadLikesPage(time);
+//        loadLikesPage(time);
+
+//        showRandomPhoto();
+    }
+
+    private void showRandomPhoto() {
+        PhotoEntity photo = _photoRepo.getRandomPhoto();
+        Picasso.with(this).load(photo.getUrl()).into(_photo);
     }
 
     private void loadLikesPage(long time) {
@@ -87,7 +96,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             _imageCountText.setText(getString(R.string.all_loaded));
         }
+    }
 
-//        Picasso.with(this).load(photos.get(0).originalPhoto().url()).into(_photo);
+    @OnClick(R.id.photo)
+    void onPhotoClick() {
+//        showRandomPhoto();
     }
 }
