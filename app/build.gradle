@@ -1,0 +1,126 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        def classpaths = rootProject.ext.ClassPaths
+
+        classpath classpaths.hugo
+        classpath classpaths.retrolambda
+        classpath classpaths.greenDAO
+    }
+}
+
+def config = rootProject.ext
+def plugins = config.Plugins
+def libs = config.Libraries
+
+apply plugin: plugins.android_app
+apply plugin: plugins.hugo
+apply plugin: plugins.retrolambda
+apply plugin: plugins.greenDAO
+
+android {
+    def versions = config.Versions
+    def appConfig = config.AppConfig
+
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
+
+        applicationId appConfig.id
+        versionCode appConfig.versionCode
+        versionName appConfig.versionName
+
+        testInstrumentationRunner libs.test_runner
+
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix appConfig.debugSuffix
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // testing
+    androidTestCompile(libs.test_espresso, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile libs.test_junit
+
+    // Android Support
+    compile libs.support_appCompat
+    compile libs.support_design
+    compile libs.support_constraintLayout
+
+    // Rx
+    compile libs.rxAndroid
+
+    // Play Services
+    compile libs.play_gcm
+
+    // Butterknife
+    compile libs.butterknife
+    annotationProcessor libs.annotationProcessorButterknife
+
+    // Pixplicity Prefs
+    compile libs.easyPrefs
+
+    // GSon
+    compile libs.gson
+
+    // Retrofit
+    compile libs.retrofit
+    compile libs.retrofit_gsonConverter
+    compile libs.retrofit_rxAdapter
+
+    // Picasso
+    compile libs.picasso
+
+    // Dagger
+    compile libs.dagger
+    annotationProcessor libs.annotationProcessorDagger
+
+    // OkHttp
+    compile libs.okHttp
+    compile libs.okHttp_loggingInterceptor
+
+    // AutoValue
+    provided libs.autoValue
+    annotationProcessor libs.autoValue
+
+    // AutoValue Gson
+    provided libs.autoValue_gson
+    annotationProcessor libs.autoValue_gson
+
+    // GreenDAO
+    compile libs.greenDAO
+
+    // Stetho
+    compile libs.stetho
+
+    // Evernote Job
+    compile libs.android_job
+
+    // SQL Cipher, to get rid of GreenDAO exceptions
+    compile libs.sqlCipher
+}

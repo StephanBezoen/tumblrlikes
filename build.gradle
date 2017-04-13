@@ -1,0 +1,133 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    AppConfig = [
+            id         : 'com.mediamonks.mylikes',
+            versionCode: 1,
+            versionName: '1.0',
+            debugSuffix: 'debug'
+    ]
+
+    ClassPaths = [
+            hugo       : 'com.jakewharton.hugo:hugo-plugin:1.2.1',
+            greenDAO   : 'org.greenrobot:greendao-gradle-plugin:3.2.1',
+            retrolambda: 'me.tatarka:gradle-retrolambda:3.6.0'
+    ]
+
+    Plugins = [
+            android_app: 'com.android.application',
+            hugo       : 'com.jakewharton.hugo',
+            retrolambda: 'me.tatarka.retrolambda',
+            greenDAO   : 'org.greenrobot.greendao'
+    ]
+
+    Versions = [
+            buildTools  : '25.0.2',
+            minSdk      : 19,
+            targetSdk   : 25,
+            compileSdk  : 25,
+
+            // Support libraries
+            supportLibs : '25.2.0',
+
+            // Play Services
+            playServices: '10.2.0',
+
+            // Library versions
+            dagger      : '2.8',
+            butterknife : '8.4.0',
+            okHttp      : '3.5.0',
+            retrofit    : '2.0.1',
+            rx          : '1.1.0'
+    ]
+
+    Libraries = [
+            // support
+            support_appCompat             : "com.android.support:appcompat-v7:${Versions.supportLibs}",
+            support_4                     : "com.android.support:support-v4:${Versions.supportLibs}",
+            support_13                    : "com.android.support:support-v13:${Versions.supportLibs}",
+            support_design                : "com.android.support:design:${Versions.supportLibs}",
+            support_constraintLayout      : 'com.android.support.constraint:constraint-layout:1.0.0-beta5',
+
+            // testing
+            test_espresso                 : 'com.android.support.test.espresso:espresso-core:2.2.2',
+            test_junit                    : 'junit:junit:4.12',
+            test_runner                   : 'android.support.test.runner.AndroidJUnitRunner',
+
+            // Play Services
+            play_maps                     : "com.google.android.gms:play-services-maps:${Versions.playServices}",
+            play_gcm                      : "com.google.android.gms:play-services-gcm:${Versions.playServices}",
+
+            // Dagger
+            dagger                        : "com.google.dagger:dagger:${Versions.dagger}",
+            annotationProcessorDagger     : "com.google.dagger:dagger-compiler:${Versions.dagger}",
+
+            // Butterknife
+            butterknife                   : "com.jakewharton:butterknife:${Versions.butterknife}",
+            annotationProcessorButterknife: "com.jakewharton:butterknife-compiler:${Versions.butterknife}",
+
+            // RetroFit
+            retrofit                      : "com.squareup.retrofit2:retrofit:${Versions.retrofit}",
+            retrofit_gsonConverter        : "com.squareup.retrofit2:converter-gson:${Versions.retrofit}",
+
+            retrofit_rxAdapter            : 'com.squareup.retrofit2:adapter-rxjava:2.1.0',
+
+            // Rx
+            rxBinding                     : "com.jakewharton.rxbinding:rxbinding:1.0.0",
+            rxJava                        : "io.reactivex:rxjava:${Versions.rx}",
+            rxAndroid                     : "io.reactivex:rxandroid:${Versions.rx}",
+
+            // Picasso
+            picasso                       : "com.squareup.picasso:picasso:2.5.2",
+
+            // Stetho
+            stetho                        : "com.facebook.stetho:stetho:1.4.2",
+
+            // OkHttp
+            okHttp                        : "com.squareup.okhttp3:okhttp:${Versions.okHttp}",
+            okHttp_loggingInterceptor     : "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}",
+
+            // EasyPrefs
+            easyPrefs                     : 'com.pixplicity.easyprefs:library:1.3',
+
+            // GSon
+            gson                          : 'com.google.code.gson:gson:2.8.0',
+
+            // AutValue
+            autoValue                     : "com.google.auto.value:auto-value:1.4-rc2",
+            autoValue_gson                : 'com.ryanharter.auto.value:auto-value-gson:0.4.6',
+            autoValue_parcel              : 'com.ryanharter.auto.value:auto-value-parcel:0.2.5',
+
+            // GreenDAO
+            greenDAO                      : 'org.greenrobot:greendao:3.2.0',
+
+            // Android-Job
+            android_job                   : 'com.evernote:android-job:1.1.8',
+
+            sqlCipher                     : 'net.zetetic:android-database-sqlcipher:3.5.6@aar'
+
+    ]
+}
