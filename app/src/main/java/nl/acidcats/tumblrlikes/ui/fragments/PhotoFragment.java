@@ -55,9 +55,6 @@ public class PhotoFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
         showRandomPhoto();
     }
 
@@ -67,7 +64,6 @@ public class PhotoFragment extends Fragment {
 
         Picasso.with(getContext()).load(photo.getUrl()).into(_photo);
     }
-
 
     @OnClick(R.id.photo)
     void onPhotoClick() {
