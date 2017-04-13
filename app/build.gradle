@@ -22,6 +22,8 @@ apply plugin: plugins.hugo
 apply plugin: plugins.retrolambda
 apply plugin: plugins.greenDAO
 
+apply from: "$rootDir/config/config.gradle", to:config
+
 android {
     def versions = config.Versions
     def appConfig = config.AppConfig
@@ -40,6 +42,9 @@ android {
         testInstrumentationRunner libs.test_runner
 
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
+        buildConfigField "String", "BLOG", "\"" + config.blog + "\""
     }
 
     buildTypes {

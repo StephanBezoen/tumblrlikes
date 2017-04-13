@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         new GetLikesUseCase(_likesRepos)
-                .getLikes(getString(R.string.blog))
+                .getLikes(BuildConfig.BLOG)
                 .subscribe(
                         this::handleLikes,
                         throwable -> Log.e(TAG, "onStart: " + throwable.getMessage())

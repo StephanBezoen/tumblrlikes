@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.mediamonks.mylikes.BuildConfig;
 import com.mediamonks.mylikes.R;
 import com.mediamonks.mylikes.data.vo.tumblr.TumblrAdapterFactory;
 import com.mediamonks.mylikes.data.vo.tumblr.TumblrLikeVO;
@@ -35,7 +36,7 @@ public class NetLikesStore implements LikesStore {
     public NetLikesStore(Context context) {
         initRestApi(context);
 
-        _apiKey = context.getString(R.string.consumer_key);
+        _apiKey = BuildConfig.CONSUMER_KEY;
     }
 
     @Override
