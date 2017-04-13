@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">MyLikes</string>
-    <string name="image_count">p%1$d: %2$d photos stored</string>
+    <string name="app_name">TumblrLikes</string>
+    <string name="image_page_count">p%1$d: %2$d photos stored</string>
+    <string name="total_image_count">%d photos stored</string>
     <string name="all_loaded">All loaded</string>
+    <string name="pretty">Pretty</string>
+    <string name="loading">Loading likes…</string>
 </resources>

@@ -45,6 +45,7 @@ android {
 
         buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
         buildConfigField "String", "BLOG", "\"" + config.blog + "\""
+        buildConfigField "String", "PINHASH", "\"" + config.pinhash + "\""
     }
 
     buildTypes {
