@@ -31,7 +31,7 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     }
 
     @Override
-    public Observable<List<PhotoEntity>> getPageOfLikes(long timestamp) {
+    public Observable<List<PhotoEntity>> getPageOfLikesBefore(long timestamp) {
         return _likesRepo
                 .getLikes(BuildConfig.BLOG, 20, timestamp)
                 .subscribeOn(Schedulers.io())

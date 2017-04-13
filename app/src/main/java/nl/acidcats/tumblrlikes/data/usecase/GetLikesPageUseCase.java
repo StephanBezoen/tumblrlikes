@@ -10,5 +10,5 @@ import rx.Observable;
  */
 
 public interface GetLikesPageUseCase {
-    Observable<List<PhotoEntity>> getPageOfLikes(long timestamp);
+    Observable<List<PhotoEntity>> getPageOfLikesBefore(long timestamp);
 }

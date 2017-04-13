@@ -77,7 +77,7 @@ public class LoadLikesFragment extends Fragment {
 
     private void loadLikesPage(long time) {
         _likesPageUseCase
-                .getPageOfLikes(time)
+                .getPageOfLikesBefore(time)
                 .subscribe(
                         this::handleLikesPageLoaded,
                         throwable -> Log.e(TAG, "onStart: " + throwable.getMessage())
@@ -85,21 +85,16 @@ public class LoadLikesFragment extends Fragment {
     }
 
     private void handleLikesPageLoaded(List<PhotoEntity> photoEntities) {
-        Log.d(TAG, "showPhoto: " + photoEntities.size() + " likes found");
-
         _pageCount++;
 
         long count = _photoRepo.getPhotoCount();
+
         _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
 
-        Log.d(TAG, "handleLikes: hasMore: " + _likesRepo.hasMoreLikes());
         if (_likesRepo.hasMoreLikes()) {
-            Log.d(TAG, "handleLikes: new time: " + _likesRepo.getLastLikeTime());
-
             loadLikesPage(_likesRepo.getLastLikeTime());
         } else {
             _imageCountText.setText(getString(R.string.total_image_count, count));
-
             _loadingText.setText(R.string.all_loaded);
 
             _likesRepo.setCheckComplete();
