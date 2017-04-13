@@ -13,5 +13,7 @@ public interface PhotoRepo {
 
     void storePhotos(List<PhotoEntity> photos);
 
+    long getPhotoCount();
+
     PhotoEntity getRandomPhoto();
 }

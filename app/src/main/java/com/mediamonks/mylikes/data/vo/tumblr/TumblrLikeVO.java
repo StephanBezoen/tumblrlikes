@@ -20,6 +20,7 @@ public abstract class TumblrLikeVO {
 
     public abstract long id();
 
+    @SerializedName("liked_timestamp")
     public abstract long timestamp();
 
     @Nullable

@@ -42,13 +42,8 @@ public class NetLikesStore implements LikesStore {
     @Override
     public Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime) {
         return _tumblrApi
-                .getLikes(blogName, _apiKey, 50, beforeTime)
+                .getLikes(blogName, _apiKey, count, beforeTime)
                 .map(result -> result.response().likes());
-    }
-
-    @Override
-    public void storeLikes(List<TumblrLikeVO> likes) {
-        throw new RuntimeException("Don't use this method on the NetStore");
     }
 
     interface TumblrApi {

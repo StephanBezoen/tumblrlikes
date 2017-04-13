@@ -5,6 +5,8 @@ import com.mediamonks.mylikes.data.vo.db.PhotoEntity;
 
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by stephan on 11/04/2017.
  */
@@ -16,7 +18,9 @@ public class StorePhotosUseCase {
         _repo = repo;
     }
 
-    public void storePhotos(List<PhotoEntity> photos) {
+    public List<PhotoEntity> storePhotos(List<PhotoEntity> photos) {
         _repo.storePhotos(photos);
+
+        return photos;
     }
 }

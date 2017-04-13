@@ -2,6 +2,7 @@ package com.mediamonks.mylikes.data.usecase;
 
 import android.util.Log;
 
+import com.mediamonks.mylikes.BuildConfig;
 import com.mediamonks.mylikes.data.repo.like.LikesRepos;
 import com.mediamonks.mylikes.data.vo.tumblr.TumblrLikeVO;
 
@@ -19,7 +20,7 @@ import rx.schedulers.Schedulers;
 public class GetLikesUseCase {
     private static final String TAG = GetLikesUseCase.class.getSimpleName();
 
-    private static final int LIKES_COUNT = 5000;
+    private static final int LIKES_COUNT = 20;
 
     private LikesRepos _likesRepos;
 
@@ -27,9 +28,9 @@ public class GetLikesUseCase {
         _likesRepos = likesRepos;
     }
 
-    public Observable<List<TumblrLikeVO>> getLikes(String blogName) {
+    public Observable<List<TumblrLikeVO>> getLikesPage(long beforeTime) {
         return _likesRepos
-                .getLikes(blogName, LIKES_COUNT, new Date().getTime())
+                .getLikes(BuildConfig.BLOG, LIKES_COUNT, beforeTime)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(this::logError);

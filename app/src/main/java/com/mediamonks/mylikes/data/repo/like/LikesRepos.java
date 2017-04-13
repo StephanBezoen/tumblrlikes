@@ -12,4 +12,8 @@ import rx.Observable;
 
 public interface LikesRepos {
     Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime);
+
+    boolean hasMoreLikes();
+
+    long getLastLikeTime();
 }

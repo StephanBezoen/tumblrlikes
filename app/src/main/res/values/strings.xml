@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyLikes</string>
+    <string name="image_count">p%1$d: %2$d photos stored</string>
+    <string name="all_loaded">All loaded</string>
 </resources>

@@ -12,4 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <TextView
+        android:id="@+id/tv_image_count"
+        tools:text="500 images loaded"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </FrameLayout>

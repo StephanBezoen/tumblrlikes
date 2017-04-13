@@ -13,5 +13,7 @@ public interface PhotoStore {
 
     void storePhotos(List<PhotoEntity> photos);
 
+    long getPhotoCount();
+
     PhotoEntity getRandomPhoto();
 }

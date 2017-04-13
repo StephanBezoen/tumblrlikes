@@ -12,6 +12,4 @@ import rx.Observable;
 
 public interface LikesStore {
     Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime);
-
-    void storeLikes(List<TumblrLikeVO> likes);
 }

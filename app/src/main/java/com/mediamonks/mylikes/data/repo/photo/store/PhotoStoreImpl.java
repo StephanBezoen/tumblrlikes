@@ -25,6 +25,8 @@ public class PhotoStoreImpl implements PhotoStore {
     public PhotoStoreImpl(Context context) {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, DATABASE_NAME, null);
         _photoEntityDao = new DaoMaster(helper.getWritableDatabase()).newSession().getPhotoEntityDao();
+
+//        _photoEntityDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
     @Override
@@ -38,6 +40,11 @@ public class PhotoStoreImpl implements PhotoStore {
         if (_debug) Log.d(TAG, "storePhotos: " + photos.size());
 
         _photoEntityDao.saveInTx(photos);
+    }
+
+    @Override
+    public long getPhotoCount() {
+        return _photoEntityDao.count();
     }
 
     @Override

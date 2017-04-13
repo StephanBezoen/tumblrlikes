@@ -29,6 +29,11 @@ public class PhotoRepoImpl implements PhotoRepo {
     }
 
     @Override
+    public long getPhotoCount() {
+        return _photoStore.getPhotoCount();
+    }
+
+    @Override
     public PhotoEntity getRandomPhoto() {
         return _photoStore.getRandomPhoto();
     }
