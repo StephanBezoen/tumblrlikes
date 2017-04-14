@@ -62,11 +62,25 @@ public class PhotoFragment extends Fragment {
         PhotoEntity photo = _photoRepo.getRandomPhoto();
         if (photo == null) return;
 
-        Picasso.with(getContext()).load(photo.getUrl()).into(_photo);
+        Picasso.with(getContext()).load(photo.getUrl()).noPlaceholder().into(_photo);
     }
 
     @OnClick(R.id.photo)
     void onPhotoClick() {
         showRandomPhoto();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        _photo.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        _photo.setVisibility(View.INVISIBLE);
     }
 }
