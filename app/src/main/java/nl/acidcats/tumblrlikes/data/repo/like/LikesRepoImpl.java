@@ -42,7 +42,9 @@ public class LikesRepoImpl implements LikesRepo {
 
     @Override
     public boolean hasMoreLikes() {
-        return _hasMore;
+        // check if there's more to load, based on whether previous request returned empty, and whether last item loaded had timestamp after most recent
+        // check time
+        return _hasMore && (_lastTime > getMostRecentCheckTime());
     }
 
     @Override
