@@ -39,4 +39,14 @@ public class PhotoRepoImpl implements PhotoRepo {
     public PhotoEntity getRandomPhoto() {
         return _photoStore.getRandomPhoto();
     }
+
+    @Override
+    public boolean hasUncachedPhotos() {
+        return _photoStore.hasUncachedPhotos();
+    }
+
+    @Override
+    public PhotoEntity getNextUncachedPhoto() {
+        return _photoStore.getNextUncachedPhoto();
+    }
 }

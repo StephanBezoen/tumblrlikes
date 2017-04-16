@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.data.repo.photo.store;
 
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
@@ -15,5 +17,11 @@ public interface PhotoStore {
 
     long getPhotoCount();
 
+    @Nullable
     PhotoEntity getRandomPhoto();
+
+    boolean hasUncachedPhotos();
+
+    @Nullable
+    PhotoEntity getNextUncachedPhoto();
 }

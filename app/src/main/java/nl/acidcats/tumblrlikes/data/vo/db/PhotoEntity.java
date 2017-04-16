@@ -17,16 +17,29 @@ public class PhotoEntity {
 
     private long photoId;
 
+    private String filePath;
+
+    private boolean isCached;
+
+    private int viewCount;
+
+    private long viewTime;
+
     public PhotoEntity(String url, long photoId) {
         this.url = url;
         this.photoId = photoId;
     }
 
-    @Generated(hash = 1406380572)
-    public PhotoEntity(Long id, String url, long photoId) {
+    @Generated(hash = 1657293559)
+    public PhotoEntity(Long id, String url, long photoId, String filePath,
+            boolean isCached, int viewCount, long viewTime) {
         this.id = id;
         this.url = url;
         this.photoId = photoId;
+        this.filePath = filePath;
+        this.isCached = isCached;
+        this.viewCount = viewCount;
+        this.viewTime = viewTime;
     }
 
     @Generated(hash = 1889335700)
@@ -62,5 +75,37 @@ public class PhotoEntity {
 
     public void setPhotoId(long photoId) {
         this.photoId = photoId;
+    }
+
+    public String getFilePath() {
+        return this.filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public boolean getIsCached() {
+        return this.isCached;
+    }
+
+    public void setIsCached(boolean isCached) {
+        this.isCached = isCached;
+    }
+
+    public int getViewCount() {
+        return this.viewCount;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public long getViewTime() {
+        return this.viewTime;
+    }
+
+    public void setViewTime(long viewTime) {
+        this.viewTime = viewTime;
     }
 }
