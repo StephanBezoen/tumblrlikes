@@ -10,6 +10,7 @@ import nl.acidcats.tumblrlikes.data.repo.like.LikesRepoImpl;
 import nl.acidcats.tumblrlikes.data.repo.like.store.NetLikesStore;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepoImpl;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStoreImpl;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCaseImpl;
@@ -36,18 +37,24 @@ public class MyModule {
 
     @Provides
     @Singleton
-    PhotoRepo providePhotoRepo() {
-        return new PhotoRepoImpl(new PhotoStoreImpl(_application));
-    }
-
-    @Provides
-    @Singleton
     SecurityHelper provideSecurityHelper() {
         return new SecurityHelperImpl();
     }
 
     @Provides
     GetLikesPageUseCase provideLikesPageUseCase(GetLikesPageUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Singleton
+    PhotoStore providePhotoStore() {
+        return new PhotoStoreImpl(_application);
+    }
+
+    @Provides
+    @Singleton
+    PhotoRepo providePhotoRepo(PhotoRepoImpl impl) {
         return impl;
     }
 }

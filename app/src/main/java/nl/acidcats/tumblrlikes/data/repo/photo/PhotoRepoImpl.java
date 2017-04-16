@@ -2,6 +2,8 @@ package nl.acidcats.tumblrlikes.data.repo.photo;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 
@@ -12,10 +14,11 @@ import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 public class PhotoRepoImpl implements PhotoRepo {
     private static final String TAG = PhotoRepoImpl.class.getSimpleName();
 
-    private PhotoStore _photoStore;
+    @Inject
+    PhotoStore _photoStore;
 
-    public PhotoRepoImpl(PhotoStore photoStore) {
-        _photoStore = photoStore;
+    @Inject
+    public PhotoRepoImpl() {
     }
 
     @Override
