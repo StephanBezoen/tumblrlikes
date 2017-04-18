@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onAllLikesLoaded(String action, Intent intent) {
+        startService(new Intent(this, CacheService.class));
+
         showFragment(PhotoFragment.newInstance());
     }
 

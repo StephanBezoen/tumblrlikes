@@ -46,6 +46,7 @@ public class CacheService extends Service {
     private boolean _isRunning;
     private final boolean _debug = BuildConfig.DEBUG;
     private OkHttpClient _client;
+    private int _photoCount;
 
     @Override
     public void onCreate() {
@@ -111,6 +112,9 @@ public class CacheService extends Service {
 
                 if (filepath != null) {
                     _photoRepo.markAsCached(photo, filepath);
+
+                    _photoCount++;
+                    Log.d(TAG, "onResponse: " + _photoCount);
 
                     checkCachePhotos();
                 }
