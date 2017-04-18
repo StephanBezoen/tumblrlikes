@@ -63,7 +63,7 @@ public class PhotoFragment extends Fragment {
         PhotoEntity photo = _photoRepo.getRandomPhoto();
         if (photo == null) return;
 
-        String url = photo.getIsCached() ? photo.getFilePath() : photo.getUrl();
+        String url = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
         Log.d(TAG, "showRandomPhoto: url = " + url);
         Picasso.with(getContext()).load(url).noPlaceholder().into(_photo);
     }
