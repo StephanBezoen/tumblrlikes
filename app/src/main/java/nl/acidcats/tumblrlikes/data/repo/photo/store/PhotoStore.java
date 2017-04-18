@@ -24,4 +24,6 @@ public interface PhotoStore {
 
     @Nullable
     PhotoEntity getNextUncachedPhoto();
+
+    void storePhoto(PhotoEntity photo);
 }

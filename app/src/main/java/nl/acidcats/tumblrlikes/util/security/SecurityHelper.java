@@ -6,4 +6,6 @@ package nl.acidcats.tumblrlikes.util.security;
 
 public interface SecurityHelper {
     boolean checkPassword(String password);
+
+    String getHash (String text);
 }

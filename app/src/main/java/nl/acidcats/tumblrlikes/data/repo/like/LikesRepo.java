@@ -21,4 +21,6 @@ public interface LikesRepo {
     long getMostRecentCheckTime();
 
     boolean isTimeToCheck();
+
+    void reset();
 }

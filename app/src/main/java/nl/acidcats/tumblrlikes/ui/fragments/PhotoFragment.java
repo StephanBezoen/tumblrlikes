@@ -3,6 +3,7 @@ package nl.acidcats.tumblrlikes.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,9 @@ public class PhotoFragment extends Fragment {
         PhotoEntity photo = _photoRepo.getRandomPhoto();
         if (photo == null) return;
 
-        Picasso.with(getContext()).load(photo.getUrl()).noPlaceholder().into(_photo);
+        String url = photo.getIsCached() ? photo.getFilePath() : photo.getUrl();
+        Log.d(TAG, "showRandomPhoto: url = " + url);
+        Picasso.with(getContext()).load(url).noPlaceholder().into(_photo);
     }
 
     @OnClick(R.id.photo)

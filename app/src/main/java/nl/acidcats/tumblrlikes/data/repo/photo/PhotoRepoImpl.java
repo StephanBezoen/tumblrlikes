@@ -52,4 +52,12 @@ public class PhotoRepoImpl implements PhotoRepo {
     public PhotoEntity getNextUncachedPhoto() {
         return _photoStore.getNextUncachedPhoto();
     }
+
+    @Override
+    public void markAsCached(PhotoEntity photo, String path) {
+        photo.setIsCached(true);
+        photo.setFilePath(path);
+
+        _photoStore.storePhoto(photo);
+    }
 }

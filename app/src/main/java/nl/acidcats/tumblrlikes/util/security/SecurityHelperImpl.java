@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.util.security;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.security.MessageDigest;
@@ -25,7 +26,12 @@ public class SecurityHelperImpl implements SecurityHelper {
 
     @Override
     public boolean checkPassword(String password) {
-        _digest.update(password.getBytes());
+        return getHash(password).equals(BuildConfig.PINHASH);
+    }
+
+    @NonNull
+    public String getHash(String text) {
+        _digest.update(text.getBytes());
         byte messageDigest[] = _digest.digest();
 
         StringBuilder hexString = new StringBuilder();
@@ -36,6 +42,6 @@ public class SecurityHelperImpl implements SecurityHelper {
             hexString.append(h);
         }
 
-        return hexString.toString().equals(BuildConfig.PINHASH);
+        return hexString.toString();
     }
 }

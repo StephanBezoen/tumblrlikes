@@ -1,10 +1,13 @@
 package nl.acidcats.tumblrlikes.data.repo.like;
 
+import android.util.Log;
+
 import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.Date;
 import java.util.List;
 
+import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.data.constants.PrefKeys;
 import nl.acidcats.tumblrlikes.data.repo.like.store.LikesStore;
 import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrLikeVO;
@@ -20,6 +23,7 @@ public class LikesRepoImpl implements LikesRepo {
     private static final long TIME_BETWEEN_CHECKS_MS = 24L * 60L * 60L * 1000L; // 24 hours
 
     private final LikesStore _netStore;
+    private final boolean _debug = BuildConfig.DEBUG;
     private boolean _hasMore;
     private long _lastTime;
 
@@ -66,5 +70,12 @@ public class LikesRepoImpl implements LikesRepo {
     public boolean isTimeToCheck() {
         long timeSinceLastCheck = new Date().getTime() - getMostRecentCheckTime();
         return timeSinceLastCheck > TIME_BETWEEN_CHECKS_MS;
+    }
+
+    @Override
+    public void reset() {
+        if (_debug) Log.d(TAG, "reset: ");
+
+        Prefs.putLong(PrefKeys.KEY_LATEST_CHECK_TIMESTAMP, 0L);
     }
 }

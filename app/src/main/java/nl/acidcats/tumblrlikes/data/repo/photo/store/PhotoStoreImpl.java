@@ -14,6 +14,7 @@ import nl.acidcats.tumblrlikes.data.vo.db.DaoMaster;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
 import nl.acidcats.tumblrlikes.util.ListUtil;
+import nl.acidcats.tumblrlikes.util.database.DbOpenHelper;
 
 /**
  * Created by stephan on 11/04/2017.
@@ -30,7 +31,7 @@ public class PhotoStoreImpl implements PhotoStore {
     private final boolean _debug = BuildConfig.DEBUG;
 
     public PhotoStoreImpl(Context context) {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, DATABASE_NAME, null);
+        DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
         _photoEntityDao = new DaoMaster(helper.getWritableDatabase()).newSession().getPhotoEntityDao();
 
         _countQuery = _photoEntityDao.queryBuilder().buildCount();
@@ -75,6 +76,11 @@ public class PhotoStoreImpl implements PhotoStore {
     @Override
     @Nullable
     public PhotoEntity getNextUncachedPhoto() {
-        return ListUtil.getFirstFromList(_uncachedQuery.list());
+        return ListUtil.getFirstFromList(_uncachedQuery.forCurrentThread().list());
+    }
+
+    @Override
+    public void storePhoto(PhotoEntity photo) {
+        _photoEntityDao.save(photo);
     }
 }

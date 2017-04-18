@@ -3,6 +3,7 @@ package nl.acidcats.tumblrlikes.di;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.MainActivity;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
@@ -22,4 +23,6 @@ public interface MyComponent {
     void inject(LoadLikesFragment fragment);
 
     void inject(PhotoFragment fragment);
+
+    void inject(CacheService service);
 }

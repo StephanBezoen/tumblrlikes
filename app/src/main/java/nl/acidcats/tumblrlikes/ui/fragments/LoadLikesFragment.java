@@ -99,11 +99,11 @@ public class LoadLikesFragment extends Fragment {
 
             _likesRepo.setCheckComplete();
 
-            new Handler().postDelayed(this::notifyComplete, 500);
+            new Handler().postDelayed(this::onComplete, 500);
         }
     }
 
-    private void notifyComplete() {
+    private void onComplete() {
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.ALL_LIKES_LOADED));
     }
 

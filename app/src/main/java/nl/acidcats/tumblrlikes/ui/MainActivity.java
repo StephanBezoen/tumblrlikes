@@ -12,6 +12,7 @@ import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
+import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.PhotoFragment;
@@ -35,9 +36,16 @@ public class MainActivity extends AppCompatActivity {
         _receiver = new BroadcastReceiver(this);
         _receiver.addActionHandler(Broadcasts.PASSWORD_OK, this::onPasswordOk);
         _receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED, this::onAllLikesLoaded);
+        _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
+    }
+
+    private void onDatabaseReset(String action, Intent intent) {
+        _likesRepo.reset();
     }
 
     private void onAllLikesLoaded(String action, Intent intent) {
+        startService(new Intent(this, CacheService.class));
+
         showFragment(PhotoFragment.newInstance());
     }
 

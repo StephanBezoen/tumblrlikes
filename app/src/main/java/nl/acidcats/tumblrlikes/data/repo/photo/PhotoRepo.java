@@ -20,4 +20,6 @@ public interface PhotoRepo {
     boolean hasUncachedPhotos();
 
     PhotoEntity getNextUncachedPhoto();
+
+    void markAsCached(PhotoEntity photo, String path);
 }
