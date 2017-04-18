@@ -128,9 +128,6 @@ dependencies {
     // Stetho
     compile libs.stetho
 
-    // Evernote Job
-    compile libs.android_job
-
     // SQL Cipher, to get rid of GreenDAO exceptions
     compile libs.sqlCipher
 }

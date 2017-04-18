@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.PASSWORD_OK, this::onPasswordOk);
         _receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED, this::onAllLikesLoaded);
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
+
+        startService(new Intent(this, CacheService.class));
     }
 
     private void onDatabaseReset(String action, Intent intent) {
@@ -44,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onAllLikesLoaded(String action, Intent intent) {
-        startService(new Intent(this, CacheService.class));
-
         showFragment(PhotoFragment.newInstance());
     }
 

@@ -8,6 +8,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import javax.inject.Inject;
@@ -55,7 +57,6 @@ public class LoginFragment extends Fragment {
         _unbinder = ButterKnife.bind(this, view);
 
         return view;
-
     }
 
     @Override
@@ -73,6 +74,15 @@ public class LoginFragment extends Fragment {
         if (_securityHelper.checkPassword(password)) {
             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Window window = getActivity().getWindow();
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
     }
 
     @Override
