@@ -48,10 +48,20 @@ android {
         buildConfigField "String", "PINHASH", "\"" + config.pinhash + "\""
     }
 
+    signingConfigs {
+        release_keystore {
+            storeFile file(config.keystore_file)
+            storePassword config.keystore_password
+            keyAlias config.keystore_key
+            keyPassword config.key_password
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release_keystore
         }
         debug {
             applicationIdSuffix appConfig.debugSuffix

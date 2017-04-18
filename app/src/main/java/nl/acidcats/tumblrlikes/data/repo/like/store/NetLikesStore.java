@@ -62,9 +62,11 @@ public class NetLikesStore implements LikesStore {
 
             OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
-            HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(message -> Log.d("OkHttp", message));
-            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            clientBuilder.addInterceptor(httpLoggingInterceptor);
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(message -> Log.d("OkHttp", message));
+                httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                clientBuilder.addInterceptor(httpLoggingInterceptor);
+            }
 
             // set json as in/out format
             builder.addConverterFactory(GsonConverterFactory.create(
