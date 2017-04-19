@@ -113,8 +113,8 @@ dependencies {
     compile libs.retrofit_gsonConverter
     compile libs.retrofit_rxAdapter
 
-    // Picasso
-    compile libs.picasso
+    // Glide
+    compile libs.glide
 
     // Dagger
     compile libs.dagger

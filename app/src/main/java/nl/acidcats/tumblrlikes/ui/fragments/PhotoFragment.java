@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import javax.inject.Inject;
 
@@ -65,7 +66,7 @@ public class PhotoFragment extends Fragment {
 
         String url = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
         Log.d(TAG, "showRandomPhoto: url = " + url);
-        Picasso.with(getContext()).load(url).noPlaceholder().into(_photo);
+        Glide.with(getContext()).load(url).into(new GlideDrawableImageViewTarget(_photo));
     }
 
     @OnClick(R.id.photo)
