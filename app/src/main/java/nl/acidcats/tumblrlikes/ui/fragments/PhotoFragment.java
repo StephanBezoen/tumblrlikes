@@ -63,23 +63,30 @@ public class PhotoFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        showRandomPhoto();
+        showPhoto();
     }
 
-    private void showRandomPhoto() {
+    private void showPhoto() {
         if (_photoUrl == null) {
-            PhotoEntity photo = _photoRepo.getRandomPhoto();
-            if (photo == null) return;
-
-            _photoUrl = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
+            getRandomPhoto();
         }
+        if (_photoUrl == null) return;
 
         Glide.with(getContext()).load(_photoUrl).into(new GlideDrawableImageViewTarget(_photo));
     }
 
+    private void getRandomPhoto() {
+        PhotoEntity photo = _photoRepo.getRandomPhoto();
+        if (photo == null) return;
+
+        _photoUrl = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
+    }
+
     @OnClick(R.id.photo)
     void onPhotoClick() {
-        showRandomPhoto();
+        getRandomPhoto();
+
+        showPhoto();
     }
 
     @Override
