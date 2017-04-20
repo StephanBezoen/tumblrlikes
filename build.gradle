@@ -28,7 +28,7 @@ ext {
             id         : 'nl.acidcats.tumblrlikes',
             versionCode: 1,
             versionName: '1.0',
-            debugSuffix: 'debug'
+            debugSuffix: ''
     ]
 
     ClassPaths = [
@@ -70,7 +70,7 @@ ext {
             support_4                     : "com.android.support:support-v4:${Versions.supportLibs}",
             support_13                    : "com.android.support:support-v13:${Versions.supportLibs}",
             support_design                : "com.android.support:design:${Versions.supportLibs}",
-            support_constraintLayout      : 'com.android.support.constraint:constraint-layout:1.0.0-beta5',
+            support_constraintLayout      : 'com.android.support.constraint:constraint-layout:1.0.2',
 
             // testing
             test_espresso                 : 'com.android.support.test.espresso:espresso-core:2.2.2',

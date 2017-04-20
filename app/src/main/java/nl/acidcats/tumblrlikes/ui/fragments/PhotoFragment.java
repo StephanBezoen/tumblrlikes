@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import javax.inject.Inject;
@@ -72,7 +73,12 @@ public class PhotoFragment extends Fragment {
         }
         if (_photoUrl == null) return;
 
-        Glide.with(getContext()).load(_photoUrl).into(new GlideDrawableImageViewTarget(_photo));
+        Glide
+                .with(getContext())
+                .load(_photoUrl)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(new GlideDrawableImageViewTarget(_photo));
     }
 
     private void getRandomPhoto() {
@@ -94,6 +100,15 @@ public class PhotoFragment extends Fragment {
         super.onResume();
 
         _photo.setVisibility(View.VISIBLE);
+
+        _photo.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        );
     }
 
     @Override

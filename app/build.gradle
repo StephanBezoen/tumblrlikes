@@ -95,9 +95,6 @@ dependencies {
     // Rx
     compile libs.rxAndroid
 
-    // Play Services
-    compile libs.play_gcm
-
     // Butterknife
     compile libs.butterknife
     annotationProcessor libs.annotationProcessorButterknife
