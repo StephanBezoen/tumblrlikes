@@ -65,7 +65,15 @@ public class PhotoStoreImpl implements PhotoStore {
         int index = (int) (getPhotoCount() * Math.random());
         if (_debug) Log.d(TAG, "getRandomPhoto: index = " + index);
 
-        return ListUtil.getFirstFromList(_photoEntityDao.queryBuilder().limit(1).offset(index).list());
+        PhotoEntity photo = ListUtil.getFirstFromList(_photoEntityDao.queryBuilder().limit(1).offset(index).list());
+        if (photo == null) return null;
+
+        // increase view count
+        photo.setViewCount(photo.getViewCount() + 1);
+        if (_debug) Log.d(TAG, "getRandomPhoto: view count now " + photo.getViewCount());
+        storePhoto(photo);
+
+        return photo;
     }
 
     @Override
@@ -82,5 +90,20 @@ public class PhotoStoreImpl implements PhotoStore {
     @Override
     public void storePhoto(PhotoEntity photo) {
         _photoEntityDao.save(photo);
+    }
+
+    @Override
+    public void addViewTime(PhotoEntity photo, long timeInMs) {
+        photo.setViewTime(photo.getViewTime() + timeInMs);
+        if (_debug) Log.d(TAG, "addViewTime: view time now " + (timeInMs / 1000) + " s");
+
+        storePhoto(photo);
+    }
+
+    @Override
+    @Nullable
+    public PhotoEntity getPhotoByPath(String filePath) {
+        return ListUtil.getFirstFromList(
+                _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).list());
     }
 }

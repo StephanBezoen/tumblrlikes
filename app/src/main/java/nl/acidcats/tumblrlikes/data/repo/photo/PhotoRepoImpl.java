@@ -1,9 +1,14 @@
 package nl.acidcats.tumblrlikes.data.repo.photo;
 
+import android.os.SystemClock;
+import android.support.annotation.Nullable;
+import android.util.Log;
+
 import java.util.List;
 
 import javax.inject.Inject;
 
+import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 
@@ -16,6 +21,10 @@ public class PhotoRepoImpl implements PhotoRepo {
 
     @Inject
     PhotoStore _photoStore;
+
+    private long _startViewTime;
+    private String _currentUrl;
+    private final boolean _debug = BuildConfig.DEBUG;
 
     @Inject
     public PhotoRepoImpl() {
@@ -59,5 +68,25 @@ public class PhotoRepoImpl implements PhotoRepo {
         photo.setFilePath(path);
 
         _photoStore.storePhoto(photo);
+    }
+
+    @Override
+    public void startPhotoView(String url) {
+        _currentUrl = url;
+
+        _startViewTime = SystemClock.elapsedRealtime();
+    }
+
+    @Override
+    public void endPhotoView(@Nullable String url) {
+        if (url == null || !url.equals(_currentUrl)) return;
+
+        PhotoEntity photo = _photoStore.getPhotoByPath(url);
+        if (photo == null) {
+            return;
+        }
+
+        long diff = SystemClock.elapsedRealtime() - _startViewTime;
+        _photoStore.addViewTime(photo, diff);
     }
 }

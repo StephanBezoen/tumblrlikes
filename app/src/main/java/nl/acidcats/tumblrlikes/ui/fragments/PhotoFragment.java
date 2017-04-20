@@ -36,6 +36,7 @@ public class PhotoFragment extends Fragment {
 
     @BindView(R.id.photo)
     ImageView _photo;
+
     private String _photoUrl;
 
     public static PhotoFragment newInstance() {
@@ -75,17 +76,23 @@ public class PhotoFragment extends Fragment {
 
         Glide
                 .with(getContext())
-                .load(_photoUrl)
+                .load("file:" + _photoUrl)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(new GlideDrawableImageViewTarget(_photo));
+
+        _photoRepo.startPhotoView(_photoUrl);
     }
 
     private void getRandomPhoto() {
+        if (_photoUrl != null) {
+            _photoRepo.endPhotoView(_photoUrl);
+        }
+
         PhotoEntity photo = _photoRepo.getRandomPhoto();
         if (photo == null) return;
 
-        _photoUrl = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
+        _photoUrl = photo.getIsCached() ? photo.getFilePath() : photo.getUrl();
     }
 
     @OnClick(R.id.photo)
@@ -114,6 +121,8 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
+        _photoRepo.endPhotoView(_photoUrl);
 
         _photo.setVisibility(View.INVISIBLE);
     }

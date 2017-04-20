@@ -26,4 +26,9 @@ public interface PhotoStore {
     PhotoEntity getNextUncachedPhoto();
 
     void storePhoto(PhotoEntity photo);
+
+    void addViewTime(PhotoEntity photo, long timeInMs);
+
+    @Nullable
+    PhotoEntity getPhotoByPath(String url);
 }
