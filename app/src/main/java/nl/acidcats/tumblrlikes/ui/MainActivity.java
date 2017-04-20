@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 
 import javax.inject.Inject;
 
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
 
         startService(new Intent(this, CacheService.class));
+
+        if (savedInstanceState == null) {
+            showFragment(LoginFragment.newInstance());
+        }
     }
 
     private void onDatabaseReset(String action, Intent intent) {
@@ -62,12 +67,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        showFragment(LoginFragment.newInstance());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
         _receiver.onResume();
-
-        showFragment(LoginFragment.newInstance());
     }
 
     @Override
@@ -75,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         _receiver.onPause();
-
-        showFragment(LoginFragment.newInstance());
     }
 
     @Override

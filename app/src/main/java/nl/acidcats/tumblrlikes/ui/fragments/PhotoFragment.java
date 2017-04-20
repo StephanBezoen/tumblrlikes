@@ -3,7 +3,6 @@ package nl.acidcats.tumblrlikes.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +28,14 @@ import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 public class PhotoFragment extends Fragment {
     private static final String TAG = PhotoFragment.class.getSimpleName();
 
+    private static final String KEY_PHOTO_URL = "key_photoUrl";
+
     @Inject
     PhotoRepo _photoRepo;
 
     @BindView(R.id.photo)
     ImageView _photo;
+    private String _photoUrl;
 
     public static PhotoFragment newInstance() {
         return new PhotoFragment();
@@ -52,6 +54,10 @@ public class PhotoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photo, container, false);
         ButterKnife.bind(this, view);
 
+        if (savedInstanceState != null) {
+            _photoUrl = savedInstanceState.getString(KEY_PHOTO_URL);
+        }
+
         return view;
     }
 
@@ -61,12 +67,14 @@ public class PhotoFragment extends Fragment {
     }
 
     private void showRandomPhoto() {
-        PhotoEntity photo = _photoRepo.getRandomPhoto();
-        if (photo == null) return;
+        if (_photoUrl == null) {
+            PhotoEntity photo = _photoRepo.getRandomPhoto();
+            if (photo == null) return;
 
-        String url = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
-        Log.d(TAG, "showRandomPhoto: url = " + url);
-        Glide.with(getContext()).load(url).into(new GlideDrawableImageViewTarget(_photo));
+            _photoUrl = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
+        }
+
+        Glide.with(getContext()).load(_photoUrl).into(new GlideDrawableImageViewTarget(_photo));
     }
 
     @OnClick(R.id.photo)
@@ -86,5 +94,12 @@ public class PhotoFragment extends Fragment {
         super.onPause();
 
         _photo.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(KEY_PHOTO_URL, _photoUrl);
     }
 }
