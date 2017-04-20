@@ -102,7 +102,8 @@ public class PhotoStoreImpl implements PhotoStore {
 
     @Override
     @Nullable
-    public PhotoEntity getPhotoByUrl(String url) {
-        return ListUtil.getFirstFromList(_photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.Url.eq(url)).list());
+    public PhotoEntity getPhotoByPath(String filePath) {
+        return ListUtil.getFirstFromList(
+                _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).list());
     }
 }

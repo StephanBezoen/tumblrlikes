@@ -30,5 +30,5 @@ public interface PhotoStore {
     void addViewTime(PhotoEntity photo, long timeInMs);
 
     @Nullable
-    PhotoEntity getPhotoByUrl (String url);
+    PhotoEntity getPhotoByPath(String url);
 }

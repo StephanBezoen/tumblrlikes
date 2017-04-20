@@ -73,7 +73,7 @@ public class PhotoFragment extends Fragment {
         }
         if (_photoUrl == null) return;
 
-        Glide.with(getContext()).load(_photoUrl).into(new GlideDrawableImageViewTarget(_photo));
+        Glide.with(getContext()).load("file:" + _photoUrl).into(new GlideDrawableImageViewTarget(_photo));
 
         _photoRepo.startPhotoView(_photoUrl);
     }
@@ -86,7 +86,7 @@ public class PhotoFragment extends Fragment {
         PhotoEntity photo = _photoRepo.getRandomPhoto();
         if (photo == null) return;
 
-        _photoUrl = photo.getIsCached() ? "file:" + photo.getFilePath() : photo.getUrl();
+        _photoUrl = photo.getIsCached() ? photo.getFilePath() : photo.getUrl();
     }
 
     @OnClick(R.id.photo)
