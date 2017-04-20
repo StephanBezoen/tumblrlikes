@@ -35,6 +35,7 @@ public class PhotoFragment extends Fragment {
 
     @BindView(R.id.photo)
     ImageView _photo;
+
     private String _photoUrl;
 
     public static PhotoFragment newInstance() {
@@ -73,9 +74,15 @@ public class PhotoFragment extends Fragment {
         if (_photoUrl == null) return;
 
         Glide.with(getContext()).load(_photoUrl).into(new GlideDrawableImageViewTarget(_photo));
+
+        _photoRepo.startPhotoView(_photoUrl);
     }
 
     private void getRandomPhoto() {
+        if (_photoUrl != null) {
+            _photoRepo.endPhotoView(_photoUrl);
+        }
+
         PhotoEntity photo = _photoRepo.getRandomPhoto();
         if (photo == null) return;
 
@@ -99,6 +106,8 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
+        _photoRepo.endPhotoView(_photoUrl);
 
         _photo.setVisibility(View.INVISIBLE);
     }

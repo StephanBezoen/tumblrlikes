@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.data.repo.photo;
 
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
@@ -22,4 +24,8 @@ public interface PhotoRepo {
     PhotoEntity getNextUncachedPhoto();
 
     void markAsCached(PhotoEntity photo, String path);
+
+    void startPhotoView(String url);
+
+    void endPhotoView (@Nullable String url);
 }

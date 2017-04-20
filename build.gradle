@@ -28,7 +28,7 @@ ext {
             id         : 'nl.acidcats.tumblrlikes',
             versionCode: 1,
             versionName: '1.0',
-            debugSuffix: 'debug'
+            debugSuffix: ''
     ]
 
     ClassPaths = [
