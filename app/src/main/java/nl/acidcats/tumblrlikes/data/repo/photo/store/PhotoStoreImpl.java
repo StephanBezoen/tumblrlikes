@@ -95,7 +95,7 @@ public class PhotoStoreImpl implements PhotoStore {
     @Override
     public void addViewTime(PhotoEntity photo, long timeInMs) {
         photo.setViewTime(photo.getViewTime() + timeInMs);
-        if (_debug) Log.d(TAG, "addViewTime: view time now " + (timeInMs / 1000) + " ms");
+        if (_debug) Log.d(TAG, "addViewTime: view time now " + (timeInMs / 1000) + " s");
 
         storePhoto(photo);
     }
