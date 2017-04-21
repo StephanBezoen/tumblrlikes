@@ -17,6 +17,7 @@ public class LikesApplication extends Application {
     private static final String TAG = LikesApplication.class.getSimpleName();
 
     private MyComponent _myComponent;
+    private boolean _isFreshRun = true;
 
     @Override
     public void onCreate() {
@@ -36,5 +37,13 @@ public class LikesApplication extends Application {
 
     public MyComponent getMyComponent() {
         return _myComponent;
+    }
+
+    public boolean isFreshRun() {
+        return _isFreshRun;
+    }
+
+    public void setFreshRun(boolean freshRun) {
+        _isFreshRun = freshRun;
     }
 }

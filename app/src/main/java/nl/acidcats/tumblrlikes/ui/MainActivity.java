@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, CacheService.class));
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || ((LikesApplication)getApplication()).isFreshRun()) {
             showFragment(LoginFragment.newInstance());
         }
     }
@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         _receiver.onDestroy();
+
+        ((LikesApplication)getApplication()).setFreshRun(false);
 
         super.onDestroy();
     }
