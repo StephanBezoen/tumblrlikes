@@ -1,6 +1,7 @@
 package nl.acidcats.tumblrlikes.data.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
@@ -36,7 +37,7 @@ public class PhotoUtil {
             if (photos.size() == 0) continue;
 
             // sort by size
-            photos.sort(new PhotoSizeComparator());
+            Collections.sort(photos, new PhotoSizeComparator());
 
             // store biggest
             photoEntities.add(new PhotoEntity(photos.get(0).url(), likeVO.id()));
