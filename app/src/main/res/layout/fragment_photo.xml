@@ -6,7 +6,7 @@
               android:background="@color/photo_background"
     >
 
-    <ImageView
+    <nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView
         android:id="@+id/photo"
         android:contentDescription="@string/pretty"
         android:layout_width="match_parent"
