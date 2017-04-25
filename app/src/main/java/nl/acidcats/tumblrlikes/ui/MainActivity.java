@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     LikesRepo _likesRepo;
 
     private BroadcastReceiver _receiver;
+    private boolean _isRestarted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
-        showFragment(LoginFragment.newInstance());
+        _isRestarted = true;
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+
+        if (_isRestarted) {
+            _isRestarted = false;
+
+            showFragment(LoginFragment.newInstance());
+        }
     }
 
     @Override
