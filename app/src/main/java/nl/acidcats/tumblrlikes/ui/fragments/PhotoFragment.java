@@ -21,6 +21,7 @@ import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
+import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
 
 /**
  * Created by stephan on 13/04/2017.
@@ -76,7 +77,14 @@ public class PhotoFragment extends Fragment {
             case TAP:
                 showUI();
                 break;
+            case LONG_PRESS:
+                showPhotoActionDialog();
+                break;
         }
+    }
+
+    private void showPhotoActionDialog() {
+        getActivity().getSupportFragmentManager().beginTransaction().add(PhotoActionDialog.newInstance(_photoUrl), PhotoActionDialog.TAG).commit();
     }
 
     private void showUI() {

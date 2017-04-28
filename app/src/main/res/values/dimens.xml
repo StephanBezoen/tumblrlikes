@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="popup_list_padding">16dp</dimen>
+    <dimen name="popup_list_padding_end">32dp</dimen>
+    <dimen name="popup_list_margin">8dp</dimen>
+    <dimen name="popup_list_item_height">48dp</dimen>
+    <dimen name="popup_list_item_icon_padding">16dp</dimen>
+    <dimen name="popup_list_item_text_size">16sp</dimen>
+</resources>

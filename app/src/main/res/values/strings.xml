@@ -5,4 +5,8 @@
     <string name="all_loaded">All loaded</string>
     <string name="pretty">Pretty</string>
     <string name="loading">Loading likes…</string>
+    <string name="photo_action_favourite">Favourite</string>
+    <string name="photo_action_like">Like</string>
+    <string name="photo_action_unlike">Unlike</string>
+    <string name="photo_action_hide">Hide</string>
 </resources>
