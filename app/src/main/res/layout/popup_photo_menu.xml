@@ -1,44 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/popup_list_margin"
-    android:paddingBottom="@dimen/popup_list_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/popup_overlay_background"
+    android:id="@+id/background"
     >
 
-    <TextView
-        android:id="@+id/btn_favorite"
-        android:text="@string/photo_action_favourite"
-        style="@style/PopupListItem"
-        android:drawableStart="@drawable/ic_star_border_black_24dp"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/popup_list_item_height"
-        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/popup_list_margin"
+        android:paddingBottom="@dimen/popup_list_margin"
+        android:layout_gravity="center"
+        android:background="@color/white"
+        android:elevation="10dp"
+        >
+        <TextView
+            android:id="@+id/btn_favorite"
+            android:text="@string/photo_action_favourite"
+            style="@style/PopupListItem"
+            android:drawableStart="@drawable/ic_star_border_black_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/popup_list_item_height"
+            />
 
-    <TextView
-        android:id="@+id/btn_like"
-        android:text="@string/photo_action_like"
-        style="@style/PopupListItem"
-        android:drawableStart="@drawable/ic_plus_one_black_24dp"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/popup_list_item_height"/>
+        <TextView
+            android:id="@+id/btn_like"
+            android:text="@string/photo_action_like"
+            style="@style/PopupListItem"
+            android:drawableStart="@drawable/ic_plus_one_black_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/popup_list_item_height"/>
 
-    <TextView
-        android:id="@+id/btn_unlike"
-        android:text="@string/photo_action_unlike"
-        style="@style/PopupListItem"
-        android:drawableStart="@drawable/ic_exposure_neg_1_black_24dp"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/popup_list_item_height"/>
+        <TextView
+            android:id="@+id/btn_unlike"
+            android:text="@string/photo_action_unlike"
+            style="@style/PopupListItem"
+            android:drawableStart="@drawable/ic_exposure_neg_1_black_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/popup_list_item_height"/>
 
-    <TextView
-        android:id="@+id/btn_hide"
-        android:text="@string/photo_action_hide"
-        style="@style/PopupListItem"
-        android:drawableStart="@drawable/ic_block_black_24dp"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/popup_list_item_height"/>
+        <TextView
+            android:id="@+id/btn_hide"
+            android:text="@string/photo_action_hide"
+            style="@style/PopupListItem"
+            android:drawableStart="@drawable/ic_block_black_24dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/popup_list_item_height"/>
 
-</LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

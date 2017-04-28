@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
@@ -38,10 +39,13 @@ public class PhotoFragment extends Fragment {
 
     @BindView(R.id.photo)
     InteractiveImageView _photo;
+    @BindView(R.id.photo_action_dialog)
+    PhotoActionDialog _photoActionDialog;
 
     private String _photoUrl;
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
+    private Unbinder _unbinder;
 
     public static PhotoFragment newInstance() {
         return new PhotoFragment();
@@ -58,7 +62,7 @@ public class PhotoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photo, container, false);
-        ButterKnife.bind(this, view);
+        _unbinder = ButterKnife.bind(this, view);
 
         if (savedInstanceState != null) {
             _photoUrl = savedInstanceState.getString(KEY_PHOTO_URL);
@@ -78,13 +82,9 @@ public class PhotoFragment extends Fragment {
                 showUI();
                 break;
             case LONG_PRESS:
-                showPhotoActionDialog();
+                _photoActionDialog.show();
                 break;
         }
-    }
-
-    private void showPhotoActionDialog() {
-        getActivity().getSupportFragmentManager().beginTransaction().add(PhotoActionDialog.newInstance(_photoUrl), PhotoActionDialog.TAG).commit();
     }
 
     private void showUI() {
@@ -171,5 +171,14 @@ public class PhotoFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         outState.putString(KEY_PHOTO_URL, _photoUrl);
+    }
+
+    @Override
+    public void onDestroy() {
+        _photoActionDialog.onDestroy();
+
+        _unbinder.unbind();
+
+        super.onDestroy();
     }
 }
