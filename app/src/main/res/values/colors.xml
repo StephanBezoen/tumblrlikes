@@ -6,4 +6,5 @@
 
     <color name="photo_background">#FF111111</color>
     <color name="body_text">#FF222222</color>
+    <color name="red">#FFFF0000</color>
 </resources>

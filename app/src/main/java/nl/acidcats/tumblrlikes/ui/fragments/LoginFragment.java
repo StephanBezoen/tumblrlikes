@@ -51,6 +51,8 @@ public class LoginFragment extends Fragment {
     TextView _header;
     @BindView(R.id.btn_skip)
     View _skipButton;
+    @BindView(R.id.tv_pincode_no_match)
+    TextView _pincodeNoMatchText;
 
     private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
@@ -108,6 +110,8 @@ public class LoginFragment extends Fragment {
     }
 
     private void updateUI() {
+        _pincodeNoMatchText.setVisibility(View.GONE);
+
         switch (_mode) {
             case LOGIN:
                 _header.setText(R.string.enter_pincode);
@@ -129,6 +133,8 @@ public class LoginFragment extends Fragment {
     }
 
     private void onTextChanged(String pincode) {
+        _pincodeNoMatchText.setVisibility(View.GONE);
+
         switch (_mode) {
             case LOGIN:
                 if (_appRepo.isPincodeCorrect(pincode)) {
@@ -154,7 +160,8 @@ public class LoginFragment extends Fragment {
                     } else {
                         _passwordInput.setText("");
 
-                        // TODO show error message
+                        _pincodeNoMatchText.setVisibility(View.VISIBLE);
+
                         // TODO allow to start over with new pincode
                     }
                 }

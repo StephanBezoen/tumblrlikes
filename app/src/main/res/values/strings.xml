@@ -24,4 +24,5 @@
     <string name="repeat_new_pincode">Repeat the new pincode</string>
     <string name="enter_pincode">Enter pincode</string>
     <string name="skip">Skip</string>
+    <string name="pincode_no_match">Pincode doesn\'t match</string>
 </resources>
