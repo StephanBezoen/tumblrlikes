@@ -147,6 +147,8 @@ public class LoginFragment extends Fragment {
 
                     _mode = Mode.REPEAT_PINCODE;
 
+                    _passwordInput.setText("");
+
                     updateUI();
                 }
                 break;

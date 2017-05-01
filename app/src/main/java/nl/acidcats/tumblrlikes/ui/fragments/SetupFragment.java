@@ -60,10 +60,6 @@ public class SetupFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setup, container, false);
         _unbinder = ButterKnife.bind(this, view);
 
-        if (!TextUtils.isEmpty(BuildConfig.BLOG)) {
-            _tumblrBlogInput.setText(BuildConfig.BLOG);
-        }
-
         return view;
     }
 
@@ -77,7 +73,14 @@ public class SetupFragment extends Fragment {
         };
         _tumblrBlogInput.addTextChangedListener(_textWatcher);
 
-        _okButton.setEnabled(false);
+
+        if (!TextUtils.isEmpty(BuildConfig.BLOG)) {
+            _tumblrBlogInput.setText(BuildConfig.BLOG);
+            _okButton.setEnabled(true);
+        } else {
+            _okButton.setEnabled(false);
+        }
+
         _okButton.setOnClickListener(this::onOkButtonClick);
     }
 
