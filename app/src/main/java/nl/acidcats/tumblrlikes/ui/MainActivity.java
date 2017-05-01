@@ -12,11 +12,13 @@ import butterknife.ButterKnife;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
+import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.PhotoFragment;
+import nl.acidcats.tumblrlikes.ui.fragments.SetupFragment;
 import nl.acidcats.tumblrlikes.util.BroadcastReceiver;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Inject
     LikesRepo _likesRepo;
+    @Inject
+    AppRepo _appRepo;
 
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;
@@ -39,12 +43,29 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.PASSWORD_OK, this::onPasswordOk);
         _receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED, this::onAllLikesLoaded);
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
+        _receiver.addActionHandler(Broadcasts.SETUP_COMPLETE, this::onSetupComplete);
 
         startService(new Intent(this, CacheService.class));
 
-        if (savedInstanceState == null || ((LikesApplication)getApplication()).isFreshRun()) {
-            showFragment(LoginFragment.newInstance());
+        if (_appRepo.isSetupComplete()) {
+            if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
+                checkLogin();
+            }
+        } else {
+            showFragment(SetupFragment.newInstance());
         }
+    }
+
+    private void checkLogin() {
+        if (_appRepo.hasPincode()) {
+            showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
+        } else {
+            enterApp();
+        }
+    }
+
+    private void onSetupComplete(String action, Intent intent) {
+        showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
     }
 
     private void onDatabaseReset(String action, Intent intent) {
@@ -58,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onPasswordOk(String action, Intent intent) {
+        enterApp();
+    }
+
+    private void enterApp() {
         showFragment(_likesRepo.isTimeToCheck()
                 ? LoadLikesFragment.newInstance()
                 : PhotoFragment.newInstance());
@@ -81,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         if (_isRestarted) {
             _isRestarted = false;
 
-            showFragment(LoginFragment.newInstance());
+            checkLogin();
         }
     }
 
@@ -110,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         _receiver.onDestroy();
 
-        ((LikesApplication)getApplication()).setFreshRun(false);
+        ((LikesApplication) getApplication()).setFreshRun(false);
 
         super.onDestroy();
     }

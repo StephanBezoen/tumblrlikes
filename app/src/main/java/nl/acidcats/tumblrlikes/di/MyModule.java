@@ -5,6 +5,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import nl.acidcats.tumblrlikes.LikesApplication;
+import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
+import nl.acidcats.tumblrlikes.data.repo.app.AppRepoImpl;
+import nl.acidcats.tumblrlikes.data.repo.app.store.AppStore;
+import nl.acidcats.tumblrlikes.data.repo.app.store.AppStoreImpl;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepoImpl;
 import nl.acidcats.tumblrlikes.data.repo.like.store.NetLikesStore;
@@ -55,6 +59,18 @@ public class MyModule {
     @Provides
     @Singleton
     PhotoRepo providePhotoRepo(PhotoRepoImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Singleton
+    AppStore provideAppStore() {
+        return new AppStoreImpl();
+    }
+
+    @Provides
+    @Singleton
+    AppRepo provideAppRepo(AppRepoImpl impl) {
         return impl;
     }
 }
