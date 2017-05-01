@@ -24,13 +24,8 @@ public class SecurityHelperImpl implements SecurityHelper {
         }
     }
 
-    @Override
-    public boolean checkPassword(String password) {
-        return getHash(password).equals(BuildConfig.PINHASH);
-    }
-
     @NonNull
-    public String getHash(String text) {
+    public String getHash(@NonNull String text) {
         _digest.update(text.getBytes());
         byte messageDigest[] = _digest.digest();
 

@@ -56,14 +56,26 @@ public class AppRepoImpl implements AppRepo {
     }
 
     @Override
-    public void setPinCode(String pinCode) {
-        _appStore.storePinCodeHash(_securityHelper.getHash(pinCode));
+    public void setPincode(String pinCode) {
+        _appStore.storePincodeHash(_securityHelper.getHash(pinCode));
+    }
+
+    @Override
+    public void clearPincode() {
+        _appStore.clearPincodeHash();
+    }
+
+    @Override
+    public boolean hasPincode() {
+        return (_appStore.getPincodeHash() != null);
     }
 
     @Override
     public boolean isPincodeCorrect(@NonNull String pinCode) {
+        if (!hasPincode()) return true;
+
         String pinCodeHash = _securityHelper.getHash(pinCode);
-        String storedPinCodeHash = _appStore.getPinCodeHash();
+        String storedPinCodeHash = _appStore.getPincodeHash();
         return pinCodeHash.equals(storedPinCodeHash);
     }
 }

@@ -48,11 +48,19 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(this, CacheService.class));
 
         if (_appRepo.isSetupComplete()) {
-            if (savedInstanceState == null || ((LikesApplication)getApplication()).isFreshRun()) {
-                showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
+            if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
+                checkLogin();
             }
         } else {
             showFragment(SetupFragment.newInstance());
+        }
+    }
+
+    private void checkLogin() {
+        if (_appRepo.hasPincode()) {
+            showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
+        } else {
+            enterApp();
         }
     }
 
@@ -71,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onPasswordOk(String action, Intent intent) {
+        enterApp();
+    }
+
+    private void enterApp() {
         showFragment(_likesRepo.isTimeToCheck()
                 ? LoadLikesFragment.newInstance()
                 : PhotoFragment.newInstance());
@@ -94,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         if (_isRestarted) {
             _isRestarted = false;
 
-            showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
+            checkLogin();
         }
     }
 
@@ -123,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         _receiver.onDestroy();
 
-        ((LikesApplication)getApplication()).setFreshRun(false);
+        ((LikesApplication) getApplication()).setFreshRun(false);
 
         super.onDestroy();
     }

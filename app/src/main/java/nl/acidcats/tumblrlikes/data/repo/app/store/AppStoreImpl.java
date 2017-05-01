@@ -42,12 +42,17 @@ public class AppStoreImpl implements AppStore {
     }
 
     @Override
-    public void storePinCodeHash(String pinCodeHash) {
+    public void storePincodeHash(String pinCodeHash) {
         Prefs.putString(PrefKeys.KEY_PINCODE_HASH, pinCodeHash);
     }
 
     @Override
-    public String getPinCodeHash() {
+    public void clearPincodeHash() {
+        Prefs.remove(PrefKeys.KEY_PINCODE_HASH);
+    }
+
+    @Override
+    public String getPincodeHash() {
         return Prefs.getString(PrefKeys.KEY_PINCODE_HASH, null);
     }
 }

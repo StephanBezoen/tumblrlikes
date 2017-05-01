@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
@@ -56,6 +59,10 @@ public class SetupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setup, container, false);
         _unbinder = ButterKnife.bind(this, view);
+
+        if (!TextUtils.isEmpty(BuildConfig.BLOG)) {
+            _tumblrBlogInput.setText(BuildConfig.BLOG);
+        }
 
         return view;
     }

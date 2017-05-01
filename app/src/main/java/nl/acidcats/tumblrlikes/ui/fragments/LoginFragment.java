@@ -77,7 +77,7 @@ public class LoginFragment extends Fragment {
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_MODE)) {
             _mode = Mode.values()[savedInstanceState.getInt(KEY_MODE)];
-        } else if (args != null && args.containsKey(KEY_MODE)){
+        } else if (args != null && args.containsKey(KEY_MODE)) {
             _mode = Mode.values()[args.getInt(KEY_MODE)];
         }
 
@@ -129,7 +129,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void onSkipButtonClick(View view) {
-        // TODO implement skipped pincode setup
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
     }
 
     private void onTextChanged(String pincode) {
@@ -154,7 +154,7 @@ public class LoginFragment extends Fragment {
                 if (pincode.length() == PINCODE_LENGTH) {
                     String newPincodeHash = _securityHelper.getHash(pincode);
                     if (newPincodeHash.equals(_tempPincodeHash)) {
-                        _appRepo.setPinCode(pincode);
+                        _appRepo.setPincode(pincode);
 
                         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
                     } else {

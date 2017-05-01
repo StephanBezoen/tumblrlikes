@@ -17,8 +17,10 @@ public interface AppStore {
     @Nullable
     String getTumblrBlog();
 
-    void storePinCodeHash(String pinCodeHash);
+    void storePincodeHash(String pinCodeHash);
+
+    void clearPincodeHash();
 
     @Nullable
-    String getPinCodeHash();
+    String getPincodeHash();
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.BuildConfig;
+import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.util.PhotoUtil;
@@ -25,6 +26,8 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     LikesRepo _likesRepo;
     @Inject
     PhotoRepo _photoRepo;
+    @Inject
+    AppRepo _appRepo;
 
     @Inject
     public GetLikesPageUseCaseImpl() {
@@ -33,7 +36,7 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     @Override
     public Observable<List<PhotoEntity>> getPageOfLikesBefore(long timestamp) {
         return _likesRepo
-                .getLikes(BuildConfig.BLOG, 20, timestamp)
+                .getLikes(_appRepo.getTumblrBlog(), 20, timestamp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapIterable(tumblrLikeVOs -> tumblrLikeVOs)

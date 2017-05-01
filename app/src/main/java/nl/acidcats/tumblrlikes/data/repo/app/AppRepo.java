@@ -17,7 +17,11 @@ public interface AppRepo {
 
     String getTumblrBlog();
 
-    void setPinCode(String pinCode);
+    void setPincode(String pinCode);
+
+    void clearPincode();
+
+    boolean hasPincode();
 
     boolean isPincodeCorrect(@NonNull String pinCode);
 }

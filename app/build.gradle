@@ -44,8 +44,11 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
-        buildConfigField "String", "BLOG", "\"" + config.blog + "\""
-        buildConfigField "String", "PINHASH", "\"" + config.pinhash + "\""
+        if (config.has('blog')) {
+            buildConfigField "String", "BLOG", "\"" + config.blog + "\""
+        } else {
+            buildConfigField "String", "BLOG", "\"\""
+        }
     }
 
     signingConfigs {
