@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
+import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 
@@ -32,13 +34,16 @@ public class LoginFragment extends Fragment {
     private static final String TAG = LoginFragment.class.getSimpleName();
 
     private static final String KEY_MODE = "key_mode";
+    private static final int PINCODE_LENGTH = 4;
 
     public enum Mode {
-        NEW_PINCODE, LOGIN
+        NEW_PINCODE, REPEAT_PINCODE, LOGIN
     }
 
     @Inject
     SecurityHelper _securityHelper;
+    @Inject
+    AppRepo _appRepo;
 
     @BindView(R.id.input_password)
     EditText _passwordInput;
@@ -50,6 +55,7 @@ public class LoginFragment extends Fragment {
     private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
     private Mode _mode;
+    private String _tempPincodeHash;
 
     public static LoginFragment newInstance(Mode mode) {
         Bundle args = new Bundle();
@@ -82,6 +88,9 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         _unbinder = ButterKnife.bind(this, view);
 
+        InputFilter filter = new InputFilter.LengthFilter(PINCODE_LENGTH);
+        _passwordInput.setFilters(new InputFilter[]{filter});
+
         return view;
     }
 
@@ -95,6 +104,10 @@ public class LoginFragment extends Fragment {
         };
         _passwordInput.addTextChangedListener(_textWatcher);
 
+        updateUI();
+    }
+
+    private void updateUI() {
         switch (_mode) {
             case LOGIN:
                 _header.setText(R.string.enter_pincode);
@@ -104,6 +117,10 @@ public class LoginFragment extends Fragment {
                 _header.setText(R.string.enter_new_pincode);
                 _skipButton.setOnClickListener(this::onSkipButtonClick);
                 break;
+            case REPEAT_PINCODE:
+                _header.setText(R.string.repeat_new_pincode);
+                _skipButton.setOnClickListener(this::onSkipButtonClick);
+                break;
         }
     }
 
@@ -111,10 +128,37 @@ public class LoginFragment extends Fragment {
         // TODO implement skipped pincode setup
     }
 
-    private void onTextChanged(String password) {
-        // TODO deal with changed text based on current mode
-        if (_securityHelper.checkPassword(password)) {
-            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
+    private void onTextChanged(String pincode) {
+        switch (_mode) {
+            case LOGIN:
+                if (_appRepo.isPincodeCorrect(pincode)) {
+                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
+                }
+                break;
+            case NEW_PINCODE:
+                if (pincode.length() == PINCODE_LENGTH) {
+                    _tempPincodeHash = _securityHelper.getHash(pincode);
+
+                    _mode = Mode.REPEAT_PINCODE;
+
+                    updateUI();
+                }
+                break;
+            case REPEAT_PINCODE:
+                if (pincode.length() == PINCODE_LENGTH) {
+                    String newPincodeHash = _securityHelper.getHash(pincode);
+                    if (newPincodeHash.equals(_tempPincodeHash)) {
+                        _appRepo.setPinCode(pincode);
+
+                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
+                    } else {
+                        _passwordInput.setText("");
+
+                        // TODO show error message
+                        // TODO allow to start over with new pincode
+                    }
+                }
+                break;
         }
     }
 
