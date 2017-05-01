@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -30,22 +31,47 @@ import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 public class LoginFragment extends Fragment {
     private static final String TAG = LoginFragment.class.getSimpleName();
 
+    private static final String KEY_MODE = "key_mode";
+
+    public enum Mode {
+        NEW_PINCODE, LOGIN
+    }
+
     @Inject
     SecurityHelper _securityHelper;
 
     @BindView(R.id.input_password)
     EditText _passwordInput;
+    @BindView(R.id.tv_pincode_header)
+    TextView _header;
+    @BindView(R.id.btn_skip)
+    View _skipButton;
 
     private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
+    private Mode _mode;
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    public static LoginFragment newInstance(Mode mode) {
+        Bundle args = new Bundle();
+        args.putInt(KEY_MODE, mode.ordinal());
+
+        LoginFragment fragment = new LoginFragment();
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_MODE)) {
+            _mode = Mode.values()[savedInstanceState.getInt(KEY_MODE)];
+        } else if (args != null && args.containsKey(KEY_MODE)){
+            _mode = Mode.values()[args.getInt(KEY_MODE)];
+        }
 
         ((LikesApplication) getActivity().getApplication()).getMyComponent().inject(this);
     }
@@ -68,9 +94,25 @@ public class LoginFragment extends Fragment {
             }
         };
         _passwordInput.addTextChangedListener(_textWatcher);
+
+        switch (_mode) {
+            case LOGIN:
+                _header.setText(R.string.enter_pincode);
+                _skipButton.setVisibility(View.GONE);
+                break;
+            case NEW_PINCODE:
+                _header.setText(R.string.enter_new_pincode);
+                _skipButton.setOnClickListener(this::onSkipButtonClick);
+                break;
+        }
+    }
+
+    private void onSkipButtonClick(View view) {
+        // TODO implement skipped pincode setup
     }
 
     private void onTextChanged(String password) {
+        // TODO deal with changed text based on current mode
         if (_securityHelper.checkPassword(password)) {
             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
         }
@@ -85,8 +127,16 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(KEY_MODE, _mode.ordinal());
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onDestroy() {
         _passwordInput.removeTextChangedListener(_textWatcher);
+        _skipButton.setOnClickListener(null);
 
         if (_unbinder != null) {
             _unbinder.unbind();

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (_appRepo.isSetupComplete()) {
             if (savedInstanceState == null || ((LikesApplication)getApplication()).isFreshRun()) {
-                showFragment(LoginFragment.newInstance());
+                showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
             }
         } else {
             showFragment(SetupFragment.newInstance());
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSetupComplete(String action, Intent intent) {
-        showFragment(LoadLikesFragment.newInstance());
+        showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
     }
 
     private void onDatabaseReset(String action, Intent intent) {
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         if (_isRestarted) {
             _isRestarted = false;
 
-            showFragment(LoginFragment.newInstance());
+            showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
         }
     }
 
