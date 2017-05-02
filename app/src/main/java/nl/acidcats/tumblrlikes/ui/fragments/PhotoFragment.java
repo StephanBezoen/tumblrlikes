@@ -144,6 +144,8 @@ public class PhotoFragment extends Fragment {
 
         _photo.setVisibility(View.VISIBLE);
 
+        _photoRepo.startPhotoView(_photoUrl);
+
         hideUI();
     }
 
