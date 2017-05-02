@@ -41,3 +41,4 @@ captures/
 config.gradle
 crashlytics-build.properties
 com_crashlytics_export_strings.xml
+fabric.properties
