@@ -2,9 +2,11 @@ package nl.acidcats.tumblrlikes;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.pixplicity.easyprefs.library.Prefs;
 
+import io.fabric.sdk.android.Fabric;
 import nl.acidcats.tumblrlikes.di.DaggerMyComponent;
 import nl.acidcats.tumblrlikes.di.MyComponent;
 import nl.acidcats.tumblrlikes.di.MyModule;
@@ -22,6 +24,7 @@ public class LikesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         Prefs.initPrefs(this);
 

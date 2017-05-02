@@ -2,6 +2,7 @@ buildscript {
 
     repositories {
         mavenCentral()
+        maven { url rootProject.ext.Repos.fabric }
     }
 
     dependencies {
@@ -10,17 +11,20 @@ buildscript {
         classpath classpaths.hugo
         classpath classpaths.retrolambda
         classpath classpaths.greenDAO
+        classpath classpaths.fabric
     }
 }
 
 def config = rootProject.ext
 def plugins = config.Plugins
 def libs = config.Libraries
+def repos = config.Repos
 
 apply plugin: plugins.android_app
 apply plugin: plugins.hugo
 apply plugin: plugins.retrolambda
 apply plugin: plugins.greenDAO
+apply plugin: plugins.fabric
 
 apply from: "$rootDir/config/config.gradle", to:config
 
@@ -79,6 +83,10 @@ android {
 
 greendao {
     schemaVersion 4
+}
+
+repositories {
+    maven { url repos.fabric }
 }
 
 dependencies {
@@ -140,4 +148,9 @@ dependencies {
 
     // SQL Cipher, to get rid of GreenDAO exceptions
     compile libs.sqlCipher
+
+    // Fabric
+    compile (libs.fabric) {
+        transitive = true;
+    }
 }

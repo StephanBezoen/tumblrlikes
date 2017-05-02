@@ -25,6 +25,9 @@
             android:name=".data.services.CacheService"
             android:exported="false"
             />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="4430c468ff3d07fde7e41a441b9fe9c167ecb54b" />
     </application>
 
 </manifest>
