@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
         _receiver.addActionHandler(Broadcasts.SETUP_COMPLETE, this::onSetupComplete);
 
-        startService(new Intent(this, CacheService.class));
-
         if (_appRepo.isSetupComplete()) {
             if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
                 checkLogin();
@@ -120,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        startService(new Intent(this, CacheService.class));
 
         _receiver.onResume();
     }
