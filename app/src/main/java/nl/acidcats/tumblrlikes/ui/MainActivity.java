@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.WindowManager;
+
+import com.pixplicity.easyprefs.library.Prefs;
 
 import javax.inject.Inject;
 
@@ -12,6 +15,7 @@ import butterknife.ButterKnife;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
+import nl.acidcats.tumblrlikes.data.constants.PrefKeys;
 import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
@@ -24,6 +28,8 @@ import nl.acidcats.tumblrlikes.util.BroadcastReceiver;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final long MAX_STOP_TIME_MS = 1000L;
+
     @Inject
     LikesRepo _likesRepo;
     @Inject
@@ -31,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;
+    private boolean _isStoppedTooLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +108,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResumeFragments() {
         super.onResumeFragments();
 
-        if (_isRestarted) {
+        if (_isRestarted || _isStoppedTooLong) {
             _isRestarted = false;
+            _isStoppedTooLong = false;
 
             checkLogin();
         }
@@ -113,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+        long timeDiff = System.currentTimeMillis() - Prefs.getLong(PrefKeys.KEY_APP_STOP_TIME, 0L);
+        _isStoppedTooLong = (timeDiff > MAX_STOP_TIME_MS);
     }
 
     @Override
@@ -129,6 +140,13 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         _receiver.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Prefs.putLong(PrefKeys.KEY_APP_STOP_TIME, System.currentTimeMillis());
     }
 
     @Override
