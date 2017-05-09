@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import javax.inject.Inject;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     LikesRepo _likesRepo;
     @Inject
     AppRepo _appRepo;
+    @Inject
+    FirebaseAnalytics _analytics;
 
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;

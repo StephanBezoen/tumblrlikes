@@ -26,7 +26,7 @@ apply plugin: plugins.retrolambda
 apply plugin: plugins.greenDAO
 apply plugin: plugins.fabric
 
-apply from: "$rootDir/config/config.gradle", to:config
+apply from: "$rootDir/config/config.gradle", to: config
 
 android {
     def versions = config.Versions
@@ -150,7 +150,10 @@ dependencies {
     compile libs.sqlCipher
 
     // Fabric
-    compile (libs.fabric) {
+    compile(libs.fabric) {
         transitive = true;
     }
+    compile libs.firebase
 }
+
+apply plugin: 'com.google.gms.google-services'

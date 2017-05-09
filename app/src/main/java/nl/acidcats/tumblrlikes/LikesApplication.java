@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import io.fabric.sdk.android.Fabric;
@@ -32,8 +33,10 @@ public class LikesApplication extends Application {
             Stetho.initializeWithDefaults(this);
         }
 
+        FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(this);
+
         _myComponent = DaggerMyComponent.builder()
-                .myModule(new MyModule(this))
+                .myModule(new MyModule(this, analytics))
                 .build();
 
     }

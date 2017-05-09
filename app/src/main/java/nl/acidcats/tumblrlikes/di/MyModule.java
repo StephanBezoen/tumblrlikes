@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.di;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -28,9 +30,11 @@ import nl.acidcats.tumblrlikes.util.security.SecurityHelperImpl;
 @Module
 public class MyModule {
     private LikesApplication _application;
+    private FirebaseAnalytics _analytics;
 
-    public MyModule(LikesApplication application) {
+    public MyModule(LikesApplication application, FirebaseAnalytics analytics) {
         _application = application;
+        _analytics = analytics;
     }
 
     @Provides
@@ -72,5 +76,10 @@ public class MyModule {
     @Singleton
     AppRepo provideAppRepo(AppRepoImpl impl) {
         return impl;
+    }
+
+    @Provides
+    FirebaseAnalytics provideAnalytics () {
+        return _analytics;
     }
 }

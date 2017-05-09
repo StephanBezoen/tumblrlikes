@@ -10,6 +10,7 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 
@@ -138,7 +139,9 @@ ext {
 
             glide                         : 'com.github.bumptech.glide:glide:3.7.0',
 
-            fabric                        : 'com.crashlytics.sdk.android:crashlytics:2.6.7@aar'
+            fabric                        : 'com.crashlytics.sdk.android:crashlytics:2.6.7@aar',
+
+            firebase                      : 'com.google.firebase:firebase-core:10.0.1'
 
     ]
 }
