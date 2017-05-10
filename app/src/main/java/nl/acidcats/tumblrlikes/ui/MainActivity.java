@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;
     private boolean _isStoppedTooLong;
+    private boolean _isShowingSetup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 checkLogin();
             }
         } else {
+            _isShowingSetup = true;
+
             showFragment(SetupFragment.newInstance());
         }
     }
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSetupComplete(String action, Intent intent) {
+        _isShowingSetup = false;
+
         showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
     }
 
@@ -110,11 +115,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResumeFragments() {
         super.onResumeFragments();
 
-        if (_isRestarted || _isStoppedTooLong) {
-            _isRestarted = false;
-            _isStoppedTooLong = false;
+        if (!_isShowingSetup) {
+            if (_isRestarted || _isStoppedTooLong) {
+                _isRestarted = false;
+                _isStoppedTooLong = false;
 
-            checkLogin();
+                checkLogin();
+            }
         }
     }
 
