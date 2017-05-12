@@ -28,4 +28,15 @@ public interface PhotoRepo {
     void startPhotoView(String url);
 
     void endPhotoView (@Nullable String url);
+
+    void likePhoto(long id);
+
+    void unlikePhoto(long id);
+
+    void setPhotoFavorite(long id, boolean isFavorite);
+
+    void setPhotoHidden(long id);
+
+    @Nullable
+    PhotoEntity getPhotoById(long id);
 }

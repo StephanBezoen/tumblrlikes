@@ -31,4 +31,15 @@ public interface PhotoStore {
 
     @Nullable
     PhotoEntity getPhotoByPath(String url);
+
+    @Nullable
+    PhotoEntity getPhotoById(long id);
+
+    void likePhoto(long id);
+
+    void unlikePhoto(long id);
+
+    void setPhotoFavorite(long id, boolean isFavorite);
+
+    void setPhotoHidden(long id);
 }

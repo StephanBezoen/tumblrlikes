@@ -89,4 +89,30 @@ public class PhotoRepoImpl implements PhotoRepo {
         long diff = SystemClock.elapsedRealtime() - _startViewTime;
         _photoStore.addViewTime(photo, diff);
     }
+
+    @Override
+    public void likePhoto(long id) {
+        _photoStore.likePhoto(id);
+    }
+
+    @Override
+    public void unlikePhoto(long id) {
+        _photoStore.unlikePhoto(id);
+    }
+
+    @Override
+    public void setPhotoFavorite(long id, boolean isFavorite) {
+        _photoStore.setPhotoFavorite(id, isFavorite);
+    }
+
+    @Override
+    public void setPhotoHidden(long id) {
+        _photoStore.setPhotoHidden(id);
+    }
+
+    @Override
+    @Nullable
+    public PhotoEntity getPhotoById(long id) {
+        return _photoStore.getPhotoById(id);
+    }
 }

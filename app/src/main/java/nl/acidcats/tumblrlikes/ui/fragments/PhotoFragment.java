@@ -32,6 +32,8 @@ public class PhotoFragment extends Fragment {
     private static final String TAG = PhotoFragment.class.getSimpleName();
 
     private static final String KEY_PHOTO_URL = "key_photoUrl";
+    private static final String KEY_PHOTO_ID = "key_photoId";
+
     private static final long HIDE_UI_DELAY_MS = 2000L;
 
     @Inject
@@ -46,6 +48,8 @@ public class PhotoFragment extends Fragment {
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
     private Unbinder _unbinder;
+    private boolean _isTest = true;
+    private Long _photoId;
 
     public static PhotoFragment newInstance() {
         return new PhotoFragment();
@@ -66,9 +70,16 @@ public class PhotoFragment extends Fragment {
 
         if (savedInstanceState != null) {
             _photoUrl = savedInstanceState.getString(KEY_PHOTO_URL);
+            _photoId = savedInstanceState.getLong(KEY_PHOTO_ID);
         }
 
         _photoView.setGestureListener(this::onGesture);
+
+        if (_isTest) {
+            _photoView.setAlpha(0.1f);
+        }
+
+        _photoActionDialog.setPhotoRepo(_photoRepo);
 
         return view;
     }
@@ -82,7 +93,7 @@ public class PhotoFragment extends Fragment {
                 showUI();
                 break;
             case LONG_PRESS:
-                _photoActionDialog.show();
+                _photoActionDialog.show(_photoId);
                 break;
         }
     }
@@ -134,11 +145,13 @@ public class PhotoFragment extends Fragment {
 
     private void getRandomPhoto() {
         if (_photoUrl != null) {
-            _photoRepo.endPhotoView(_photoUrl);
+            endPhotoView();
         }
 
         PhotoEntity photo = _photoRepo.getRandomPhoto();
         if (photo == null) return;
+
+        _photoId = photo.getId();
 
         _photoUrl = photo.getIsCached() ? photo.getFilePath() : photo.getUrl();
     }
@@ -164,11 +177,17 @@ public class PhotoFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        _photoRepo.endPhotoView(_photoUrl);
+        endPhotoView();
 
         _photoView.setVisibility(View.INVISIBLE);
 
         _handler.removeCallbacks(_uiHider);
+    }
+
+    private void endPhotoView() {
+        if (!_isTest) {
+            _photoRepo.endPhotoView(_photoUrl);
+        }
     }
 
     @Override
@@ -176,6 +195,7 @@ public class PhotoFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         outState.putString(KEY_PHOTO_URL, _photoUrl);
+        outState.putLong(KEY_PHOTO_ID, _photoId);
     }
 
     @Override

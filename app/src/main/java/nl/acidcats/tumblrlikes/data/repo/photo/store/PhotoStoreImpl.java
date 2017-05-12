@@ -106,4 +106,46 @@ public class PhotoStoreImpl implements PhotoStore {
         return ListUtil.getFirstFromList(
                 _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).list());
     }
+
+    @Override
+    public PhotoEntity getPhotoById(long id) {
+        return ListUtil.getFirstFromList(
+                _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.Id.eq(id)).list());
+    }
+
+    @Override
+    public void likePhoto(long id) {
+        PhotoEntity photo = getPhotoById(id);
+        if (photo == null) return;
+
+        photo.setLikeCount(1 + photo.getLikeCount());
+        _photoEntityDao.save(photo);
+    }
+
+    @Override
+    public void unlikePhoto(long id) {
+        PhotoEntity photo = getPhotoById(id);
+        if (photo == null) return;
+
+        photo.setLikeCount(photo.getLikeCount() - 1);
+        _photoEntityDao.save(photo);
+    }
+
+    @Override
+    public void setPhotoFavorite(long id, boolean isFavorite) {
+        PhotoEntity photo = getPhotoById(id);
+        if (photo == null) return;
+
+        photo.setIsFavorite(isFavorite);
+        _photoEntityDao.save(photo);
+    }
+
+    @Override
+    public void setPhotoHidden(long id) {
+        PhotoEntity photo = getPhotoById(id);
+        if (photo == null) return;
+
+        photo.setIsHidden(true);
+        _photoEntityDao.save(photo);
+    }
 }

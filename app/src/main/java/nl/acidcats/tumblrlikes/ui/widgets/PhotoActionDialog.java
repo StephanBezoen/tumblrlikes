@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
+import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 
 /**
  * Created by stephan on 28/04/2017.
@@ -36,9 +37,9 @@ public class PhotoActionDialog extends FrameLayout {
     @BindView(R.id.background)
     View _background;
 
-    private String _photoUrl;
     private Unbinder _unbinder;
     private PhotoRepo _photoRepo;
+    private PhotoEntity _photo;
 
     public PhotoActionDialog(Context context) {
         super(context);
@@ -62,8 +63,8 @@ public class PhotoActionDialog extends FrameLayout {
         _photoRepo = photoRepo;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        _photoUrl = photoUrl;
+    public void setPhotoId(long id) {
+        _photo = _photoRepo.getPhotoById(id);
     }
 
     private void init() {
@@ -74,13 +75,8 @@ public class PhotoActionDialog extends FrameLayout {
         _likeButton.setOnClickListener(this::onLikeButtonClick);
         _unlikeButton.setOnClickListener(this::onUnlikeButtonClick);
         _hideButton.setOnClickListener(this::onHideButtonClick);
-        _background.setOnClickListener(this::onBackgroundClick);
 
-        hide();
-    }
-
-    private void onBackgroundClick(View view) {
-        Log.d(TAG, "onBackgroundClick: ");
+        _background.setOnClickListener(v -> hide());
 
         hide();
     }
@@ -88,11 +84,15 @@ public class PhotoActionDialog extends FrameLayout {
     private void onHideButtonClick(View view) {
         Log.d(TAG, "onHideButtonClick: ");
 
+        _photoRepo.setPhotoHidden(_photo.getId());
+
         hide();
     }
 
     private void onUnlikeButtonClick(View view) {
         Log.d(TAG, "onUnlikeButtonClick: ");
+
+        _photoRepo.unlikePhoto(_photo.getId());
 
         hide();
     }
@@ -100,16 +100,22 @@ public class PhotoActionDialog extends FrameLayout {
     private void onLikeButtonClick(View view) {
         Log.d(TAG, "onLikeButtonClick: ");
 
+        _photoRepo.likePhoto(_photo.getId());
+
         hide();
     }
 
     private void onFavoriteButtonClick(View view) {
         Log.d(TAG, "onFavoriteButtonClick: ");
 
+        _photoRepo.setPhotoFavorite(_photo.getId(), !_photo.getIsFavorite());
+
         hide();
     }
 
-    public void show() {
+    public void show(long id) {
+        _photo = _photoRepo.getPhotoById(id);
+
         setVisibility(VISIBLE);
     }
 
