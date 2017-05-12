@@ -2,6 +2,7 @@ buildscript {
 
     repositories {
         mavenCentral()
+        maven { url rootProject.ext.Repos.fabric }
     }
 
     dependencies {
@@ -10,19 +11,22 @@ buildscript {
         classpath classpaths.hugo
         classpath classpaths.retrolambda
         classpath classpaths.greenDAO
+        classpath classpaths.fabric
     }
 }
 
 def config = rootProject.ext
 def plugins = config.Plugins
 def libs = config.Libraries
+def repos = config.Repos
 
 apply plugin: plugins.android_app
 apply plugin: plugins.hugo
 apply plugin: plugins.retrolambda
 apply plugin: plugins.greenDAO
+apply plugin: plugins.fabric
 
-apply from: "$rootDir/config/config.gradle", to:config
+apply from: "$rootDir/config/config.gradle", to: config
 
 android {
     def versions = config.Versions
@@ -44,8 +48,11 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
-        buildConfigField "String", "BLOG", "\"" + config.blog + "\""
-        buildConfigField "String", "PINHASH", "\"" + config.pinhash + "\""
+        if (config.has('blog')) {
+            buildConfigField "String", "BLOG", "\"" + config.blog + "\""
+        } else {
+            buildConfigField "String", "BLOG", "\"\""
+        }
     }
 
     signingConfigs {
@@ -59,7 +66,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release_keystore
         }
@@ -75,7 +82,11 @@ android {
 }
 
 greendao {
-    schemaVersion 4
+    schemaVersion 5
+}
+
+repositories {
+    maven { url repos.fabric }
 }
 
 dependencies {
@@ -137,4 +148,12 @@ dependencies {
 
     // SQL Cipher, to get rid of GreenDAO exceptions
     compile libs.sqlCipher
+
+    // Fabric
+    compile(libs.fabric) {
+        transitive = true;
+    }
+    compile libs.firebase
 }
+
+apply plugin: 'com.google.gms.google-services'

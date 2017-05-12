@@ -38,7 +38,7 @@ public class PhotoFragment extends Fragment {
     PhotoRepo _photoRepo;
 
     @BindView(R.id.photo)
-    InteractiveImageView _photo;
+    InteractiveImageView _photoView;
     @BindView(R.id.photo_action_dialog)
     PhotoActionDialog _photoActionDialog;
 
@@ -68,7 +68,7 @@ public class PhotoFragment extends Fragment {
             _photoUrl = savedInstanceState.getString(KEY_PHOTO_URL);
         }
 
-        _photo.setGestureListener(this::onGesture);
+        _photoView.setGestureListener(this::onGesture);
 
         return view;
     }
@@ -88,7 +88,7 @@ public class PhotoFragment extends Fragment {
     }
 
     private void showUI() {
-        _photo.setSystemUiVisibility(
+        _photoView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -98,7 +98,7 @@ public class PhotoFragment extends Fragment {
     }
 
     private void hideUI() {
-        _photo.setSystemUiVisibility(
+        _photoView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LOW_PROFILE
@@ -119,12 +119,15 @@ public class PhotoFragment extends Fragment {
         }
         if (_photoUrl == null) return;
 
+        String url = _photoUrl;
+        if (!_photoUrl.startsWith("http")) url = "file:" + url;
+
         Glide
                 .with(getContext())
-                .load("file:" + _photoUrl)
+                .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
-                .into(new GlideDrawableImageViewTarget(_photo));
+                .into(new GlideDrawableImageViewTarget(_photoView));
 
         _photoRepo.startPhotoView(_photoUrl);
     }
@@ -150,7 +153,9 @@ public class PhotoFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        _photo.setVisibility(View.VISIBLE);
+        _photoView.setVisibility(View.VISIBLE);
+
+        _photoRepo.startPhotoView(_photoUrl);
 
         hideUI();
     }
@@ -161,7 +166,7 @@ public class PhotoFragment extends Fragment {
 
         _photoRepo.endPhotoView(_photoUrl);
 
-        _photo.setVisibility(View.INVISIBLE);
+        _photoView.setVisibility(View.INVISIBLE);
 
         _handler.removeCallbacks(_uiHider);
     }

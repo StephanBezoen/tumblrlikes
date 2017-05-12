@@ -14,9 +14,8 @@
     <TextView
         android:id="@+id/tv_loading"
         android:text="@string/loading"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -26,6 +25,21 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         />
+
+    <ProgressBar
+        android:id="@+id/spinner"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+
 
     <TextView
         android:id="@+id/tv_image_count"

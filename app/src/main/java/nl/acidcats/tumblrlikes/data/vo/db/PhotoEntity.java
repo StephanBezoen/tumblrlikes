@@ -25,14 +25,25 @@ public class PhotoEntity {
 
     private long viewTime;
 
+    private boolean isFavorite;
+
+    private boolean isHidden;
+
+    private int likeCount;
+
+    private int dislikeCount;
+
+    private String hash;
+
     public PhotoEntity(String url, long photoId) {
         this.url = url;
         this.photoId = photoId;
     }
 
-    @Generated(hash = 1657293559)
+    @Generated(hash = 2137840767)
     public PhotoEntity(Long id, String url, long photoId, String filePath,
-            boolean isCached, int viewCount, long viewTime) {
+            boolean isCached, int viewCount, long viewTime, boolean isFavorite,
+            boolean isHidden, int likeCount, int dislikeCount, String hash) {
         this.id = id;
         this.url = url;
         this.photoId = photoId;
@@ -40,6 +51,11 @@ public class PhotoEntity {
         this.isCached = isCached;
         this.viewCount = viewCount;
         this.viewTime = viewTime;
+        this.isFavorite = isFavorite;
+        this.isHidden = isHidden;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
+        this.hash = hash;
     }
 
     @Generated(hash = 1889335700)
@@ -107,5 +123,45 @@ public class PhotoEntity {
 
     public void setViewTime(long viewTime) {
         this.viewTime = viewTime;
+    }
+
+    public boolean getIsFavorite() {
+        return this.isFavorite;
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public boolean getIsHidden() {
+        return this.isHidden;
+    }
+
+    public void setIsHidden(boolean isHidden) {
+        this.isHidden = isHidden;
+    }
+
+    public int getLikeCount() {
+        return this.likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public int getDislikeCount() {
+        return this.dislikeCount;
+    }
+
+    public void setDislikeCount(int dislikeCount) {
+        this.dislikeCount = dislikeCount;
+    }
+
+    public String getHash() {
+        return this.hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }

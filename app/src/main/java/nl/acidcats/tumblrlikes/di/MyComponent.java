@@ -9,6 +9,7 @@ import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.PhotoFragment;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
+import nl.acidcats.tumblrlikes.ui.fragments.SetupFragment;
 
 /**
  * Created by stephan on 28/03/2017.
@@ -28,4 +29,6 @@ public interface MyComponent {
     void inject(CacheService service);
 
     void inject(PhotoActionDialog photoActionDialog);
+
+    void inject(SetupFragment fragment);
 }

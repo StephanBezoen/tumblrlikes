@@ -6,27 +6,41 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.pixplicity.easyprefs.library.Prefs;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
+import nl.acidcats.tumblrlikes.data.constants.PrefKeys;
+import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.PhotoFragment;
+import nl.acidcats.tumblrlikes.ui.fragments.SetupFragment;
 import nl.acidcats.tumblrlikes.util.BroadcastReceiver;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final long MAX_STOP_TIME_MS = 1000L;
+
     @Inject
     LikesRepo _likesRepo;
+    @Inject
+    AppRepo _appRepo;
+    @Inject
+    FirebaseAnalytics _analytics;
 
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;
+    private boolean _isStoppedTooLong;
+    private boolean _isShowingSetup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +53,31 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.PASSWORD_OK, this::onPasswordOk);
         _receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED, this::onAllLikesLoaded);
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
+        _receiver.addActionHandler(Broadcasts.SETUP_COMPLETE, this::onSetupComplete);
 
-        startService(new Intent(this, CacheService.class));
+        if (_appRepo.isSetupComplete()) {
+            if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
+                checkLogin();
+            }
+        } else {
+            _isShowingSetup = true;
 
-        if (savedInstanceState == null || ((LikesApplication)getApplication()).isFreshRun()) {
-            showFragment(LoginFragment.newInstance());
+            showFragment(SetupFragment.newInstance());
         }
+    }
+
+    private void checkLogin() {
+        if (_appRepo.hasPincode()) {
+            showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
+        } else {
+            enterApp();
+        }
+    }
+
+    private void onSetupComplete(String action, Intent intent) {
+        _isShowingSetup = false;
+
+        showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
     }
 
     private void onDatabaseReset(String action, Intent intent) {
@@ -58,6 +91,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onPasswordOk(String action, Intent intent) {
+        enterApp();
+    }
+
+    private void enterApp() {
         showFragment(_likesRepo.isTimeToCheck()
                 ? LoadLikesFragment.newInstance()
                 : PhotoFragment.newInstance());
@@ -78,10 +115,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResumeFragments() {
         super.onResumeFragments();
 
-        if (_isRestarted) {
-            _isRestarted = false;
+        if (!_isShowingSetup) {
+            if (_isRestarted || _isStoppedTooLong) {
+                _isRestarted = false;
+                _isStoppedTooLong = false;
 
-            showFragment(LoginFragment.newInstance());
+                checkLogin();
+            }
         }
     }
 
@@ -90,11 +130,16 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+        long timeDiff = System.currentTimeMillis() - Prefs.getLong(PrefKeys.KEY_APP_STOP_TIME, 0L);
+        _isStoppedTooLong = (timeDiff > MAX_STOP_TIME_MS);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        startService(new Intent(this, CacheService.class));
 
         _receiver.onResume();
     }
@@ -107,10 +152,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        Prefs.putLong(PrefKeys.KEY_APP_STOP_TIME, System.currentTimeMillis());
+    }
+
+    @Override
     protected void onDestroy() {
         _receiver.onDestroy();
 
-        ((LikesApplication)getApplication()).setFreshRun(false);
+        ((LikesApplication) getApplication()).setFreshRun(false);
 
         super.onDestroy();
     }

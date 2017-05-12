@@ -2,9 +2,11 @@ package nl.acidcats.tumblrlikes.data.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -12,12 +14,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.LikesApplication;
+import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
@@ -47,10 +49,13 @@ public class CacheService extends Service {
     private final boolean _debug = BuildConfig.DEBUG;
     private OkHttpClient _client;
     private int _photoCount;
+    private Handler _handler;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        _handler = new Handler();
 
         if (_debug) Log.d(TAG, "onCreate: ");
 
@@ -102,6 +107,8 @@ public class CacheService extends Service {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG, "onFailure: " + e.getMessage());
+
+                onLoadError();
             }
 
             @Override
@@ -117,11 +124,19 @@ public class CacheService extends Service {
                     Log.d(TAG, "onResponse: " + _photoCount);
 
                     checkCachePhotos();
+                } else {
+                    onLoadError();
                 }
             }
         });
 
         return null;
+    }
+
+    private void onLoadError() {
+        _handler.post(() -> Toast.makeText(this, getString(R.string.error_load), Toast.LENGTH_SHORT).show());
+
+        stopSelf();
     }
 
     private String savePhoto(InputStream inputStream, PhotoEntity photo) {

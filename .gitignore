@@ -39,5 +39,7 @@ captures/
 # Keystore files
 *.jks
 config.gradle
-google-services.json
+crashlytics-build.properties
+com_crashlytics_export_strings.xml
 fabric.properties
+google-services.json

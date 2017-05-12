@@ -1,15 +1,18 @@
 package nl.acidcats.tumblrlikes.ui.fragments;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -46,6 +49,8 @@ public class LoadLikesFragment extends Fragment {
     TextView _imageCountText;
     @BindView(R.id.tv_loading)
     TextView _loadingText;
+    @BindView(R.id.spinner)
+    ProgressBar _spinner;
 
     private int _pageCount;
     private Unbinder _unbinder;
@@ -66,6 +71,9 @@ public class LoadLikesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_loadlikes, container, false);
         _unbinder = ButterKnife.bind(this, view);
+
+        _spinner.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
+
 
         return view;
     }

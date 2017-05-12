@@ -23,3 +23,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn com.squareup.okhttp.**
+-keep class com.squareup.okhttp.* { *;}
+-dontwarn okio.
+
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keepclasseswithmembernames class * { @butterknife.* <methods>; }
+-keepclasseswithmembernames class * { @butterknife.* <fields>; }
+-keep class **_ViewBinding { *; }
+

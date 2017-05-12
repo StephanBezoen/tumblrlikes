@@ -9,4 +9,25 @@
     <string name="photo_action_like">Like</string>
     <string name="photo_action_unlike">Unlike</string>
     <string name="photo_action_hide">Hide</string>
+    <string name="introduction">This app allows you to view liked photo posts of a single Tumblr blog offline.
+        \n\n
+        The first time this app runs, it will retrieve all liked posts from the blog you have specified. Once they have been downloaded, you can view the posts as full screen images.
+        \n\n
+        In the background, all photos are downloaded and cached at their highest resolution. Please be aware that this may take considerable storage space on your device.
+        \n\n
+        Liked posts are synchronized once a day.
+    </string>
+    <string name="tumblr_key">Tumblr API key:</string>
+    <string name="tumblr_key_hint">Your Tumblr API key</string>
+    <string name="tumblr_blog">Tumblr blog:</string>
+    <string name="tumblr_blog_hint">****.tumblr.com</string>
+    <string name="ok">OK</string>
+    <string name="introduction_title">Welcome to Tumblr Likes</string>
+    <string name="tumblr_blog_message">Please type the Tumblr blog below that you would like to see the likes of:</string>
+    <string name="enter_new_pincode">Enter a new pincode (4 digits)</string>
+    <string name="repeat_new_pincode">Repeat the new pincode</string>
+    <string name="enter_pincode">Enter pincode</string>
+    <string name="skip">Skip</string>
+    <string name="pincode_no_match">Pincode doesn\'t match</string>
+    <string name="error_load">There was an error loading a file. Please start the app to continue.</string>
 </resources>
