@@ -66,7 +66,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release_keystore
         }
@@ -82,7 +82,7 @@ android {
 }
 
 greendao {
-    schemaVersion 4
+    schemaVersion 5
 }
 
 repositories {

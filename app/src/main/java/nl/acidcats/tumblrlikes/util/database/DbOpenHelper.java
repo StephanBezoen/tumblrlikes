@@ -8,10 +8,15 @@ import android.util.Log;
 
 import org.greenrobot.greendao.database.Database;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.vo.db.DaoMaster;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
+import nl.acidcats.tumblrlikes.util.database.migration.Migration;
+import nl.acidcats.tumblrlikes.util.database.migration.MigrationV5;
 
 /**
  * Created by stephan on 18/04/2017.
@@ -40,10 +45,23 @@ public class DbOpenHelper extends DaoMaster.OpenHelper {
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
         if (_debug) Log.d(TAG, "onUpgrade: from " + oldVersion + " to " + newVersion);
 
-        PhotoEntityDao.dropTable(db, true);
+        for (Migration migration : getMigrations()) {
+            if (migration.getVersion() <= newVersion) {
+                migration.runMigration(db);
+            }
+        }
 
-        onCreate(db);
-
-        LocalBroadcastManager.getInstance(_context).sendBroadcast(new Intent(Broadcasts.DATABASE_RESET));
+//        LocalBroadcastManager.getInstance(_context).sendBroadcast(new Intent(Broadcasts.DATABASE_RESET));
     }
+
+    private List<Migration> getMigrations() {
+        List<Migration> migrations = new ArrayList<>();
+        migrations.add(new MigrationV5());
+
+        // Sorting just to be safe, in case other people add migrations in the wrong order.
+        Collections.sort(migrations, (m1, m2) -> m1.getVersion().compareTo(m2.getVersion()));
+
+        return migrations;
+    }
+
 }
