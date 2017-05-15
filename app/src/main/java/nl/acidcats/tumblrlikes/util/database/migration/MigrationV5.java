@@ -25,8 +25,6 @@ public class MigrationV5 implements Migration {
 
     private int likeCount;
 
-    private int dislikeCount;
-
     private String hash;
 
         *
@@ -35,7 +33,6 @@ public class MigrationV5 implements Migration {
         db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.IsFavorite.columnName + " INTEGER");
         db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.IsHidden.columnName + " INTEGER");
         db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.LikeCount.columnName + " INTEGER");
-        db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.DislikeCount.columnName + " INTEGER");
         db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.Hash.columnName + " TEXT");
     }
 }

@@ -31,8 +31,6 @@ public class PhotoEntity {
 
     private int likeCount;
 
-    private int dislikeCount;
-
     private String hash;
 
     public PhotoEntity(String url, long photoId) {
@@ -40,10 +38,10 @@ public class PhotoEntity {
         this.photoId = photoId;
     }
 
-    @Generated(hash = 2137840767)
+    @Generated(hash = 750736346)
     public PhotoEntity(Long id, String url, long photoId, String filePath,
             boolean isCached, int viewCount, long viewTime, boolean isFavorite,
-            boolean isHidden, int likeCount, int dislikeCount, String hash) {
+            boolean isHidden, int likeCount, String hash) {
         this.id = id;
         this.url = url;
         this.photoId = photoId;
@@ -54,7 +52,6 @@ public class PhotoEntity {
         this.isFavorite = isFavorite;
         this.isHidden = isHidden;
         this.likeCount = likeCount;
-        this.dislikeCount = dislikeCount;
         this.hash = hash;
     }
 
@@ -147,14 +144,6 @@ public class PhotoEntity {
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
-    }
-
-    public int getDislikeCount() {
-        return this.dislikeCount;
-    }
-
-    public void setDislikeCount(int dislikeCount) {
-        this.dislikeCount = dislikeCount;
     }
 
     public String getHash() {
