@@ -2,6 +2,8 @@ package nl.acidcats.tumblrlikes.ui.widgets;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -63,10 +65,6 @@ public class PhotoActionDialog extends FrameLayout {
         _photoRepo = photoRepo;
     }
 
-    public void setPhotoId(long id) {
-        _photo = _photoRepo.getPhotoById(id);
-    }
-
     private void init() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.popup_photo_menu, this, true);
         _unbinder = ButterKnife.bind(this, view);
@@ -82,32 +80,24 @@ public class PhotoActionDialog extends FrameLayout {
     }
 
     private void onHideButtonClick(View view) {
-        Log.d(TAG, "onHideButtonClick: ");
-
         _photoRepo.setPhotoHidden(_photo.getId());
 
         hide();
     }
 
     private void onUnlikeButtonClick(View view) {
-        Log.d(TAG, "onUnlikeButtonClick: ");
-
         _photoRepo.unlikePhoto(_photo.getId());
 
         hide();
     }
 
     private void onLikeButtonClick(View view) {
-        Log.d(TAG, "onLikeButtonClick: ");
-
         _photoRepo.likePhoto(_photo.getId());
 
         hide();
     }
 
     private void onFavoriteButtonClick(View view) {
-        Log.d(TAG, "onFavoriteButtonClick: ");
-
         _photoRepo.setPhotoFavorite(_photo.getId(), !_photo.getIsFavorite());
 
         hide();
@@ -115,6 +105,10 @@ public class PhotoActionDialog extends FrameLayout {
 
     public void show(long id) {
         _photo = _photoRepo.getPhotoById(id);
+        if (_photo == null) return;
+
+        @DrawableRes int iconId = _photo.getIsFavorite() ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp;
+        _favoriteButton.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
 
         setVisibility(VISIBLE);
     }
