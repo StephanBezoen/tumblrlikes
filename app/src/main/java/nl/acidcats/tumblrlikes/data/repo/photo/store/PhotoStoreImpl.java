@@ -27,6 +27,7 @@ public class PhotoStoreImpl implements PhotoStore {
 
     private final CountQuery<PhotoEntity> _countQuery;
     private final Query<PhotoEntity> _uncachedQuery;
+    private final CountQuery<PhotoEntity> _countUnhiddenQuery;
     private final PhotoEntityDao _photoEntityDao;
     private final boolean _debug = BuildConfig.DEBUG;
 
@@ -36,6 +37,7 @@ public class PhotoStoreImpl implements PhotoStore {
 
         _countQuery = _photoEntityDao.queryBuilder().buildCount();
         _uncachedQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsCached.eq(false)).limit(1).build();
+        _countUnhiddenQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false)).buildCount();
 //        _photoEntityDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
     }
 
@@ -62,10 +64,10 @@ public class PhotoStoreImpl implements PhotoStore {
     public PhotoEntity getRandomPhoto() {
         if (_debug) Log.d(TAG, "getRandomPhoto: ");
 
-        int index = (int) (getPhotoCount() * Math.random());
+        int index = (int) (_countUnhiddenQuery.count() * Math.random());
         if (_debug) Log.d(TAG, "getRandomPhoto: index = " + index);
 
-        PhotoEntity photo = ListUtil.getFirstFromList(_photoEntityDao.queryBuilder().limit(1).offset(index).list());
+        PhotoEntity photo = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false)).limit(1).offset(index).unique();
         if (photo == null) return null;
 
         // increase view count
@@ -84,7 +86,7 @@ public class PhotoStoreImpl implements PhotoStore {
     @Override
     @Nullable
     public PhotoEntity getNextUncachedPhoto() {
-        return ListUtil.getFirstFromList(_uncachedQuery.forCurrentThread().list());
+        return _uncachedQuery.forCurrentThread().unique();
     }
 
     @Override
@@ -103,14 +105,12 @@ public class PhotoStoreImpl implements PhotoStore {
     @Override
     @Nullable
     public PhotoEntity getPhotoByPath(String filePath) {
-        return ListUtil.getFirstFromList(
-                _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).list());
+        return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).unique();
     }
 
     @Override
     public PhotoEntity getPhotoById(long id) {
-        return ListUtil.getFirstFromList(
-                _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.Id.eq(id)).list());
+        return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.Id.eq(id)).unique();
     }
 
     @Override
@@ -119,7 +119,8 @@ public class PhotoStoreImpl implements PhotoStore {
         if (photo == null) return;
 
         photo.setLikeCount(1 + photo.getLikeCount());
-        _photoEntityDao.save(photo);
+
+        storePhoto(photo);
     }
 
     @Override
@@ -128,7 +129,8 @@ public class PhotoStoreImpl implements PhotoStore {
         if (photo == null) return;
 
         photo.setLikeCount(photo.getLikeCount() - 1);
-        _photoEntityDao.save(photo);
+
+        storePhoto(photo);
     }
 
     @Override
@@ -137,7 +139,8 @@ public class PhotoStoreImpl implements PhotoStore {
         if (photo == null) return;
 
         photo.setIsFavorite(isFavorite);
-        _photoEntityDao.save(photo);
+
+        storePhoto(photo);
     }
 
     @Override
@@ -146,6 +149,7 @@ public class PhotoStoreImpl implements PhotoStore {
         if (photo == null) return;
 
         photo.setIsHidden(true);
-        _photoEntityDao.save(photo);
+
+        storePhoto(photo);
     }
 }
