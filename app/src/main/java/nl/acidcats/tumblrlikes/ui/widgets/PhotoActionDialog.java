@@ -110,6 +110,18 @@ public class PhotoActionDialog extends FrameLayout {
         @DrawableRes int iconId = _photo.getIsFavorite() ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp;
         _favoriteButton.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
 
+        int likes = _photo.getLikeCount();
+        if (likes > 0) {
+            _likeButton.setText(getContext().getString(R.string.photo_action_like_count, likes));
+            _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
+        } else if (likes < 0) {
+            _likeButton.setText(getContext().getString(R.string.photo_action_like));
+            _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike_count, likes));
+        } else {
+            _likeButton.setText(getContext().getString(R.string.photo_action_like));
+            _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
+        }
+
         setVisibility(VISIBLE);
     }
 
