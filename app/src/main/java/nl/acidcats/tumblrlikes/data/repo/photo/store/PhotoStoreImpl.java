@@ -13,7 +13,6 @@ import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.data.vo.db.DaoMaster;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
-import nl.acidcats.tumblrlikes.util.ListUtil;
 import nl.acidcats.tumblrlikes.util.database.DbOpenHelper;
 
 /**
