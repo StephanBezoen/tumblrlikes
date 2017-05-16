@@ -1,12 +1,15 @@
 package nl.acidcats.tumblrlikes.ui.fragments;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -23,6 +26,7 @@ import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
+import nl.acidcats.tumblrlikes.ui.widgets.PhotoNavBar;
 
 /**
  * Created by stephan on 13/04/2017.
@@ -43,6 +47,8 @@ public class PhotoFragment extends Fragment {
     InteractiveImageView _photoView;
     @BindView(R.id.photo_action_dialog)
     PhotoActionDialog _photoActionDialog;
+    @BindView(R.id.photo_nav_bar)
+    PhotoNavBar _photoNavBar;
 
     private String _photoUrl;
     private Handler _handler = new Handler();
@@ -106,6 +112,7 @@ public class PhotoFragment extends Fragment {
 
         _handler.postDelayed(_uiHider, HIDE_UI_DELAY_MS);
 
+        _photoNavBar.show();
     }
 
     private void hideUI() {
@@ -117,6 +124,8 @@ public class PhotoFragment extends Fragment {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_IMMERSIVE
         );
+
+        _photoNavBar.hide();
     }
 
     @Override
@@ -197,6 +206,8 @@ public class PhotoFragment extends Fragment {
         outState.putString(KEY_PHOTO_URL, _photoUrl);
         outState.putLong(KEY_PHOTO_ID, _photoId);
     }
+
+
 
     @Override
     public void onDestroy() {

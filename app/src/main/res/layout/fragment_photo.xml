@@ -18,4 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <nl.acidcats.tumblrlikes.ui.widgets.PhotoNavBar
+        android:paddingTop="20dp"
+        android:id="@+id/photo_nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </FrameLayout>

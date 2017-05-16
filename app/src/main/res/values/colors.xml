@@ -10,4 +10,6 @@
     <color name="popup_overlay_background">#33000000</color>
     <color name="body_text">#FF222222</color>
     <color name="red">#FFFF0000</color>
+    <color name="bg_overlay">#88000000</color>
+    <color name="transparent">#00000000</color>
 </resources>
