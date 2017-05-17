@@ -78,7 +78,7 @@ public class PhotoNavBar extends FrameLayout {
     }
 
     private void onSettingsButtonClick(View view) {
-
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.SETTINGS_REQUEST));
     }
 
     private void onFilterButtonClick(View view) {
