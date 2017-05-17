@@ -29,6 +29,7 @@ public class PhotoStoreImpl implements PhotoStore {
     private final CountQuery<PhotoEntity> _countUnhiddenQuery;
     private final PhotoEntityDao _photoEntityDao;
     private final boolean _debug = BuildConfig.DEBUG;
+    private final Query<PhotoEntity> _unhiddenQuery;
 
     public PhotoStoreImpl(Context context) {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
@@ -36,6 +37,7 @@ public class PhotoStoreImpl implements PhotoStore {
 
         _countQuery = _photoEntityDao.queryBuilder().buildCount();
         _uncachedQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsCached.eq(false)).limit(1).build();
+        _unhiddenQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false)).build();
         _countUnhiddenQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false)).buildCount();
 //        _photoEntityDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
     }

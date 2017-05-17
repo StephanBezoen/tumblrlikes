@@ -1,9 +1,11 @@
 package nl.acidcats.tumblrlikes.ui.widgets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
+import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 
 /**
  * Created by stephan on 16/05/2017.
@@ -71,7 +74,7 @@ public class PhotoNavBar extends FrameLayout {
     }
 
     private void onRefreshButtonClick(View view) {
-
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.REFRESH_REQUEST));
     }
 
     private void onSettingsButtonClick(View view) {

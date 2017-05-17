@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED, this::onAllLikesLoaded);
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
         _receiver.addActionHandler(Broadcasts.SETUP_COMPLETE, this::onSetupComplete);
+        _receiver.addActionHandler(Broadcasts.REFRESH_REQUEST, this::onRefreshRequest);
+
 
         if (_appRepo.isSetupComplete()) {
             if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
@@ -64,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
             showFragment(SetupFragment.newInstance());
         }
+    }
+
+    private void onRefreshRequest(String action, Intent intent) {
+        showFragment(LoadLikesFragment.newInstance());
     }
 
     private void checkLogin() {

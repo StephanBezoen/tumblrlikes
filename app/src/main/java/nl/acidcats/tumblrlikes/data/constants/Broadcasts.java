@@ -11,4 +11,6 @@ public class Broadcasts {
     public static final String ALL_LIKES_LOADED = PREFIX + ".allLikesLoaded";
     public static final String DATABASE_RESET = PREFIX + ".databaseReset";
     public static final String SETUP_COMPLETE = PREFIX + ".setupComplete";
+    public static final String REFRESH_REQUEST = PREFIX + ".refreshRequest";
+    public static final String SETTINGS_REQUEST = PREFIX + ".settingsRequest";
 }
