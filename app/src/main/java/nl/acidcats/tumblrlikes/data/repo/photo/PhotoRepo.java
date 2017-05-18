@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
+import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 
 /**
@@ -39,4 +40,6 @@ public interface PhotoRepo {
 
     @Nullable
     PhotoEntity getPhotoById(long id);
+
+    void setFilterType(FilterType filterType);
 }

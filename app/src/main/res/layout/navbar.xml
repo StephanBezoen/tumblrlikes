@@ -1,54 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
-    android:background="@color/bg_overlay"
+    android:layout_height="wrap_content"
     >
 
-    <TextView
-        tools:text="Favourite"
-        android:id="@+id/btn_filter"
+    <nl.acidcats.tumblrlikes.ui.widgets.filterdropdown.FilterDropdown
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:paddingStart="32dp"
-        android:paddingEnd="16dp"
-        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
-        android:drawablePadding="8dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         />
 
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/bg_overlay"
+        >
 
-    <ImageButton
-        android:id="@+id/btn_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_autorenew_black_24dp"
-        android:scaleType="fitCenter"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:tint="@color/white"
-        android:background="@color/transparent"
-        />
+        <TextView
+            tools:text="Favourite"
+            android:id="@+id/btn_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:paddingStart="32dp"
+            android:paddingEnd="16dp"
+            android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+            android:drawablePadding="8dp"
+            />
 
-    <ImageButton
-        android:id="@+id/btn_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_settings_black_24dp"
-        android:scaleType="fitCenter"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:tint="@color/white"
-        android:background="@color/transparent"
-        />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_autorenew_black_24dp"
+            android:scaleType="fitCenter"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:tint="@color/white"
+            android:background="@color/transparent"
+            />
+
+        <ImageButton
+            android:id="@+id/btn_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_settings_black_24dp"
+            android:scaleType="fitCenter"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:tint="@color/white"
+            android:background="@color/transparent"
+            />
+
+    </LinearLayout>
+</FrameLayout>

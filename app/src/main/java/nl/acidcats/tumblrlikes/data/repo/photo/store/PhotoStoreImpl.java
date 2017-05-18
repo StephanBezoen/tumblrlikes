@@ -6,10 +6,18 @@ import android.util.Log;
 
 import org.greenrobot.greendao.query.CountQuery;
 import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nl.acidcats.tumblrlikes.BuildConfig;
+import nl.acidcats.tumblrlikes.data.constants.FilterType;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.FavoriteFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.FilterOption;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.PopularFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.UnhiddenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.vo.db.DaoMaster;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
@@ -29,7 +37,11 @@ public class PhotoStoreImpl implements PhotoStore {
     private final CountQuery<PhotoEntity> _countUnhiddenQuery;
     private final PhotoEntityDao _photoEntityDao;
     private final boolean _debug = BuildConfig.DEBUG;
-    private final Query<PhotoEntity> _unhiddenQuery;
+    private final CountQuery<PhotoEntity> _countFavoriteQuery;
+    private final QueryBuilder<PhotoEntity> _favoriteQueryBuilder;
+    private final QueryBuilder<PhotoEntity> _unhiddenQueryBuilder;
+    private final Map<FilterType, FilterOption> _filters = new HashMap<>();
+    private FilterOption _currentFilter;
 
     public PhotoStoreImpl(Context context) {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
@@ -37,9 +49,18 @@ public class PhotoStoreImpl implements PhotoStore {
 
         _countQuery = _photoEntityDao.queryBuilder().buildCount();
         _uncachedQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsCached.eq(false)).limit(1).build();
-        _unhiddenQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false)).build();
+
+        _unhiddenQueryBuilder = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false));
         _countUnhiddenQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false)).buildCount();
-//        _photoEntityDao.queryBuilder().buildDelete().executeDeleteWithoutDetachingEntities();
+
+        _favoriteQueryBuilder = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsFavorite.eq(true));
+        _countFavoriteQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsFavorite.eq(true)).buildCount();
+
+        _filters.put(FilterType.UNHIDDEN, new UnhiddenFilterOptionImpl(_photoEntityDao));
+        _filters.put(FilterType.FAVORITE, new FavoriteFilterOptionImpl(_photoEntityDao));
+        _filters.put(FilterType.POPULAR, new PopularFilterOptionImpl(_photoEntityDao));
+
+        _currentFilter = _filters.get(FilterType.UNHIDDEN);
     }
 
     @Override
@@ -65,10 +86,10 @@ public class PhotoStoreImpl implements PhotoStore {
     public PhotoEntity getRandomPhoto() {
         if (_debug) Log.d(TAG, "getRandomPhoto: ");
 
-        int index = (int) (_countUnhiddenQuery.count() * Math.random());
+        int index = (int) (_currentFilter.getCount() * Math.random());
         if (_debug) Log.d(TAG, "getRandomPhoto: index = " + index);
 
-        PhotoEntity photo = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsHidden.eq(false)).limit(1).offset(index).unique();
+        PhotoEntity photo = _currentFilter.getPhoto(index);
         if (photo == null) return null;
 
         // increase view count
@@ -152,5 +173,10 @@ public class PhotoStoreImpl implements PhotoStore {
         photo.setIsHidden(true);
 
         storePhoto(photo);
+    }
+
+    @Override
+    public void setFilterType(FilterType filterType) {
+        _currentFilter = _filters.get(filterType);
     }
 }

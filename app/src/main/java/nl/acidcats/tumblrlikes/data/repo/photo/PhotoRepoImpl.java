@@ -9,6 +9,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.BuildConfig;
+import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 
@@ -114,5 +115,10 @@ public class PhotoRepoImpl implements PhotoRepo {
     @Nullable
     public PhotoEntity getPhotoById(long id) {
         return _photoStore.getPhotoById(id);
+    }
+
+    @Override
+    public void setFilterType(FilterType filterType) {
+        _photoStore.setFilterType(filterType);
     }
 }

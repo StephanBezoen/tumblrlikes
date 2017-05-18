@@ -32,5 +32,8 @@
     <string name="skip">Skip</string>
     <string name="pincode_no_match">Pincode doesn\'t match</string>
     <string name="error_load">There was an error loading a file. Please start the app to continue.</string>
+
     <string name="filter_all">All</string>
+    <string name="filter_favorite">All</string>
+    <string name="filter_popular">All</string>
 </resources>
