@@ -121,7 +121,7 @@ public class CacheService extends Service {
                     _photoRepo.markAsCached(photo, filepath);
 
                     _photoCount++;
-                    Log.d(TAG, "onResponse: " + _photoCount);
+                    if (_debug) Log.d(TAG, "onResponse: " + _photoCount);
 
                     checkCachePhotos();
                 } else {
