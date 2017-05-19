@@ -39,6 +39,7 @@ public class PhotoStoreImpl implements PhotoStore {
     private final Map<FilterType, FilterOption> _filters = new HashMap<>();
     private FilterOption _currentFilter;
     private FilterType _currentFilterType;
+    private int _runningIndex;
 
     public PhotoStoreImpl(Context context) {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
@@ -52,6 +53,7 @@ public class PhotoStoreImpl implements PhotoStore {
         _filters.put(FilterType.POPULAR, new PopularFilterOptionImpl(_photoEntityDao));
         _filters.put(FilterType.LATEST, new LatestFilterOptionImpl(_photoEntityDao));
 
+        _currentFilterType = FilterType.UNHIDDEN;
         _currentFilter = _filters.get(FilterType.UNHIDDEN);
     }
 
@@ -86,7 +88,14 @@ public class PhotoStoreImpl implements PhotoStore {
     }
 
     private PhotoEntity getNextPhotoInLine() {
-        return null;
+        PhotoEntity photo = _currentFilter.getPhoto(_runningIndex);
+
+        _runningIndex++;
+        if (_runningIndex >= _currentFilter.getCount()) {
+            _runningIndex = 0;
+        }
+
+        return photo;
     }
 
     @Nullable
@@ -185,5 +194,7 @@ public class PhotoStoreImpl implements PhotoStore {
         _currentFilterType = filterType;
 
         _currentFilter = _filters.get(filterType);
+
+        _runningIndex = 0;
     }
 }

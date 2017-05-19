@@ -79,6 +79,8 @@ public class PhotoNavBar extends FrameLayout {
         }
 
         _filterDropdown.hide();
+
+        _filterButton.setText(filterType.getResId());
     }
 
     public void setFilterOptionSelectionListener(FilterOptionSelectionListener listener) {
