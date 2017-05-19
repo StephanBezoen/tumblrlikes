@@ -68,12 +68,16 @@ public class PhotoNavBar extends FrameLayout {
 
         _filterButton.setText(R.string.filter_all);
 
-        _filterDropdown.setFilterOptionSelectionListener(this::setFilterType);
+        _filterDropdown.setFilterOptionSelectionListener(filterType -> setFilterType(filterType, true));
 
         hide();
     }
 
-    private void setFilterType(FilterType filterType) {
+    public void setFilterType(FilterType filterType) {
+        setFilterType(filterType, false);
+    }
+
+    private void setFilterType(FilterType filterType, boolean notifyListener) {
         if (_filterOptionSelectionListener != null) {
             _filterOptionSelectionListener.onOptionSelected(filterType);
         }

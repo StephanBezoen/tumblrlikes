@@ -88,6 +88,7 @@ public class PhotoFragment extends Fragment {
 
         _photoActionDialog.setPhotoRepo(_photoRepo);
 
+        _photoNavBar.setFilterType(_photoRepo.getFilterType());
         _photoNavBar.setFilterOptionSelectionListener(this::setFilterType);
 
         return view;

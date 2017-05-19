@@ -54,7 +54,7 @@ public class PhotoStoreImpl implements PhotoStore {
         _filters.put(FilterType.LATEST, new LatestFilterOptionImpl(_photoEntityDao));
 
         _currentFilterType = FilterType.UNHIDDEN;
-        _currentFilter = _filters.get(FilterType.UNHIDDEN);
+        _currentFilter = _filters.get(_currentFilterType);
     }
 
     @Override
@@ -196,5 +196,10 @@ public class PhotoStoreImpl implements PhotoStore {
         _currentFilter = _filters.get(filterType);
 
         _runningIndex = 0;
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return _currentFilterType;
     }
 }

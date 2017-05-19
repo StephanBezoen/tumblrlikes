@@ -45,4 +45,6 @@ public interface PhotoStore {
     void setPhotoHidden(long id);
 
     void setFilterType(FilterType filterType);
+
+    FilterType getFilterType();
 }

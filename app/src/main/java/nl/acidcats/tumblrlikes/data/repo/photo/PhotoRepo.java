@@ -42,4 +42,6 @@ public interface PhotoRepo {
     PhotoEntity getPhotoById(long id);
 
     void setFilterType(FilterType filterType);
+
+    FilterType getFilterType();
 }

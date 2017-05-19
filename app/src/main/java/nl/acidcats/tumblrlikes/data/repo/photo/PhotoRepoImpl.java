@@ -118,6 +118,13 @@ public class PhotoRepoImpl implements PhotoRepo {
 
     @Override
     public void setFilterType(FilterType filterType) {
+        _filterType = filterType;
+
         _photoStore.setFilterType(filterType);
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return _photoStore.getFilterType();
     }
 }
