@@ -2,7 +2,6 @@ package nl.acidcats.tumblrlikes.data.repo.photo;
 
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class PhotoRepoImpl implements PhotoRepo {
 
     @Override
     public PhotoEntity getRandomPhoto() {
-        return _photoStore.getRandomPhoto();
+        return _photoStore.getNextPhoto();
     }
 
     @Override

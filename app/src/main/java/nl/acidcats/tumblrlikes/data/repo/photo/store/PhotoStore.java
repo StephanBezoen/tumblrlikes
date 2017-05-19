@@ -19,7 +19,7 @@ public interface PhotoStore {
     long getPhotoCount();
 
     @Nullable
-    PhotoEntity getRandomPhoto();
+    PhotoEntity getNextPhoto();
 
     boolean hasUncachedPhotos();
 
