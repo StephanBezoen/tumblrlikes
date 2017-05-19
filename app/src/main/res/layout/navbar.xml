@@ -7,9 +7,11 @@
     >
 
     <nl.acidcats.tumblrlikes.ui.widgets.filterdropdown.FilterDropdown
+        android:id="@+id/filter_dropdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="56dp"
         />
 
     <LinearLayout

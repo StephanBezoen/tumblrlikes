@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
+import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
@@ -87,7 +88,15 @@ public class PhotoFragment extends Fragment {
 
         _photoActionDialog.setPhotoRepo(_photoRepo);
 
+        _photoNavBar.setFilterOptionSelectionListener(this::setFilterType);
+
         return view;
+    }
+
+    private void setFilterType(FilterType filterType) {
+        _photoRepo.setFilterType(filterType);
+
+        showRandomPhoto();
     }
 
     private void onGesture(InteractiveImageView.Gesture gesture) {

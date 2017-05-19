@@ -3,6 +3,7 @@ package nl.acidcats.tumblrlikes.ui.widgets.filterdropdown;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -41,6 +42,18 @@ public class FilterDropdown extends LinearLayout {
         for (FilterType filterType : FilterType.values()) {
             _filterOptionViews.add(new FilterOptionView(this, filterType));
         }
+
+        if (!isInEditMode()) {
+            hide();
+        }
+    }
+
+    public void show() {
+        setVisibility(VISIBLE);
+    }
+
+    public void hide() {
+        setVisibility(GONE);
     }
 
     public void setFilterOptionSelectionListener(FilterOptionSelectionListener listener) {

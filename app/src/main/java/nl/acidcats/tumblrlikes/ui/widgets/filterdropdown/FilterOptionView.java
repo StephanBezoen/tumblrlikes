@@ -1,6 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.widgets.filterdropdown;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +33,14 @@ public class FilterOptionView {
 
         Context context = parent.getContext();
 
-        _view = LayoutInflater.from(context).inflate(R.layout.listitem_filteroption, parent, true);
+        _view = LayoutInflater.from(context).inflate(R.layout.listitem_filteroption, parent, false);
         _unbinder = ButterKnife.bind(this, _view);
 
         _filterOptionText.setText(context.getString(filterType.getResId()));
 
         _view.setOnClickListener(this::onViewClick);
+
+        parent.addView(_view);
     }
 
     private void onViewClick(View v) {
