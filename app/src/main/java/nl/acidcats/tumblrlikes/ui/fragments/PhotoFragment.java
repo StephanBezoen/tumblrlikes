@@ -120,6 +120,7 @@ public class PhotoFragment extends Fragment {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
+        _handler.removeCallbacks(_uiHider);
         _handler.postDelayed(_uiHider, HIDE_UI_DELAY_MS);
 
         _photoNavBar.show();
