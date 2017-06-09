@@ -74,7 +74,7 @@ public class SetupFragment extends Fragment {
         _tumblrBlogInput.addTextChangedListener(_textWatcher);
 
 
-        if (!TextUtils.isEmpty(BuildConfig.BLOG)) {
+        if (BuildConfig.DEBUG && !TextUtils.isEmpty(BuildConfig.BLOG)) {
             _tumblrBlogInput.setText(BuildConfig.BLOG);
             _okButton.setEnabled(true);
         } else {
