@@ -26,7 +26,7 @@
 
 -dontwarn com.squareup.okhttp.**
 -keep class com.squareup.okhttp.* { *;}
--dontwarn okio.
+-dontwarn okio.**
 
 -keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
@@ -34,3 +34,25 @@
 -keepclasseswithmembernames class * { @butterknife.* <fields>; }
 -keep class **_ViewBinding { *; }
 
+-dontwarn sun.misc.Unsafe
+-dontwarn org.w3c.dom.bootstrap.DOMImplementationRegistry
+
+-dontwarn retrofit.**
+-dontwarn retrofit2.Platform$Java8
+
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+
+
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
