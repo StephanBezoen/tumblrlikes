@@ -22,7 +22,7 @@
     <string name="tumblr_key">Tumblr API key:</string>
     <string name="tumblr_key_hint">Your Tumblr API key</string>
     <string name="tumblr_blog">Tumblr blog:</string>
-    <string name="tumblr_blog_hint">****.tumblr.com</string>
+    <string name="tumblr_blog_hint">your blog name</string>
     <string name="ok">OK</string>
     <string name="introduction_title">Welcome to Tumblr Likes</string>
     <string name="tumblr_blog_message">Please type the Tumblr blog below that you would like to see the likes of:</string>
@@ -47,4 +47,5 @@
     <string name="btn_retry">Retry</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_settings">Settings</string>
+    <string name="blog_extension">.tumblr.com</string>
 </resources>

@@ -7,11 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -32,6 +32,8 @@ import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 public class SetupFragment extends Fragment {
     private static final String TAG = SetupFragment.class.getSimpleName();
 
+    private static final String BLOG_EXT = ".tumblr.com";
+
     @Inject
     AppRepo _appRepo;
 
@@ -39,6 +41,8 @@ public class SetupFragment extends Fragment {
     EditText _tumblrBlogInput;
     @BindView(R.id.btn_ok)
     Button _okButton;
+    @BindView(R.id.blog_ext_txt)
+    TextView _blogExtensionText;
 
     private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
@@ -73,19 +77,21 @@ public class SetupFragment extends Fragment {
         };
         _tumblrBlogInput.addTextChangedListener(_textWatcher);
 
-
         if (BuildConfig.DEBUG && !TextUtils.isEmpty(BuildConfig.BLOG)) {
             _tumblrBlogInput.setText(BuildConfig.BLOG);
+            _tumblrBlogInput.setSelection(BuildConfig.BLOG.length());
             _okButton.setEnabled(true);
         } else {
             _okButton.setEnabled(false);
         }
 
+        _blogExtensionText.setText(BLOG_EXT);
+
         _okButton.setOnClickListener(this::onOkButtonClick);
     }
 
     private void onOkButtonClick(View view) {
-        _appRepo.setTumblrBlog(_tumblrBlogInput.getText().toString());
+        _appRepo.setTumblrBlog(_tumblrBlogInput.getText().toString() + BLOG_EXT);
 
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.SETUP_COMPLETE));
     }
