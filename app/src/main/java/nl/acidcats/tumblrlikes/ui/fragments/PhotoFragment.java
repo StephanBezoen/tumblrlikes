@@ -214,11 +214,13 @@ public class PhotoFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString(KEY_PHOTO_URL, _photoUrl);
-        outState.putLong(KEY_PHOTO_ID, _photoId);
+        if (_photoUrl != null) {
+            outState.putString(KEY_PHOTO_URL, _photoUrl);
+        }
+        if (_photoId != null) {
+            outState.putLong(KEY_PHOTO_ID, _photoId);
+        }
     }
-
-
 
     @Override
     public void onDestroy() {

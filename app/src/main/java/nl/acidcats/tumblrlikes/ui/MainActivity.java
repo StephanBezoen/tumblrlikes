@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
         _receiver.addActionHandler(Broadcasts.SETUP_COMPLETE, this::onSetupComplete);
         _receiver.addActionHandler(Broadcasts.REFRESH_REQUEST, this::onRefreshRequest);
+        _receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST, this::onSettingsRequest);
 
 
         if (_appRepo.isSetupComplete()) {
@@ -66,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
             showFragment(SetupFragment.newInstance());
         }
+    }
+
+    private void onSettingsRequest(String action, Intent intent) {
+        showFragment(SetupFragment.newInstance());
     }
 
     private void onRefreshRequest(String action, Intent intent) {
@@ -83,7 +88,11 @@ public class MainActivity extends AppCompatActivity {
     private void onSetupComplete(String action, Intent intent) {
         _isShowingSetup = false;
 
-        showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
+        if (_appRepo.hasPincode()) {
+            enterApp();
+        } else {
+            showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
+        }
     }
 
     private void onDatabaseReset(String action, Intent intent) {

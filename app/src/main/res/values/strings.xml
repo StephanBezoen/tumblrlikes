@@ -37,4 +37,14 @@
     <string name="filter_favorite">Favorite</string>
     <string name="filter_popular">Popular</string>
     <string name="filter_latest">Latest</string>
+
+    <string name="error_title">Error!</string>
+    <string name="error_403">Access to the blog has been denied</string>
+    <string name="error_404">Blog could not be found</string>
+    <string name="error_300_400">Failed to load blog data</string>
+    <string name="error_500">Internal server error</string>
+
+    <string name="btn_retry">Retry</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_settings">Settings</string>
 </resources>

@@ -5,9 +5,11 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * Created by stephan on 13/04/2017.
@@ -74,22 +77,54 @@ public class LoadLikesFragment extends Fragment {
 
         _spinner.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
 
-
         return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        loadLikesPage();
+    }
+
+    private void loadLikesPage() {
         loadLikesPage(new Date().getTime());
     }
 
     private void loadLikesPage(long time) {
         _likesPageUseCase
                 .getPageOfLikesBefore(time)
-                .subscribe(
-                        this::handleLikesPageLoaded,
-                        throwable -> Log.e(TAG, "onStart: " + throwable.getMessage())
-                );
+                .subscribe(this::handleLikesPageLoaded, this::handleError);
+    }
+
+    private void handleError(Throwable throwable) {
+        Log.e(TAG, "handleError: " + throwable.getMessage());
+
+        @StringRes int errorStringId = R.string.error_load;
+
+        if (throwable instanceof HttpException) {
+            HttpException exception = (HttpException) throwable;
+            if (exception.code() == 403) {
+                errorStringId = R.string.error_403;
+            } else if (exception.code() == 404) {
+                errorStringId = R.string.error_404;
+            } else if (exception.code() >= 300 && exception.code() < 500){
+                errorStringId = R.string.error_300_400;
+            } else if (exception.code() >= 500 && exception.code() < 600){
+                errorStringId = R.string.error_500;
+            }
+        }
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.error_title)
+                .setMessage(errorStringId)
+                .setPositiveButton(R.string.btn_retry, (dialog, which) -> loadLikesPage())
+                .setNeutralButton(R.string.btn_settings, (dialog, which) -> onSettings())
+                .setNegativeButton(R.string.btn_cancel, (dialog, which) -> onComplete())
+                .create()
+                .show();
+    }
+
+    private void onSettings() {
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.SETTINGS_REQUEST));
     }
 
     private void handleLikesPageLoaded(List<PhotoEntity> photoEntities) {
