@@ -28,8 +28,8 @@ task clean(type: Delete) {
 ext {
     AppConfig = [
             id         : 'nl.acidcats.tumblrlikes',
-            versionCode: 1,
-            versionName: '1.0',
+            versionCode: 2,
+            versionName: '1.0.1',
             debugSuffix: ''
     ]
 
