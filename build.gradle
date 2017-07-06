@@ -10,7 +10,7 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.google.gms:google-services:3.1.0'
     }
 }
 
@@ -28,8 +28,8 @@ task clean(type: Delete) {
 ext {
     AppConfig = [
             id         : 'nl.acidcats.tumblrlikes',
-            versionCode: 3,
-            versionName: '1.0.2',
+            versionCode: 4,
+            versionName: '1.0.3',
             debugSuffix: ''
     ]
 
@@ -39,8 +39,8 @@ ext {
 
     ClassPaths = [
             hugo       : 'com.jakewharton.hugo:hugo-plugin:1.2.1',
-            greenDAO   : 'org.greenrobot:greendao-gradle-plugin:3.2.1',
-            retrolambda: 'me.tatarka:gradle-retrolambda:3.6.0',
+            greenDAO   : 'org.greenrobot:greendao-gradle-plugin:3.2.2',
+            retrolambda: 'me.tatarka:gradle-retrolambda:3.6.1',
             fabric     : 'io.fabric.tools:gradle:1.+'
     ]
 
@@ -53,23 +53,23 @@ ext {
     ]
 
     Versions = [
-            buildTools  : '25.0.2',
+            buildTools  : '25.0.3',
             minSdk      : 21,
             targetSdk   : 25,
             compileSdk  : 25,
 
             // Support libraries
-            supportLibs : '25.2.0',
+            supportLibs : '25.3.1',
 
             // Play Services
-            playServices: '10.2.0',
+            playServices: '11.0.2',
 
             // Library versions
-            dagger      : '2.8',
-            butterknife : '8.4.0',
-            okHttp      : '3.5.0',
-            retrofit    : '2.0.1',
-            rx          : '1.1.0'
+            dagger      : '2.11',
+            butterknife : '8.6.0',
+            okHttp      : '3.8.1',
+            retrofit    : '2.3.0',
+            rx          : '1.2.1'
     ]
 
     Libraries = [
@@ -101,7 +101,7 @@ ext {
             retrofit                      : "com.squareup.retrofit2:retrofit:${Versions.retrofit}",
             retrofit_gsonConverter        : "com.squareup.retrofit2:converter-gson:${Versions.retrofit}",
 
-            retrofit_rxAdapter            : 'com.squareup.retrofit2:adapter-rxjava:2.1.0',
+            retrofit_rxAdapter            : 'com.squareup.retrofit2:adapter-rxjava:2.3.0',
 
             // Rx
             rxBinding                     : "com.jakewharton.rxbinding:rxbinding:1.0.0",
@@ -112,7 +112,7 @@ ext {
             picasso                       : "com.squareup.picasso:picasso:2.5.2",
 
             // Stetho
-            stetho                        : "com.facebook.stetho:stetho:1.4.2",
+            stetho                        : "com.facebook.stetho:stetho:1.5.0",
 
             // OkHttp
             okHttp                        : "com.squareup.okhttp3:okhttp:${Versions.okHttp}",
@@ -122,26 +122,26 @@ ext {
             easyPrefs                     : 'com.pixplicity.easyprefs:library:1.3',
 
             // GSon
-            gson                          : 'com.google.code.gson:gson:2.8.0',
+            gson                          : 'com.google.code.gson:gson:2.8.1',
 
             // AutValue
-            autoValue                     : "com.google.auto.value:auto-value:1.4-rc2",
+            autoValue                     : "com.google.auto.value:auto-value:1.4.1",
             autoValue_gson                : 'com.ryanharter.auto.value:auto-value-gson:0.4.6',
             autoValue_parcel              : 'com.ryanharter.auto.value:auto-value-parcel:0.2.5',
 
             // GreenDAO
-            greenDAO                      : 'org.greenrobot:greendao:3.2.0',
+            greenDAO                      : 'org.greenrobot:greendao:3.2.2',
 
             // Android-Job
             android_job                   : 'com.evernote:android-job:1.1.8',
 
             sqlCipher                     : 'net.zetetic:android-database-sqlcipher:3.5.6@aar',
 
-            glide                         : 'com.github.bumptech.glide:glide:3.7.0',
+            glide                         : 'com.github.bumptech.glide:glide:3.8.0',
 
-            fabric                        : 'com.crashlytics.sdk.android:crashlytics:2.6.7@aar',
+            fabric                        : 'com.crashlytics.sdk.android:crashlytics:2.6.8@aar',
 
-            firebase                      : 'com.google.firebase:firebase-core:10.0.1'
+            firebase                      : 'com.google.firebase:firebase-core:11.0.2'
 
     ]
 }
