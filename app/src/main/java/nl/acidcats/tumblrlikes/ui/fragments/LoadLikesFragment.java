@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -54,9 +55,12 @@ public class LoadLikesFragment extends Fragment {
     TextView _loadingText;
     @BindView(R.id.spinner)
     ProgressBar _spinner;
+    @BindView(R.id.btn_cancel)
+    Button _cancelButton;
 
     private int _pageCount;
     private Unbinder _unbinder;
+    private boolean _isLoadingCancelled;
 
     public static LoadLikesFragment newInstance() {
         return new LoadLikesFragment();
@@ -82,7 +86,17 @@ public class LoadLikesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        _cancelButton.setOnClickListener(v ->  cancelLoading());
+
         loadLikesPage();
+    }
+
+    private void cancelLoading() {
+        _isLoadingCancelled = true;
+
+        _imageCountText.setText(R.string.loading_cancelled);
+
+        _cancelButton.setEnabled(false);
     }
 
     private void loadLikesPage() {
@@ -134,15 +148,19 @@ public class LoadLikesFragment extends Fragment {
 
         _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
 
-        if (_likesRepo.hasMoreLikes()) {
-            loadLikesPage(_likesRepo.getLastLikeTime());
+        if (_isLoadingCancelled) {
+            onComplete();
         } else {
-            _imageCountText.setText(getString(R.string.total_image_count, count));
-            _loadingText.setText(R.string.all_loaded);
+            if (_likesRepo.hasMoreLikes()) {
+                loadLikesPage(_likesRepo.getLastLikeTime());
+            } else {
+                _imageCountText.setText(getString(R.string.total_image_count, count));
+                _loadingText.setText(R.string.all_loaded);
 
-            _likesRepo.setCheckComplete();
+                _likesRepo.setCheckComplete();
 
-            new Handler().postDelayed(this::onComplete, 500);
+                new Handler().postDelayed(this::onComplete, 500);
+            }
         }
     }
 

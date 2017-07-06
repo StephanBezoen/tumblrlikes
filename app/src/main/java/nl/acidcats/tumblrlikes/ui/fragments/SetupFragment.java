@@ -77,9 +77,19 @@ public class SetupFragment extends Fragment {
         };
         _tumblrBlogInput.addTextChangedListener(_textWatcher);
 
-        if (BuildConfig.DEBUG && !TextUtils.isEmpty(BuildConfig.BLOG)) {
-            _tumblrBlogInput.setText(BuildConfig.BLOG);
-            _tumblrBlogInput.setSelection(BuildConfig.BLOG.length());
+        String tumblrBlog = _appRepo.getTumblrBlog();
+        if (tumblrBlog == null && BuildConfig.DEBUG && !TextUtils.isEmpty(BuildConfig.BLOG)) {
+            tumblrBlog = BuildConfig.BLOG;
+        }
+
+        if (tumblrBlog != null) {
+            if (tumblrBlog.endsWith(BLOG_EXT)) {
+                tumblrBlog = tumblrBlog.replace(BLOG_EXT, "");
+            }
+
+            _tumblrBlogInput.setText(tumblrBlog);
+            _tumblrBlogInput.setSelection(tumblrBlog.length());
+
             _okButton.setEnabled(true);
         } else {
             _okButton.setEnabled(false);
