@@ -43,6 +43,8 @@ public class SetupFragment extends Fragment {
     Button _okButton;
     @BindView(R.id.blog_ext_txt)
     TextView _blogExtensionText;
+    @BindView(R.id.txt_version)
+    TextView _versionText;
 
     private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
@@ -96,6 +98,8 @@ public class SetupFragment extends Fragment {
         }
 
         _blogExtensionText.setText(BLOG_EXT);
+
+        _versionText.setText(getString(R.string.version, BuildConfig.VERSION_NAME));
 
         _okButton.setOnClickListener(this::onOkButtonClick);
     }
