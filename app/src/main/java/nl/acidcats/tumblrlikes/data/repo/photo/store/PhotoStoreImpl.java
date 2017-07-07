@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.greenrobot.greendao.query.CountQuery;
 import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,8 +33,9 @@ public class PhotoStoreImpl implements PhotoStore {
 
     private static final String DATABASE_NAME = "photos.db";
 
-    private final CountQuery<PhotoEntity> _countQuery;
-    private final Query<PhotoEntity> _uncachedQuery;
+    private CountQuery<PhotoEntity> _countQuery;
+    private Query<PhotoEntity> _uncachedQuery;
+    private Query<PhotoEntity> _hiddenCachedQuery;
     private final PhotoEntityDao _photoEntityDao;
     private final boolean _debug = BuildConfig.DEBUG;
     private final Map<FilterType, FilterOption> _filters = new HashMap<>();
@@ -45,9 +47,12 @@ public class PhotoStoreImpl implements PhotoStore {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
         _photoEntityDao = new DaoMaster(helper.getWritableDatabase()).newSession().getPhotoEntityDao();
 
-        _countQuery = _photoEntityDao.queryBuilder().buildCount();
-        _uncachedQuery = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsCached.eq(false)).limit(1).build();
+        initQueries();
 
+        initFilters();
+    }
+
+    private void initFilters() {
         _filters.put(FilterType.UNHIDDEN, new UnhiddenFilterOptionImpl(_photoEntityDao));
         _filters.put(FilterType.FAVORITE, new FavoriteFilterOptionImpl(_photoEntityDao));
         _filters.put(FilterType.POPULAR, new PopularFilterOptionImpl(_photoEntityDao));
@@ -55,6 +60,38 @@ public class PhotoStoreImpl implements PhotoStore {
 
         _currentFilterType = FilterType.UNHIDDEN;
         _currentFilter = _filters.get(_currentFilterType);
+    }
+
+    private void initQueries() {
+        // TODO create more cached queries:
+        /*
+        Query<User> query = userDao.queryBuilder().where(
+        Properties.FirstName.eq("Joe"), Properties.YearOfBirth.eq(1970)
+        ).build();
+        List<User> joesOf1970 = query.list();
+
+        // using the same Query object, we can change the parameters
+        // to search for Marias born in 1977 later:
+        query.setParameter(0, "Maria");
+        query.setParameter(1, 1977);
+        List<User> mariasOf1977 = query.list();
+        */
+        _countQuery = getQueryBuilder().buildCount();
+
+        QueryBuilder<PhotoEntity> builder = getQueryBuilder();
+        _uncachedQuery = builder
+                .where(builder.and(PhotoEntityDao.Properties.IsHidden.eq(false), PhotoEntityDao.Properties.IsCached.eq(false)))
+                .limit(1)
+                .build();
+
+        builder = getQueryBuilder();
+        _hiddenCachedQuery = builder
+                .where(builder.and(PhotoEntityDao.Properties.IsHidden.eq(true), PhotoEntityDao.Properties.IsCached.eq(true)))
+                .build();
+    }
+
+    private QueryBuilder<PhotoEntity> getQueryBuilder() {
+        return _photoEntityDao.queryBuilder();
     }
 
     @Override
@@ -187,6 +224,14 @@ public class PhotoStoreImpl implements PhotoStore {
         photo.setIsHidden(true);
 
         storePhoto(photo);
+    }
+
+    @Override
+    public List<PhotoEntity> getCachedHiddenPhotos() {
+        List<PhotoEntity> cachedHiddenPhotos = _hiddenCachedQuery.list();
+        if (_debug) Log.d(TAG, "getCachedHiddenPhotos: " + cachedHiddenPhotos.size() + " cached hidden photos found");
+
+        return cachedHiddenPhotos;
     }
 
     @Override

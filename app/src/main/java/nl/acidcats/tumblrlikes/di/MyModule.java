@@ -79,7 +79,7 @@ public class MyModule {
     }
 
     @Provides
-    FirebaseAnalytics provideAnalytics () {
+    FirebaseAnalytics provideAnalytics() {
         return _analytics;
     }
 }

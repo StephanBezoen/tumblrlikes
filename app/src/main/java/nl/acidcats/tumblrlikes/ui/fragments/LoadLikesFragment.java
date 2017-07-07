@@ -34,6 +34,7 @@ import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 import retrofit2.adapter.rxjava.HttpException;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by stephan on 13/04/2017.
@@ -86,9 +87,19 @@ public class LoadLikesFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        _cancelButton.setOnClickListener(v ->  cancelLoading());
+        _cancelButton.setOnClickListener(v -> cancelLoading());
 
-        loadLikesPage();
+        _photoRepo
+                .removeCachedHiddenPhotos()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        uncachedCount -> loadLikesPage(),
+                        throwable -> {
+                            Log.e(TAG, "onViewCreated: removeCachedHiddenPhotos: " + throwable.getMessage());
+
+                            loadLikesPage();
+                        }
+                );
     }
 
     private void cancelLoading() {
@@ -120,9 +131,9 @@ public class LoadLikesFragment extends Fragment {
                 errorStringId = R.string.error_403;
             } else if (exception.code() == 404) {
                 errorStringId = R.string.error_404;
-            } else if (exception.code() >= 300 && exception.code() < 500){
+            } else if (exception.code() >= 300 && exception.code() < 500) {
                 errorStringId = R.string.error_300_400;
-            } else if (exception.code() >= 500 && exception.code() < 600){
+            } else if (exception.code() >= 500 && exception.code() < 600) {
                 errorStringId = R.string.error_500;
             }
         }

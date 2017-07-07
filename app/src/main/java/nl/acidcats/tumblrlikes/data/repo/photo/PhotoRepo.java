@@ -6,6 +6,7 @@ import java.util.List;
 
 import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import rx.Observable;
 
 /**
  * Created by stephan on 11/04/2017.
@@ -25,6 +26,8 @@ public interface PhotoRepo {
     PhotoEntity getNextUncachedPhoto();
 
     void markAsCached(PhotoEntity photo, String path);
+
+    Observable<Void> removeCachedHiddenPhotos();
 
     void startPhotoView(String url);
 

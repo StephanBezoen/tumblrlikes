@@ -2,7 +2,9 @@ package nl.acidcats.tumblrlikes.data.repo.photo;
 
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -11,6 +13,9 @@ import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by stephan on 11/04/2017.
@@ -70,6 +75,36 @@ public class PhotoRepoImpl implements PhotoRepo {
         _photoStore.storePhoto(photo);
     }
 
+    public Void uncachePhoto(PhotoEntity photo) {
+        if (_debug) Log.d(TAG, "uncachePhoto: " + photo.getFilePath());
+
+        File file = new File(photo.getFilePath());
+        if (file.exists()) {
+            if (_debug) Log.d(TAG, "uncachePhoto: file exists");
+
+            if (file.delete()) {
+                if (_debug) Log.d(TAG, "uncachePhoto: file deleted");
+
+                photo.setIsCached(false);
+
+                _photoStore.storePhoto(photo);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Observable<Void> removeCachedHiddenPhotos() {
+        return Observable
+                .just(_photoStore.getCachedHiddenPhotos())
+                .subscribeOn(Schedulers.io())
+                .flatMapIterable(photoEntities -> photoEntities)
+                .map(this::uncachePhoto)
+                .toList()
+                .flatMap(photoEntities -> Observable.just(null));
+    }
+
     @Override
     public void startPhotoView(String url) {
         _currentUrl = url;
@@ -108,6 +143,11 @@ public class PhotoRepoImpl implements PhotoRepo {
     @Override
     public void setPhotoHidden(long id) {
         _photoStore.setPhotoHidden(id);
+
+        PhotoEntity photo = _photoStore.getPhotoById(id);
+        if (photo != null) {
+            uncachePhoto(photo);
+        }
     }
 
     @Override
