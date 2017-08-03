@@ -119,11 +119,16 @@ public class PhotoStoreImpl implements PhotoStore {
     public PhotoEntity getNextPhoto() {
         if (_debug) Log.d(TAG, "getNextPhoto: ");
 
-        if (_currentFilterType.isRandom()) {
-            return getRandomPhoto();
-        } else {
-            return getNextPhotoInLine();
+        PhotoEntity photo = _currentFilterType.isRandom() ? getRandomPhoto() : getNextPhotoInLine();
+
+        if (photo != null) {
+            // increase view count
+            photo.setViewCount(photo.getViewCount() + 1);
+            if (_debug) Log.d(TAG, "getNextPhoto: view count now " + photo.getViewCount());
+            storePhoto(photo);
         }
+
+        return photo;
     }
 
     private PhotoEntity getNextPhotoInLine() {
@@ -142,15 +147,7 @@ public class PhotoStoreImpl implements PhotoStore {
         int index = (int) (_currentFilter.getCount() * Math.random());
         if (_debug) Log.d(TAG, "getNextPhoto: index = " + index);
 
-        PhotoEntity photo = _currentFilter.getPhoto(index);
-        if (photo == null) return null;
-
-        // increase view count
-        photo.setViewCount(photo.getViewCount() + 1);
-        if (_debug) Log.d(TAG, "getNextPhoto: view count now " + photo.getViewCount());
-        storePhoto(photo);
-
-        return photo;
+        return _currentFilter.getPhoto(index);
     }
 
     @Override
