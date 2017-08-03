@@ -21,6 +21,7 @@ def libs = config.Libraries
 def repos = config.Repos
 
 apply plugin: plugins.android_app
+apply plugin: 'kotlin-android'
 apply plugin: plugins.hugo
 apply plugin: plugins.retrolambda
 apply plugin: plugins.greenDAO
@@ -87,6 +88,7 @@ greendao {
 
 repositories {
     maven { url repos.fabric }
+    mavenCentral()
 }
 
 dependencies {
@@ -154,6 +156,7 @@ dependencies {
         transitive = true;
     }
     compile libs.firebase
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
