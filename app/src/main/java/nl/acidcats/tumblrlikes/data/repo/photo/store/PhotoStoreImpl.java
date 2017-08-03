@@ -178,7 +178,7 @@ public class PhotoStoreImpl implements PhotoStore {
     @Override
     @Nullable
     public PhotoEntity getPhotoByPath(String filePath) {
-        return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).unique();
+        return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).limit(1).unique();
     }
 
     @Override
