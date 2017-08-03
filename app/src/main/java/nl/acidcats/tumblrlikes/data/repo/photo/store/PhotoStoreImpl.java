@@ -17,6 +17,7 @@ import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.FavoriteFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.FilterOption;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.LatestFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.LeastSeenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.PopularFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.UnhiddenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.vo.db.DaoMaster;
@@ -57,6 +58,7 @@ public class PhotoStoreImpl implements PhotoStore {
         _filters.put(FilterType.FAVORITE, new FavoriteFilterOptionImpl(_photoEntityDao));
         _filters.put(FilterType.POPULAR, new PopularFilterOptionImpl(_photoEntityDao));
         _filters.put(FilterType.LATEST, new LatestFilterOptionImpl(_photoEntityDao));
+        _filters.put(FilterType.LEAST_SEEN, new LeastSeenFilterOptionImpl(_photoEntityDao));
 
         _currentFilterType = FilterType.UNHIDDEN;
         _currentFilter = _filters.get(_currentFilterType);

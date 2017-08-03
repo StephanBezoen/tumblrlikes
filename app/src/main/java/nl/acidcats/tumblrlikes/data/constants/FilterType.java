@@ -11,7 +11,9 @@ public enum FilterType {
     UNHIDDEN(R.string.filter_all, true),
     FAVORITE(R.string.filter_favorite, true),
     POPULAR(R.string.filter_popular, true),
-    LATEST(R.string.filter_latest, false);
+    LATEST(R.string.filter_latest, false),
+    LEAST_SEEN(R.string.filter_least_seen, false),
+    ;
 
     private final int _resId;
     private final boolean _isRandom;
