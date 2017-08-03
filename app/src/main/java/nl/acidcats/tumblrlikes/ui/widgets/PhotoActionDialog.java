@@ -26,8 +26,6 @@ import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 public class PhotoActionDialog extends FrameLayout {
     public static final String TAG = PhotoActionDialog.class.getSimpleName();
 
-    private static final String KEY_PHOTO_URL = "key_photoUrl";
-
     @BindView(R.id.btn_favorite)
     TextView _favoriteButton;
     @BindView(R.id.btn_hide)
@@ -38,6 +36,8 @@ public class PhotoActionDialog extends FrameLayout {
     TextView _unlikeButton;
     @BindView(R.id.background)
     View _background;
+    @BindView(R.id.txt_view_count)
+    TextView _viewCountText;
 
     private Unbinder _unbinder;
     private PhotoRepo _photoRepo;
@@ -121,6 +121,8 @@ public class PhotoActionDialog extends FrameLayout {
             _likeButton.setText(getContext().getString(R.string.photo_action_like));
             _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
         }
+
+        _viewCountText.setText(getContext().getString(R.string.view_count, _photo.getViewCount()));
 
         setVisibility(VISIBLE);
     }

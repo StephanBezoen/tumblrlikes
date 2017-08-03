@@ -16,6 +16,8 @@ public class LeastSeenFilterOptionImpl extends AbstractFilterOptionImpl {
 
     @Override
     protected QueryBuilder<PhotoEntity> getQueryBuilder() {
-        return _photoEntityDao.queryBuilder().orderAsc(PhotoEntityDao.Properties.ViewCount);
+        return _photoEntityDao.queryBuilder()
+                .where(PhotoEntityDao.Properties.IsHidden.eq(false))
+                .orderAsc(PhotoEntityDao.Properties.ViewCount);
     }
 }

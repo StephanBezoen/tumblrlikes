@@ -52,4 +52,5 @@
     <string name="loading_cancelled">Loading cancelled</string>
     
     <string name="version">V%s</string>
+    <string name="view_count">View count: %d</string>
 </resources>
