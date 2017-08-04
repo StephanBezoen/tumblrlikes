@@ -31,4 +31,8 @@ public enum FilterType {
     public boolean isRandom() {
         return _isRandom;
     }
+
+    public boolean isLinear() {
+        return !_isRandom;
+    }
 }

@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.data.repo.photo.store.filters;
 
+import java.util.List;
+
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 
 /**
@@ -8,6 +10,8 @@ import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 
 public interface FilterOption {
     PhotoEntity getPhoto(int index);
+
+    List<PhotoEntity> getAll();
 
     long getCount();
 }

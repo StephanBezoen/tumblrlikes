@@ -43,6 +43,7 @@ public class PhotoStoreImpl implements PhotoStore {
     private FilterOption _currentFilter;
     private FilterType _currentFilterType;
     private int _runningIndex;
+    private List<PhotoEntity> _currentPhotoList;
 
     public PhotoStoreImpl(Context context) {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
@@ -132,10 +133,10 @@ public class PhotoStoreImpl implements PhotoStore {
     }
 
     private PhotoEntity getNextPhotoInLine() {
-        PhotoEntity photo = _currentFilter.getPhoto(_runningIndex);
+        PhotoEntity photo = _currentPhotoList.get(_runningIndex);
 
         _runningIndex++;
-        if (_runningIndex >= _currentFilter.getCount()) {
+        if (_runningIndex >= _currentPhotoList.size()) {
             _runningIndex = 0;
         }
 
@@ -238,6 +239,10 @@ public class PhotoStoreImpl implements PhotoStore {
         _currentFilterType = filterType;
 
         _currentFilter = _filters.get(filterType);
+
+        if (filterType.isLinear()) {
+            _currentPhotoList = _currentFilter.getAll();
+        }
 
         _runningIndex = 0;
     }
