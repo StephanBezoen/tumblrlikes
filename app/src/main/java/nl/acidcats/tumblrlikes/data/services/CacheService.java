@@ -22,7 +22,7 @@ import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -97,11 +97,14 @@ public class CacheService extends Service {
         }
     }
 
-    private Void downloadPhoto(PhotoEntity photo) {
+    private Void downloadPhoto(Photo photo) {
         if (_debug) Log.d(TAG, "downloadPhoto: " + photo);
 
+        if (photo.url() == null) return null;
+
+        //noinspection ConstantConditions
         Request request = new Request.Builder()
-                .url(photo.getUrl())
+                .url(photo.url())
                 .build();
 
         _client.newCall(request).enqueue(new Callback() {
@@ -116,10 +119,11 @@ public class CacheService extends Service {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (_debug) Log.d(TAG, "onResponse: ");
 
+                //noinspection ConstantConditions
                 String filepath = savePhoto(response.body().byteStream(), photo);
 
                 if (filepath != null) {
-                    _photoRepo.markAsCached(photo, filepath);
+                    _photoRepo.markAsCached(photo.id(), filepath);
 
                     _photoCount++;
                     if (_debug) Log.d(TAG, "onResponse: " + _photoCount);
@@ -140,8 +144,9 @@ public class CacheService extends Service {
         stopSelf();
     }
 
-    private String savePhoto(InputStream inputStream, PhotoEntity photo) {
-        String url = photo.getUrl();
+    private String savePhoto(InputStream inputStream, Photo photo) {
+        String url = photo.url();
+        //noinspection ConstantConditions
         String extension = url.substring(url.lastIndexOf("."));
 
         String filename = _securityHelper.getHash(url) + extension;

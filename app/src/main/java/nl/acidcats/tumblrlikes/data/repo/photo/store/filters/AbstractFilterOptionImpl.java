@@ -7,7 +7,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntity;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
 
 /**

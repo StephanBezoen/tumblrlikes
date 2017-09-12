@@ -2,7 +2,7 @@ package nl.acidcats.tumblrlikes.data.repo.photo.store.filters;
 
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntity;
 
 /**
  * Created by stephan on 17/05/2017.

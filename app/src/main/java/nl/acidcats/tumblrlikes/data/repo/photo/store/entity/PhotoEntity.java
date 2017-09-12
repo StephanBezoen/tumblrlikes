@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.data.vo.db;
+package nl.acidcats.tumblrlikes.data.repo.photo.store.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;

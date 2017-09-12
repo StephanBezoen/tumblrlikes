@@ -8,7 +8,7 @@ import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.util.PhotoUtil;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrLikeVO;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,7 +33,7 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     }
 
     @Override
-    public Observable<List<PhotoEntity>> getPageOfLikesBefore(long timestamp) {
+    public Observable<List<Photo>> getPageOfLikesBefore(long timestamp) {
         return _likesRepo.getLikes(_appRepo.getTumblrBlog(), 20, timestamp)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

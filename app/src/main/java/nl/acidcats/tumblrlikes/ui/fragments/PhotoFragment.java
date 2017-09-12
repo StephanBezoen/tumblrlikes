@@ -21,7 +21,7 @@ import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoNavBar;
@@ -52,7 +52,7 @@ public class PhotoFragment extends Fragment {
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
     private Unbinder _unbinder;
-    private boolean _isTest = false;
+    private boolean _isTest = true;
     private Long _photoId;
 
     public static PhotoFragment newInstance() {
@@ -143,38 +143,37 @@ public class PhotoFragment extends Fragment {
 
     private void showPhoto() {
         if (_photoUrl == null) {
-            getRandomPhoto();
+            getNextPhoto();
         }
         if (_photoUrl == null) return;
 
         String url = _photoUrl;
         if (!_photoUrl.startsWith("http")) url = "file:" + url;
 
-        Glide
-                .with(getContext())
+        Glide.with(getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(new GlideDrawableImageViewTarget(_photoView));
 
-        _photoRepo.startPhotoView(_photoUrl);
+        _photoRepo.startPhotoView(_photoId);
     }
 
-    private void getRandomPhoto() {
+    private void getNextPhoto() {
         if (_photoUrl != null) {
             endPhotoView();
         }
 
-        PhotoEntity photo = _photoRepo.getNextPhoto();
+        Photo photo = _photoRepo.getNextPhoto();
         if (photo == null) return;
 
-        _photoId = photo.getId();
+        _photoId = photo.id();
 
-        _photoUrl = photo.getIsCached() ? photo.getFilePath() : photo.getUrl();
+        _photoUrl = photo.isCached() ? photo.filePath() : photo.url();
     }
 
     private void showRandomPhoto() {
-        getRandomPhoto();
+        getNextPhoto();
 
         showPhoto();
     }
@@ -185,7 +184,7 @@ public class PhotoFragment extends Fragment {
 
         _photoView.setVisibility(View.VISIBLE);
 
-        _photoRepo.startPhotoView(_photoUrl);
+        _photoRepo.startPhotoView(_photoId);
 
         hideUI();
     }
@@ -203,7 +202,7 @@ public class PhotoFragment extends Fragment {
 
     private void endPhotoView() {
         if (!_isTest) {
-            _photoRepo.endPhotoView(_photoUrl);
+            _photoRepo.endPhotoView(_photoId);
         }
     }
 

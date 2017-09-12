@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import java.util.List;
 
 import nl.acidcats.tumblrlikes.data.constants.FilterType;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 
 /**
  * Created by stephan on 11/04/2017.
@@ -14,27 +14,26 @@ import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
 public interface PhotoStore {
     boolean hasPhoto(long postId);
 
-    void storePhotos(List<PhotoEntity> photos);
+    void storePhotos(List<Photo> photos);
 
     long getPhotoCount();
 
     @Nullable
-    PhotoEntity getNextPhoto();
+    Photo getNextPhoto();
 
     boolean hasUncachedPhotos();
 
     @Nullable
-    PhotoEntity getNextUncachedPhoto();
+    Photo getNextUncachedPhoto();
 
-    void storePhoto(PhotoEntity photo);
+    void setAsCached(long id, String filePath);
 
-    void addViewTime(PhotoEntity photo, long timeInMs);
+    void setAsUncached(long id);
+
+    void addViewTime(long id, long timeInMs);
 
     @Nullable
-    PhotoEntity getPhotoByPath(String url);
-
-    @Nullable
-    PhotoEntity getPhotoById(long id);
+    Photo getPhotoById(long id);
 
     void likePhoto(long id);
 
@@ -44,7 +43,7 @@ public interface PhotoStore {
 
     void setPhotoHidden(long id);
 
-    List<PhotoEntity> getCachedHiddenPhotos();
+    List<Photo> getCachedHiddenPhotos();
 
     void setFilterType(FilterType filterType);
 

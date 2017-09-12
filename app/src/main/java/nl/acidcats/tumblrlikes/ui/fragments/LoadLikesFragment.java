@@ -32,7 +32,7 @@ import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -152,7 +152,7 @@ public class LoadLikesFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.SETTINGS_REQUEST));
     }
 
-    private void handleLikesPageLoaded(List<PhotoEntity> photoEntities) {
+    private void handleLikesPageLoaded(List<Photo> photos) {
         _pageCount++;
 
         long count = _photoRepo.getPhotoCount();

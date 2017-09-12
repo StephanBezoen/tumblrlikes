@@ -2,7 +2,7 @@ package nl.acidcats.tumblrlikes.data.repo.photo.store.filters;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntity;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
 
 /**

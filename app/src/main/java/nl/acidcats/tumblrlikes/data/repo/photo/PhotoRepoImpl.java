@@ -12,9 +12,8 @@ import javax.inject.Inject;
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -28,7 +27,7 @@ public class PhotoRepoImpl implements PhotoRepo {
     PhotoStore _photoStore;
 
     private long _startViewTime;
-    private String _currentUrl;
+    private long _currentPhotoId;
     private final boolean _debug = BuildConfig.DEBUG;
 
     @Inject
@@ -41,7 +40,7 @@ public class PhotoRepoImpl implements PhotoRepo {
     }
 
     @Override
-    public List<PhotoEntity> storePhotos(List<PhotoEntity> photos) {
+    public List<Photo> storePhotos(List<Photo> photos) {
         _photoStore.storePhotos(photos);
 
         return photos;
@@ -53,7 +52,7 @@ public class PhotoRepoImpl implements PhotoRepo {
     }
 
     @Override
-    public PhotoEntity getNextPhoto() {
+    public Photo getNextPhoto() {
         return _photoStore.getNextPhoto();
     }
 
@@ -63,31 +62,29 @@ public class PhotoRepoImpl implements PhotoRepo {
     }
 
     @Override
-    public PhotoEntity getNextUncachedPhoto() {
+    public Photo getNextUncachedPhoto() {
         return _photoStore.getNextUncachedPhoto();
     }
 
     @Override
-    public void markAsCached(PhotoEntity photo, String path) {
-        photo.setIsCached(true);
-        photo.setFilePath(path);
-
-        _photoStore.storePhoto(photo);
+    public void markAsCached(long id, String path) {
+        _photoStore.setAsCached(id, path);
     }
 
-    public Void uncachePhoto(PhotoEntity photo) {
-        if (_debug) Log.d(TAG, "uncachePhoto: " + photo.getFilePath());
+    private Void uncachePhoto(Photo photo) {
+        if (_debug) Log.d(TAG, "uncachePhoto: " + photo.filePath());
 
-        File file = new File(photo.getFilePath());
+        if (photo.filePath() == null) return null;
+
+        //noinspection ConstantConditions
+        File file = new File(photo.filePath());
         if (file.exists()) {
             if (_debug) Log.d(TAG, "uncachePhoto: file exists");
 
             if (file.delete()) {
                 if (_debug) Log.d(TAG, "uncachePhoto: file deleted");
 
-                photo.setIsCached(false);
-
-                _photoStore.storePhoto(photo);
+                _photoStore.setAsUncached(photo.id());
             }
         }
 
@@ -106,23 +103,17 @@ public class PhotoRepoImpl implements PhotoRepo {
     }
 
     @Override
-    public void startPhotoView(String url) {
-        _currentUrl = url;
+    public void startPhotoView(long id) {
+        _currentPhotoId = id;
 
         _startViewTime = SystemClock.elapsedRealtime();
     }
 
     @Override
-    public void endPhotoView(@Nullable String url) {
-        if (url == null || !url.equals(_currentUrl)) return;
+    public void endPhotoView(long id) {
+        if (id == 0 || id != _currentPhotoId) return;
 
-        PhotoEntity photo = _photoStore.getPhotoByPath(url);
-        if (photo == null) {
-            return;
-        }
-
-        long diff = SystemClock.elapsedRealtime() - _startViewTime;
-        _photoStore.addViewTime(photo, diff);
+        _photoStore.addViewTime(id, SystemClock.elapsedRealtime() - _startViewTime);
     }
 
     @Override
@@ -144,7 +135,7 @@ public class PhotoRepoImpl implements PhotoRepo {
     public void setPhotoHidden(long id) {
         _photoStore.setPhotoHidden(id);
 
-        PhotoEntity photo = _photoStore.getPhotoById(id);
+        Photo photo = _photoStore.getPhotoById(id);
         if (photo != null) {
             uncachePhoto(photo);
         }
@@ -152,7 +143,7 @@ public class PhotoRepoImpl implements PhotoRepo {
 
     @Override
     @Nullable
-    public PhotoEntity getPhotoById(long id) {
+    public Photo getPhotoById(long id) {
         return _photoStore.getPhotoById(id);
     }
 

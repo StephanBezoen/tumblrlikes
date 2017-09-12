@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrLikeVO;
 import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrPhotoPostVO;
 import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrPhotoVO;
@@ -14,36 +14,36 @@ import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrPhotoVO;
  */
 
 public class PhotoUtil {
-    public static List<PhotoEntity> toPhotoEntities(TumblrLikeVO likeVO) {
+    public static List<Photo> toPhotoEntities(TumblrLikeVO likeVO) {
         List<TumblrPhotoPostVO> postVOs = likeVO.photos();
         if (postVOs == null || postVOs.size() == 0) return null;
 
-        List<PhotoEntity> photoEntities = new ArrayList<>();
+        List<Photo> photos = new ArrayList<>();
 
         for (TumblrPhotoPostVO postVO : postVOs) {
-            List<TumblrPhotoVO> photos = new ArrayList<>();
+            List<TumblrPhotoVO> tumblrPhotoVOs = new ArrayList<>();
 
             // add original photo
             if (postVO.originalPhoto() != null) {
-                photos.add(postVO.originalPhoto());
+                tumblrPhotoVOs.add(postVO.originalPhoto());
             }
 
             // add alt photos
             if (postVO.altPhotos() != null) {
-                photos.addAll(postVO.altPhotos());
+                tumblrPhotoVOs.addAll(postVO.altPhotos());
             }
 
             // skip if none were found
-            if (photos.size() == 0) continue;
+            if (tumblrPhotoVOs.size() == 0) continue;
 
             // sort by size
-            Collections.sort(photos, new PhotoSizeComparator());
+            Collections.sort(tumblrPhotoVOs, new PhotoSizeComparator());
 
             // store biggest
-            photoEntities.add(new PhotoEntity(photos.get(0).url(), likeVO.id()));
+            photos.add(Photo.create(tumblrPhotoVOs.get(0).url(), likeVO.id()));
         }
 
-        return photoEntities;
+        return photos;
     }
 
     private static class PhotoSizeComparator implements java.util.Comparator<TumblrPhotoVO> {

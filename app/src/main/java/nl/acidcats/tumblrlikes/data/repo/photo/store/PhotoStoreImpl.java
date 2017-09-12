@@ -8,6 +8,7 @@ import org.greenrobot.greendao.query.CountQuery;
 import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,9 @@ import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.LatestFilterOptionI
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.LeastSeenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.PopularFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.UnhiddenFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import nl.acidcats.tumblrlikes.data.vo.db.DaoMaster;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntity;
 import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
 import nl.acidcats.tumblrlikes.util.database.DbOpenHelper;
 
@@ -104,10 +106,15 @@ public class PhotoStoreImpl implements PhotoStore {
     }
 
     @Override
-    public void storePhotos(List<PhotoEntity> photos) {
+    public void storePhotos(List<Photo> photos) {
         if (_debug) Log.d(TAG, "storePhotos: " + photos.size());
 
-        _photoEntityDao.saveInTx(photos);
+        List<PhotoEntity> photoEntities = new ArrayList<>();
+        for (Photo photo : photos) {
+            photoEntities.add(new PhotoEntity(photo.url(), photo.tumblrId()));
+        }
+
+        _photoEntityDao.saveInTx(photoEntities);
     }
 
     @Override
@@ -117,19 +124,34 @@ public class PhotoStoreImpl implements PhotoStore {
 
     @Override
     @Nullable
-    public PhotoEntity getNextPhoto() {
+    public Photo getNextPhoto() {
         if (_debug) Log.d(TAG, "getNextPhoto: ");
 
-        PhotoEntity photo = _currentFilterType.isRandom() ? getRandomPhoto() : getNextPhotoInLine();
+        PhotoEntity photoEntity = _currentFilterType.isRandom() ? getRandomPhoto() : getNextPhotoInLine();
 
-        if (photo != null) {
+        if (photoEntity != null) {
             // increase view count
-            photo.setViewCount(photo.getViewCount() + 1);
-            if (_debug) Log.d(TAG, "getNextPhoto: view count now " + photo.getViewCount());
-            storePhoto(photo);
+            photoEntity.setViewCount(photoEntity.getViewCount() + 1);
+            if (_debug) Log.d(TAG, "getNextPhoto: view count now " + photoEntity.getViewCount());
+            storePhoto(photoEntity);
+
+            return toPhoto(photoEntity);
         }
 
-        return photo;
+        return null;
+    }
+
+    private Photo toPhoto(PhotoEntity photoEntity) {
+        return Photo.create(
+                photoEntity.getId(),
+                photoEntity.getPhotoId(),
+                photoEntity.getFilePath(),
+                photoEntity.getUrl(),
+                photoEntity.getIsFavorite(),
+                photoEntity.getLikeCount(),
+                photoEntity.getIsCached(),
+                photoEntity.getViewCount()
+        );
     }
 
     private PhotoEntity getNextPhotoInLine() {
@@ -158,37 +180,61 @@ public class PhotoStoreImpl implements PhotoStore {
 
     @Override
     @Nullable
-    public PhotoEntity getNextUncachedPhoto() {
-        return _uncachedQuery.forCurrentThread().unique();
+    public Photo getNextUncachedPhoto() {
+        PhotoEntity photoEntity = _uncachedQuery.forCurrentThread().unique();
+        return photoEntity == null ? null : toPhoto(photoEntity);
     }
 
-    @Override
-    public void storePhoto(PhotoEntity photo) {
+    private void storePhoto(PhotoEntity photo) {
         _photoEntityDao.save(photo);
     }
 
     @Override
-    public void addViewTime(PhotoEntity photo, long timeInMs) {
-        photo.setViewTime(photo.getViewTime() + timeInMs);
+    public void setAsCached(long id, String filePath) {
+        PhotoEntity photoEntity = getPhotoEntityById(id);
+        if (photoEntity == null) return;
+
+        photoEntity.setIsCached(true);
+        photoEntity.setFilePath(filePath);
+
+        storePhoto(photoEntity);
+    }
+
+    @Override
+    public void setAsUncached(long id) {
+        PhotoEntity photoEntity = getPhotoEntityById(id);
+        if (photoEntity == null) return;
+
+        photoEntity.setIsCached(false);
+
+        storePhoto(photoEntity);
+    }
+
+    @Override
+    public void addViewTime(long id, long timeInMs) {
+        PhotoEntity photoEntity = getPhotoEntityById(id);
+        if (photoEntity == null) return;
+
+        photoEntity.setViewTime(photoEntity.getViewTime() + timeInMs);
         if (_debug) Log.d(TAG, "addViewTime: view time now " + (timeInMs / 1000) + " s");
 
-        storePhoto(photo);
+        storePhoto(photoEntity);
     }
 
     @Override
+    public Photo getPhotoById(long id) {
+        PhotoEntity photoEntity = getPhotoEntityById(id);
+        return photoEntity == null ? null : toPhoto(photoEntity);
+    }
+
     @Nullable
-    public PhotoEntity getPhotoByPath(String filePath) {
-        return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.FilePath.eq(filePath)).limit(1).unique();
-    }
-
-    @Override
-    public PhotoEntity getPhotoById(long id) {
+    private PhotoEntity getPhotoEntityById(long id) {
         return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.Id.eq(id)).unique();
     }
 
     @Override
     public void likePhoto(long id) {
-        PhotoEntity photo = getPhotoById(id);
+        PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
         photo.setLikeCount(1 + photo.getLikeCount());
@@ -198,7 +244,7 @@ public class PhotoStoreImpl implements PhotoStore {
 
     @Override
     public void unlikePhoto(long id) {
-        PhotoEntity photo = getPhotoById(id);
+        PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
         photo.setLikeCount(photo.getLikeCount() - 1);
@@ -208,7 +254,7 @@ public class PhotoStoreImpl implements PhotoStore {
 
     @Override
     public void setPhotoFavorite(long id, boolean isFavorite) {
-        PhotoEntity photo = getPhotoById(id);
+        PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
         photo.setIsFavorite(isFavorite);
@@ -218,7 +264,7 @@ public class PhotoStoreImpl implements PhotoStore {
 
     @Override
     public void setPhotoHidden(long id) {
-        PhotoEntity photo = getPhotoById(id);
+        PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
         photo.setIsHidden(true);
@@ -227,11 +273,16 @@ public class PhotoStoreImpl implements PhotoStore {
     }
 
     @Override
-    public List<PhotoEntity> getCachedHiddenPhotos() {
+    public List<Photo> getCachedHiddenPhotos() {
         List<PhotoEntity> cachedHiddenPhotos = _hiddenCachedQuery.list();
         if (_debug) Log.d(TAG, "getCachedHiddenPhotos: " + cachedHiddenPhotos.size() + " cached hidden photos found");
 
-        return cachedHiddenPhotos;
+        List<Photo> photos = new ArrayList<>();
+        for (PhotoEntity photoEntity : cachedHiddenPhotos) {
+            photos.add(toPhoto(photoEntity));
+        }
+
+        return photos;
     }
 
     @Override

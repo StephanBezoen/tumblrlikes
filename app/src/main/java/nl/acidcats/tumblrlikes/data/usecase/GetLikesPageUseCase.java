@@ -2,7 +2,7 @@ package nl.acidcats.tumblrlikes.data.usecase;
 
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntity;
+import nl.acidcats.tumblrlikes.data.vo.Photo;
 import rx.Observable;
 
 /**
@@ -10,5 +10,5 @@ import rx.Observable;
  */
 
 public interface GetLikesPageUseCase {
-    Observable<List<PhotoEntity>> getPageOfLikesBefore(long timestamp);
+    Observable<List<Photo>> getPageOfLikesBefore(long timestamp);
 }
