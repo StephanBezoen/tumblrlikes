@@ -9,8 +9,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.constants.TumblrPostType;
-
 /**
  * Created by stephan on 28/03/2017.
  */
@@ -39,4 +37,13 @@ public abstract class TumblrLikeVO {
         return new AutoValue_TumblrLikeVO.GsonTypeAdapter(gson);
     }
 
+    /**
+     * Created by stephan on 11/04/2017.
+     */
+
+    private static class TumblrPostType {
+        static final String PHOTO = "photo";
+        static final String VIDEO = "video";
+
+    }
 }
