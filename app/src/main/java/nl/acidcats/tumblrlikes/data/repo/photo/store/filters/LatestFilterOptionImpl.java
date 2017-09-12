@@ -16,6 +16,8 @@ public class LatestFilterOptionImpl extends AbstractFilterOptionImpl {
 
     @Override
     protected QueryBuilder<PhotoEntity> getQueryBuilder() {
-        return _photoEntityDao.queryBuilder().orderDesc(PhotoEntityDao.Properties.Id);
+        return _photoEntityDao.queryBuilder()
+                .where(PhotoEntityDao.Properties.IsHidden.eq(false))
+                .orderDesc(PhotoEntityDao.Properties.Id);
     }
 }
