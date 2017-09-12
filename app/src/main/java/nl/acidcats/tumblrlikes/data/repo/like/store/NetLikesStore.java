@@ -22,6 +22,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by stephan on 28/03/2017.
@@ -43,6 +44,7 @@ public class NetLikesStore implements LikesStore {
     public Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime) {
         return _tumblrApi
                 .getLikes(blogName, _apiKey, count, beforeTime)
+                .subscribeOn(Schedulers.io())
                 .map(result -> result.response().likes());
     }
 

@@ -12,7 +12,6 @@ import nl.acidcats.tumblrlikes.data.vo.Photo;
 import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrLikeVO;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by stephan on 13/04/2017.
@@ -35,13 +34,12 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     @Override
     public Observable<List<Photo>> getPageOfLikesBefore(long timestamp) {
         return _likesRepo.getLikes(_appRepo.getTumblrBlog(), 20, timestamp)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapIterable(tumblrLikeVOs -> tumblrLikeVOs)
                 .filter(TumblrLikeVO::isPhoto)
                 .filter(tumblrLikeVO -> !_photoRepo.hasPhoto(tumblrLikeVO.id()))
-                .map(PhotoUtil::toPhotoEntities)
-                .flatMapIterable(photoEntities -> photoEntities)
+                .map(PhotoUtil::toPhotos)
+                .flatMapIterable(photos -> photos)
                 .toList()
                 .map(_photoRepo::storePhotos);
     }

@@ -33,15 +33,17 @@ public class LikesRepoImpl implements LikesRepo {
 
     @Override
     public Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime) {
-        return _netStore.getLikes(blogName, count, beforeTime).doOnNext(tumblrLikeVOs -> {
-            if (tumblrLikeVOs.size() == 0) {
-                _hasMore = false;
-            } else {
-                _hasMore = true;
+        return _netStore
+                .getLikes(blogName, count, beforeTime)
+                .doOnNext(tumblrLikeVOs -> {
+                    if (tumblrLikeVOs.size() == 0) {
+                        _hasMore = false;
+                    } else {
+                        _hasMore = true;
 
-                _lastTime = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).timestamp();
-            }
-        });
+                        _lastTime = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).timestamp();
+                    }
+                });
     }
 
     @Override

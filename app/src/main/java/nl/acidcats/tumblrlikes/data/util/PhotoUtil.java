@@ -14,7 +14,7 @@ import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrPhotoVO;
  */
 
 public class PhotoUtil {
-    public static List<Photo> toPhotoEntities(TumblrLikeVO likeVO) {
+    public static List<Photo> toPhotos(TumblrLikeVO likeVO) {
         List<TumblrPhotoPostVO> postVOs = likeVO.photos();
         if (postVOs == null || postVOs.size() == 0) return null;
 
