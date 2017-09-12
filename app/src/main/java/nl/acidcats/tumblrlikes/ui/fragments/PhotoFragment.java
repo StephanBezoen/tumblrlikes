@@ -165,7 +165,7 @@ public class PhotoFragment extends Fragment {
             endPhotoView();
         }
 
-        PhotoEntity photo = _photoRepo.getRandomPhoto();
+        PhotoEntity photo = _photoRepo.getNextPhoto();
         if (photo == null) return;
 
         _photoId = photo.getId();

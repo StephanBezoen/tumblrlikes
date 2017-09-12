@@ -53,7 +53,7 @@ public class PhotoRepoImpl implements PhotoRepo {
     }
 
     @Override
-    public PhotoEntity getRandomPhoto() {
+    public PhotoEntity getNextPhoto() {
         return _photoStore.getNextPhoto();
     }
 

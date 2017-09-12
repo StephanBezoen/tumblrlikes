@@ -19,7 +19,7 @@ public interface PhotoRepo {
 
     long getPhotoCount();
 
-    PhotoEntity getRandomPhoto();
+    PhotoEntity getNextPhoto();
 
     boolean hasUncachedPhotos();
 
