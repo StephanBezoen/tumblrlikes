@@ -150,6 +150,8 @@ public class PhotoFragment extends Fragment {
         String url = _photoUrl;
         if (!_photoUrl.startsWith("http")) url = "file:" + url;
 
+        _photoView.resetScale();
+
         Glide.with(getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

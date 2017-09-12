@@ -1,12 +1,15 @@
 package nl.acidcats.tumblrlikes.ui.widgets;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 /**
  * Created by stephan on 24/04/2017.
@@ -23,9 +26,12 @@ public class InteractiveImageView extends AppCompatImageView {
     private static final int SWIPE_DETECTION_DIST_THRESHOLD = 30;
     private static final int SWIPE_DETECTION_ANG_THRESHOLD = 45;
 
-    private GestureDetectorCompat _detector;
+    private GestureDetectorCompat _gestureDetector;
+    private ScaleGestureDetector _scaleDetector;
     private float _density;
     private GestureListener _gestureListener;
+    private float _startScale;
+    private float _scale;
 
     public InteractiveImageView(Context context) {
         super(context);
@@ -45,10 +51,20 @@ public class InteractiveImageView extends AppCompatImageView {
         init();
     }
 
+    public void resetScale() {
+        setScale(1.0f);
+    }
+
+    private void setScale(float scale) {
+        _scale = scale;
+
+        invalidate();
+    }
+
     private void init() {
         _density = getResources().getDisplayMetrics().density;
 
-        _detector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener() {
+        _gestureDetector = new GestureDetectorCompat(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 onGesture(Gesture.DOUBLE_TAP);
@@ -85,11 +101,41 @@ public class InteractiveImageView extends AppCompatImageView {
             }
         });
 
+        _scaleDetector = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener(){
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                _startScale = _scale;
+
+                return true;
+            }
+
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                setScale(Math.min(Math.max(1.0f, _startScale * detector.getScaleFactor()), 5.0f));
+
+                return false;
+            }
+        });
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.save();
+
+        canvas.translate(0.5f * (1.0f - _scale) * getWidth(), 0.5f * (1.0f - _scale) * getHeight());
+
+        canvas.scale(_scale, _scale);
+
+        super.onDraw(canvas);
+
+        canvas.restore();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        _detector.onTouchEvent(event);
+        _gestureDetector.onTouchEvent(event);
+        _scaleDetector.onTouchEvent(event);
 
         return true;
     }
