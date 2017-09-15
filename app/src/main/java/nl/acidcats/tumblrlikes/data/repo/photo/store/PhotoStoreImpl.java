@@ -259,7 +259,11 @@ public class PhotoStoreImpl implements PhotoStore {
 
         photo.setIsFavorite(isFavorite);
 
-        storePhoto(photo);
+        if (isFavorite) {
+            likePhoto(id);
+        } else {
+            storePhoto(photo);
+        }
     }
 
     @Override
