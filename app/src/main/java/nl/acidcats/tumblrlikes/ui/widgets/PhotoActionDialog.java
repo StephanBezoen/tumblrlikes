@@ -110,11 +110,11 @@ public class PhotoActionDialog extends FrameLayout {
 
         int likes = _photo.likeCount();
         if (likes > 0) {
-            _likeButton.setText(getContext().getString(R.string.photo_action_like_count, likes));
+            _likeButton.setText(getContext().getString(R.string.photo_action_like_count, 1));
             _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
         } else if (likes < 0) {
             _likeButton.setText(getContext().getString(R.string.photo_action_like));
-            _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike_count, likes));
+            _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike_count, -1));
         } else {
             _likeButton.setText(getContext().getString(R.string.photo_action_like));
             _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
