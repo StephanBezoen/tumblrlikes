@@ -237,7 +237,11 @@ public class PhotoStoreImpl implements PhotoStore {
         PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
-        photo.setLikeCount(1 + photo.getLikeCount());
+        if (photo.getLikeCount() < 0) {
+            photo.setLikeCount(0);
+        } else {
+            photo.setLikeCount(1);
+        }
 
         storePhoto(photo);
     }
@@ -247,7 +251,11 @@ public class PhotoStoreImpl implements PhotoStore {
         PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
-        photo.setLikeCount(photo.getLikeCount() - 1);
+        if (photo.getLikeCount() > 0) {
+            photo.setLikeCount(0);
+        } else {
+            photo.setLikeCount(-1);
+        }
 
         storePhoto(photo);
     }

@@ -80,15 +80,20 @@ public class PhotoFragment extends Fragment {
         _photoView.setGestureListener(this::onGesture);
 
         if (_isTest) {
-            _photoView.setAlpha(0.1f);
+            _photoView.setAlpha(0.2f);
         }
 
         _photoActionDialog.setPhotoRepo(_photoRepo);
+        _photoActionDialog.setPhotoHiddenListener(this::onPhotoHidden);
 
         _photoNavBar.setFilterType(_photoRepo.getFilterType());
         _photoNavBar.setFilterOptionSelectionListener(this::setFilterType);
 
         return view;
+    }
+
+    private void onPhotoHidden() {
+        showNextPhoto();
     }
 
     private void setFilterType(FilterType filterType) {

@@ -40,6 +40,7 @@ public class PhotoActionDialog extends FrameLayout {
     private Unbinder _unbinder;
     private PhotoRepo _photoRepo;
     private Photo _photo;
+    private PhotoHiddenListener _photoHiddenListener;
 
     public PhotoActionDialog(Context context) {
         super(context);
@@ -81,6 +82,10 @@ public class PhotoActionDialog extends FrameLayout {
         _photoRepo.setPhotoHidden(_photo.id());
 
         hide();
+
+        if (_photoHiddenListener != null) {
+            _photoHiddenListener.onPhotoHidden();
+        }
     }
 
     private void onUnlikeButtonClick(View view) {
@@ -127,6 +132,14 @@ public class PhotoActionDialog extends FrameLayout {
 
     public void hide() {
         setVisibility(GONE);
+    }
+
+    public interface PhotoHiddenListener {
+        void onPhotoHidden();
+    }
+
+    public void setPhotoHiddenListener(PhotoHiddenListener listener) {
+        _photoHiddenListener = listener;
     }
 
     public void onDestroy() {
