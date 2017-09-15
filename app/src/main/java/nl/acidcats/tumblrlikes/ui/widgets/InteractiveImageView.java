@@ -6,7 +6,6 @@ import android.graphics.PointF;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -32,6 +31,13 @@ public class InteractiveImageView extends AppCompatImageView {
     private GestureListener _gestureListener;
     private float _startScale;
     private float _scale;
+    private boolean _isDragging;
+    private boolean _hasScaled;
+    private float _lastTouchX;
+    private float _lastTouchY;
+    private int _activePointerId;
+    private float _translateX;
+    private float _translateY;
 
     public InteractiveImageView(Context context) {
         super(context);
@@ -53,6 +59,9 @@ public class InteractiveImageView extends AppCompatImageView {
 
     public void resetScale() {
         setScale(1.0f);
+
+        _translateX = 0;
+        _translateY = 0;
     }
 
     private boolean isScaled() {
@@ -90,7 +99,7 @@ public class InteractiveImageView extends AppCompatImageView {
                 PointF point = new PointF(e2.getX() - e1.getX(), e2.getY() - e1.getY());
                 if (point.length() / _density < SWIPE_DETECTION_DIST_THRESHOLD) return false;
 
-                int angle = (int)(180 * Math.atan2(velocityY, velocityX) / Math.PI);
+                int angle = (int) (180 * Math.atan2(velocityY, velocityX) / Math.PI);
 
                 if ((angle < SWIPE_DETECTION_ANG_THRESHOLD && angle > -SWIPE_DETECTION_ANG_THRESHOLD)
                         || angle > (180 - SWIPE_DETECTION_ANG_THRESHOLD)
@@ -109,7 +118,7 @@ public class InteractiveImageView extends AppCompatImageView {
             }
         });
 
-        _scaleDetector = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener(){
+        _scaleDetector = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
 
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -122,6 +131,8 @@ public class InteractiveImageView extends AppCompatImageView {
             public boolean onScale(ScaleGestureDetector detector) {
                 setScale(Math.min(Math.max(1.0f, _startScale * detector.getScaleFactor()), 5.0f));
 
+                _hasScaled = true;
+
                 return false;
             }
         });
@@ -131,7 +142,7 @@ public class InteractiveImageView extends AppCompatImageView {
     protected void onDraw(Canvas canvas) {
         canvas.save();
 
-        canvas.translate(0.5f * (1.0f - _scale) * getWidth(), 0.5f * (1.0f - _scale) * getHeight());
+        canvas.translate(_translateX + 0.5f * (1.0f - _scale) * getWidth(), _translateY + 0.5f * (1.0f - _scale) * getHeight());
 
         canvas.scale(_scale, _scale);
 
@@ -142,10 +153,75 @@ public class InteractiveImageView extends AppCompatImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        _hasScaled = false;
+
         _gestureDetector.onTouchEvent(event);
         _scaleDetector.onTouchEvent(event);
 
+        if (!_hasScaled && isScaled()) {
+            checkDrag(event);
+        }
+
         return true;
+    }
+
+    private void checkDrag(MotionEvent event) {
+        switch (event.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                storeDownEvent(event);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                onDrag(event);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                _activePointerId = -1;
+                _isDragging = false;
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                checkDragEnd(event);
+                break;
+        }
+    }
+
+    private void storeDownEvent(MotionEvent event) {
+        final int pointerIndex = event.getActionIndex();
+
+        _lastTouchX = event.getX(pointerIndex);
+        _lastTouchY = event.getY(pointerIndex);
+
+        _activePointerId = event.getPointerId(0);
+    }
+
+    private void onDrag(MotionEvent event) {
+        _isDragging = true;
+
+        final int pointerIndex = event.findPointerIndex(_activePointerId);
+
+        final float x = event.getX(pointerIndex);
+        final float y = event.getY(pointerIndex);
+
+        _translateX += (x - _lastTouchX);
+        _translateY += (y - _lastTouchY);
+
+        invalidate();
+
+        _lastTouchX = x;
+        _lastTouchY = y;
+    }
+
+    private void checkDragEnd(MotionEvent event) {
+        final int pointerIndex = event.getActionIndex();
+        final int pointerId = event.getPointerId(pointerIndex);
+
+        if (pointerId == _activePointerId) {
+            // This was our active pointer going up. Choose a new
+            // active pointer and adjust accordingly.
+            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+            _lastTouchX = event.getX(newPointerIndex);
+            _lastTouchY = event.getY(newPointerIndex);
+            _activePointerId = event.getPointerId(newPointerIndex);
+        }
     }
 
     public interface GestureListener {
