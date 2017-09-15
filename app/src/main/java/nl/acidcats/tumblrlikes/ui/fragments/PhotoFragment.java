@@ -94,19 +94,22 @@ public class PhotoFragment extends Fragment {
     private void setFilterType(FilterType filterType) {
         _photoRepo.setFilterType(filterType);
 
-        showRandomPhoto();
+        showNextPhoto();
     }
 
     private void onGesture(InteractiveImageView.Gesture gesture) {
         switch (gesture) {
             case SIDE_SWIPE:
-                showRandomPhoto();
+                showNextPhoto();
                 break;
             case TAP:
                 showUI();
                 break;
             case LONG_PRESS:
                 _photoActionDialog.show(_photoId);
+                break;
+            case DOUBLE_TAP:
+                _photoView.resetScale();
                 break;
         }
     }
@@ -174,7 +177,7 @@ public class PhotoFragment extends Fragment {
         _photoUrl = photo.isCached() ? photo.filePath() : photo.url();
     }
 
-    private void showRandomPhoto() {
+    private void showNextPhoto() {
         getNextPhoto();
 
         showPhoto();

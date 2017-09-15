@@ -55,6 +55,10 @@ public class InteractiveImageView extends AppCompatImageView {
         setScale(1.0f);
     }
 
+    private boolean isScaled() {
+        return Math.abs(_scale - 1.0f) > .00001;
+    }
+
     private void setScale(float scale) {
         _scale = scale;
 
@@ -73,7 +77,7 @@ public class InteractiveImageView extends AppCompatImageView {
             }
 
             @Override
-            public boolean onSingleTapUp(MotionEvent e) {
+            public boolean onSingleTapConfirmed(MotionEvent e) {
                 onGesture(Gesture.TAP);
 
                 return false;
@@ -81,6 +85,8 @@ public class InteractiveImageView extends AppCompatImageView {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (isScaled()) return false;
+
                 PointF point = new PointF(e2.getX() - e1.getX(), e2.getY() - e1.getY());
                 if (point.length() / _density < SWIPE_DETECTION_DIST_THRESHOLD) return false;
 
@@ -97,6 +103,8 @@ public class InteractiveImageView extends AppCompatImageView {
 
             @Override
             public void onLongPress(MotionEvent e) {
+                if (isScaled()) return;
+
                 onGesture(Gesture.LONG_PRESS);
             }
         });
