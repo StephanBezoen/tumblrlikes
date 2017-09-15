@@ -194,9 +194,10 @@ public class InteractiveImageView extends AppCompatImageView {
     }
 
     private void onDrag(MotionEvent event) {
-        _isDragging = true;
-
         final int pointerIndex = event.findPointerIndex(_activePointerId);
+        if (pointerIndex == -1) return;
+
+        _isDragging = true;
 
         final float x = event.getX(pointerIndex);
         final float y = event.getY(pointerIndex);
