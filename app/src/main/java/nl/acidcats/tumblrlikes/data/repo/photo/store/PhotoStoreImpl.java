@@ -81,27 +81,27 @@ public class PhotoStoreImpl implements PhotoStore {
         query.setParameter(1, 1977);
         List<User> mariasOf1977 = query.list();
         */
-        _countQuery = getQueryBuilder().buildCount();
+        _countQuery = createQueryBuilder().buildCount();
 
-        QueryBuilder<PhotoEntity> builder = getQueryBuilder();
+        QueryBuilder<PhotoEntity> builder = createQueryBuilder();
         _uncachedQuery = builder
                 .where(builder.and(PhotoEntityDao.Properties.IsHidden.eq(false), PhotoEntityDao.Properties.IsCached.eq(false)))
                 .limit(1)
                 .build();
 
-        builder = getQueryBuilder();
+        builder = createQueryBuilder();
         _hiddenCachedQuery = builder
                 .where(builder.and(PhotoEntityDao.Properties.IsHidden.eq(true), PhotoEntityDao.Properties.IsCached.eq(true)))
                 .build();
     }
 
-    private QueryBuilder<PhotoEntity> getQueryBuilder() {
+    private QueryBuilder<PhotoEntity> createQueryBuilder() {
         return _photoEntityDao.queryBuilder();
     }
 
     @Override
     public boolean hasPhoto(long postId) {
-        List<PhotoEntity> photos = _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.PhotoId.eq(postId)).list();
+        List<PhotoEntity> photos = createQueryBuilder().where(PhotoEntityDao.Properties.PhotoId.eq(postId)).list();
         return (photos != null) && (photos.size() > 0);
     }
 
@@ -229,7 +229,7 @@ public class PhotoStoreImpl implements PhotoStore {
 
     @Nullable
     private PhotoEntity getPhotoEntityById(long id) {
-        return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.Id.eq(id)).unique();
+        return createQueryBuilder().where(PhotoEntityDao.Properties.Id.eq(id)).unique();
     }
 
     @Override
