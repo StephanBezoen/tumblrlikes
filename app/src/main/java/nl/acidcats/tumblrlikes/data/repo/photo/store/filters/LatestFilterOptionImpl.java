@@ -3,7 +3,7 @@ package nl.acidcats.tumblrlikes.data.repo.photo.store.filters;
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntity;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntityDao;
 
 /**
  * Created by stephan on 19/05/2017.

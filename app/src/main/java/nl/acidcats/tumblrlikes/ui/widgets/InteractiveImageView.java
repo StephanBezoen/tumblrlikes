@@ -31,7 +31,6 @@ public class InteractiveImageView extends AppCompatImageView {
     private GestureListener _gestureListener;
     private float _startScale;
     private float _scale;
-    private boolean _isDragging;
     private boolean _hasScaled;
     private float _lastTouchX;
     private float _lastTouchY;
@@ -176,7 +175,6 @@ public class InteractiveImageView extends AppCompatImageView {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 _activePointerId = -1;
-                _isDragging = false;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 checkDragEnd(event);
@@ -196,8 +194,6 @@ public class InteractiveImageView extends AppCompatImageView {
     private void onDrag(MotionEvent event) {
         final int pointerIndex = event.findPointerIndex(_activePointerId);
         if (pointerIndex == -1) return;
-
-        _isDragging = true;
 
         final float x = event.getX(pointerIndex);
         final float y = event.getY(pointerIndex);

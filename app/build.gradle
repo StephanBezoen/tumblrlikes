@@ -9,7 +9,6 @@ buildscript {
         def classpaths = rootProject.ext.ClassPaths
 
         classpath classpaths.hugo
-        classpath classpaths.retrolambda
         classpath classpaths.greenDAO
         classpath classpaths.fabric
     }
@@ -23,7 +22,6 @@ def repos = config.Repos
 apply plugin: plugins.android_app
 apply plugin: 'kotlin-android'
 apply plugin: plugins.hugo
-apply plugin: plugins.retrolambda
 apply plugin: plugins.greenDAO
 apply plugin: plugins.fabric
 
@@ -93,7 +91,7 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // testing
     androidTestCompile(libs.test_espresso, {
@@ -102,62 +100,62 @@ dependencies {
     testCompile libs.test_junit
 
     // Android Support
-    compile libs.support_appCompat
-    compile libs.support_design
-    compile libs.support_constraintLayout
+    implementation libs.support_appCompat
+    implementation libs.support_design
+    implementation libs.support_constraintLayout
 
     // Rx
-    compile libs.rxAndroid
+    implementation libs.rxAndroid
 
     // Butterknife
-    compile libs.butterknife
+    implementation libs.butterknife
     annotationProcessor libs.annotationProcessorButterknife
 
     // Pixplicity Prefs
-    compile libs.easyPrefs
+    implementation libs.easyPrefs
 
     // GSon
-    compile libs.gson
+    implementation libs.gson
 
     // Retrofit
-    compile libs.retrofit
-    compile libs.retrofit_gsonConverter
-    compile libs.retrofit_rxAdapter
+    implementation libs.retrofit
+    implementation libs.retrofit_gsonConverter
+    implementation libs.retrofit_rxAdapter
 
     // Glide
-    compile libs.glide
+    implementation libs.glide
 
     // Dagger
-    compile libs.dagger
+    implementation libs.dagger
     annotationProcessor libs.annotationProcessorDagger
 
     // OkHttp
-    compile libs.okHttp
-    compile libs.okHttp_loggingInterceptor
+    implementation libs.okHttp
+    implementation libs.okHttp_loggingInterceptor
 
     // AutoValue
-    provided libs.autoValue
+    compileOnly libs.autoValue
     annotationProcessor libs.autoValue
 
     // AutoValue Gson
-    provided libs.autoValue_gson
+    compileOnly libs.autoValue_gson
     annotationProcessor libs.autoValue_gson
 
     // GreenDAO
-    compile libs.greenDAO
+    implementation libs.greenDAO
 
     // Stetho
-    compile libs.stetho
+    implementation libs.stetho
 
     // SQL Cipher, to get rid of GreenDAO exceptions
-    compile libs.sqlCipher
+    implementation libs.sqlCipher
 
     // Fabric
-    compile(libs.fabric) {
+    implementation(libs.fabric) {
         transitive = true;
     }
-    compile libs.firebase
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation libs.firebase
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -15,6 +15,8 @@ import java.util.Map;
 
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.data.constants.FilterType;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.DaoMaster;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntityDao;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.FavoriteFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.FilterOption;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.LatestFilterOptionImpl;
@@ -22,9 +24,7 @@ import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.LeastSeenFilterOpti
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.PopularFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.filters.UnhiddenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data.vo.Photo;
-import nl.acidcats.tumblrlikes.data.vo.db.DaoMaster;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntity;
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
 import nl.acidcats.tumblrlikes.util.database.DbOpenHelper;
 
 /**

@@ -2,7 +2,7 @@ package nl.acidcats.tumblrlikes.util.database.migration;
 
 import org.greenrobot.greendao.database.Database;
 
-import nl.acidcats.tumblrlikes.data.vo.db.PhotoEntityDao;
+import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.PhotoEntityDao;
 
 /**
  * Created by stephan on 11/05/2017.
