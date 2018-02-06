@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.DrawableImageViewTarget;
+//import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import javax.inject.Inject;
 
@@ -25,6 +26,7 @@ import nl.acidcats.tumblrlikes.data.vo.Photo;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoNavBar;
+import nl.acidcats.tumblrlikes.util.GlideApp;
 
 /**
  * Created by stephan on 13/04/2017.
@@ -160,11 +162,11 @@ public class PhotoFragment extends Fragment {
 
         _photoView.resetScale();
 
-        Glide.with(getContext())
+        GlideApp.with(getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
-                .into(new GlideDrawableImageViewTarget(_photoView));
+                .into(new DrawableImageViewTarget(_photoView));
 
         _photoRepo.startPhotoView(_photoId);
     }
