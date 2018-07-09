@@ -54,7 +54,7 @@ public class PhotoFragment extends Fragment {
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
     private Unbinder _unbinder;
-    private boolean _isTest = false;
+    private boolean _isTest = true;
     private Long _photoId;
 
     public static PhotoFragment newInstance() {

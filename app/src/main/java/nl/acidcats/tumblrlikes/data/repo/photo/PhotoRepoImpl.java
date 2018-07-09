@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -155,5 +156,33 @@ public class PhotoRepoImpl implements PhotoRepo {
     @Override
     public FilterType getFilterType() {
         return _photoStore.getFilterType();
+    }
+
+    @Override
+    public Observable<Void> checkCachedPhotos() {
+        Log.d(TAG, "checkCachedPhotos: checking photo cache");
+
+        return Observable
+                .fromCallable(() -> _photoStore.getCachedPhotos())
+                .subscribeOn(Schedulers.io())
+                .flatMapIterable(photoEntities -> photoEntities)
+                .map(this::checkPhotoCache)
+                .toList()
+                .flatMap(photoEntities -> Observable.just(null));
+    }
+
+    private Void checkPhotoCache(Photo photo) {
+        String filePath = photo.filePath();
+
+//        Log.d(TAG, "checkPhotoCache: " + filePath);
+
+        if (filePath == null) return null;
+
+        File file = new File(filePath);
+        if (!file.exists()) {
+            Log.e(TAG, "checkPhotoCache: cache does not exist: " + filePath);
+        }
+
+        return null;
     }
 }

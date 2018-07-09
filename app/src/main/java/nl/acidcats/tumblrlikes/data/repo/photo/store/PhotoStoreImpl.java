@@ -314,4 +314,21 @@ public class PhotoStoreImpl implements PhotoStore {
     public FilterType getFilterType() {
         return _currentFilterType;
     }
+
+    @Override
+    public List<Photo> getCachedPhotos() {
+        QueryBuilder<PhotoEntity> builder = createQueryBuilder();
+        Query<PhotoEntity> cachedQuery = builder
+                .where(builder.and(PhotoEntityDao.Properties.IsHidden.eq(false), PhotoEntityDao.Properties.IsCached.eq(true)))
+                .build();
+
+        List<PhotoEntity> cachedPhotos = cachedQuery.list();
+
+        List<Photo> photos = new ArrayList<>();
+        for (PhotoEntity photoEntity : cachedPhotos) {
+            photos.add(toPhoto(photoEntity));
+        }
+
+        return photos;
+    }
 }

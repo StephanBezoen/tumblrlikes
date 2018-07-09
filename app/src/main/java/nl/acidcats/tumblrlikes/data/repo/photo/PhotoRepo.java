@@ -47,4 +47,6 @@ public interface PhotoRepo {
     void setFilterType(FilterType filterType);
 
     FilterType getFilterType();
+
+    Observable<Void> checkCachedPhotos();
 }

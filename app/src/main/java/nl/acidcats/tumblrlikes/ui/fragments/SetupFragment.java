@@ -23,7 +23,9 @@ import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
+import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by stephan on 29/04/2017.
@@ -36,6 +38,8 @@ public class SetupFragment extends Fragment {
 
     @Inject
     AppRepo _appRepo;
+    @Inject
+    PhotoRepo _photoRepo;
 
     @BindView(R.id.input_tumblr_blog)
     EditText _tumblrBlogInput;
@@ -45,6 +49,8 @@ public class SetupFragment extends Fragment {
     TextView _blogExtensionText;
     @BindView(R.id.txt_version)
     TextView _versionText;
+    @BindView(R.id.btn_check_cache)
+    TextView _checkCacheButton;
 
     private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
@@ -102,6 +108,14 @@ public class SetupFragment extends Fragment {
         _versionText.setText(getString(R.string.version, BuildConfig.VERSION_NAME));
 
         _okButton.setOnClickListener(this::onOkButtonClick);
+
+        _checkCacheButton.setOnClickListener(this::onCheckCacheButtonClick);
+    }
+
+    private void onCheckCacheButtonClick(View view) {
+        _photoRepo.checkCachedPhotos()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 
     private void onOkButtonClick(View view) {

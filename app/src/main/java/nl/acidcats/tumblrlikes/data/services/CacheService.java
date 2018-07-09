@@ -116,7 +116,7 @@ public class CacheService extends Service {
             }
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 if (_debug) Log.d(TAG, "onResponse: ");
 
                 //noinspection ConstantConditions

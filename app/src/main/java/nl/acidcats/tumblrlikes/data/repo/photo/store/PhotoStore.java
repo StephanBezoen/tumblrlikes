@@ -48,4 +48,6 @@ public interface PhotoStore {
     void setFilterType(FilterType filterType);
 
     FilterType getFilterType();
+
+    List<Photo> getCachedPhotos();
 }
