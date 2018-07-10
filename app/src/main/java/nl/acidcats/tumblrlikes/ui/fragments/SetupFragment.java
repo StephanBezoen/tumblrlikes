@@ -46,7 +46,7 @@ public class SetupFragment extends Fragment {
     @BindView(R.id.input_tumblr_blog)
     EditText _tumblrBlogInput;
     @BindView(R.id.btn_ok)
-    Button _okButton;
+    TextView _okButton;
     @BindView(R.id.blog_ext_txt)
     TextView _blogExtensionText;
     @BindView(R.id.txt_version)
