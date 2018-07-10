@@ -6,12 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -115,7 +117,11 @@ public class SetupFragment extends Fragment {
     private void onCheckCacheButtonClick(View view) {
         _photoRepo.checkCachedPhotos()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(this::onCacheChecked, throwable -> Log.e(TAG, "onCheckCacheButtonClick: " + throwable.getMessage()));
+    }
+
+    private void onCacheChecked(Integer cacheMissCount) {
+        Toast.makeText(getContext(), getString(R.string.cache_miss_count, cacheMissCount), Toast.LENGTH_SHORT).show();
     }
 
     private void onOkButtonClick(View view) {

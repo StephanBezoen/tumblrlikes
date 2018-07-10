@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.di;
 
+import android.content.Context;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import javax.inject.Singleton;
@@ -35,6 +37,12 @@ public class MyModule {
     public MyModule(LikesApplication application, FirebaseAnalytics analytics) {
         _application = application;
         _analytics = analytics;
+    }
+
+    @Provides
+    @Singleton
+    Context providesContext() {
+        return _application;
     }
 
     @Provides

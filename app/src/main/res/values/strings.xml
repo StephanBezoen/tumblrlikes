@@ -54,4 +54,5 @@
     <string name="version">V%s</string>
     <string name="view_count">View count: %d</string>
     <string name="check_cache">Check cache</string>
+    <string name="cache_miss_count">%s cache misses found</string>
 </resources>

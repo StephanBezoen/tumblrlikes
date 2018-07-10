@@ -6,7 +6,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -158,31 +157,39 @@ public class PhotoRepoImpl implements PhotoRepo {
         return _photoStore.getFilterType();
     }
 
-    @Override
-    public Observable<Void> checkCachedPhotos() {
-        Log.d(TAG, "checkCachedPhotos: checking photo cache");
 
+    @Override
+    public Observable<Integer> checkCachedPhotos() {
         return Observable
                 .fromCallable(() -> _photoStore.getCachedPhotos())
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable(photoEntities -> photoEntities)
                 .map(this::checkPhotoCache)
                 .toList()
-                .flatMap(photoEntities -> Observable.just(null));
+                .flatMap(this::countUncached);
     }
 
-    private Void checkPhotoCache(Photo photo) {
+    private Integer checkPhotoCache(Photo photo) {
         String filePath = photo.filePath();
 
-//        Log.d(TAG, "checkPhotoCache: " + filePath);
+        if (filePath != null) {
+            File file = new File(filePath);
+            if (!file.exists()) {
+                _photoStore.setAsUncached(photo.id());
 
-        if (filePath == null) return null;
-
-        File file = new File(filePath);
-        if (!file.exists()) {
-            Log.e(TAG, "checkPhotoCache: cache does not exist: " + filePath);
+                return 1;
+            }
         }
 
-        return null;
+        return 0;
+    }
+
+    private Observable<Integer> countUncached(List<Integer> integers) {
+        int sum = 0;
+        for (Integer integer : integers) {
+            sum += integer;
+        }
+
+        return Observable.just(sum);
     }
 }

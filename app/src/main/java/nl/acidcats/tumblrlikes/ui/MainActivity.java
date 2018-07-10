@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.REFRESH_REQUEST, this::onRefreshRequest);
         _receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST, this::onSettingsRequest);
 
-
         if (_appRepo.isSetupComplete()) {
             if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
                 checkLogin();
