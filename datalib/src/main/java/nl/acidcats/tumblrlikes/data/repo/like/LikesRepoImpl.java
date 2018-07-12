@@ -11,6 +11,7 @@ import nl.acidcats.tumblrlikes.data.constants.PrefKeys;
 import nl.acidcats.tumblrlikes.data.repo.like.store.LikesStore;
 import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrLikeVO;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
+import retrofit2.HttpException;
 import rx.Observable;
 
 /**
@@ -43,7 +44,8 @@ public class LikesRepoImpl implements LikesRepo {
 
                         _lastTime = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).timestamp();
                     }
-                });
+                })
+                .doOnError(throwable -> new LoadLikesException(((HttpException) throwable).code()));
     }
 
     @Override

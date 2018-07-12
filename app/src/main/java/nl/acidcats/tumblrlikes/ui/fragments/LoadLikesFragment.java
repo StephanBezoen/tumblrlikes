@@ -30,10 +30,10 @@ import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
+import nl.acidcats.tumblrlikes.data.repo.like.LoadLikesException;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.data.vo.Photo;
-import retrofit2.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
@@ -125,15 +125,15 @@ public class LoadLikesFragment extends Fragment {
 
         @StringRes int errorStringId = R.string.error_load;
 
-        if (throwable instanceof HttpException) {
-            HttpException exception = (HttpException) throwable;
-            if (exception.code() == 403) {
+        if (throwable instanceof LoadLikesException) {
+            LoadLikesException exception = (LoadLikesException) throwable;
+            if (exception.getCode() == 403) {
                 errorStringId = R.string.error_403;
-            } else if (exception.code() == 404) {
+            } else if (exception.getCode() == 404) {
                 errorStringId = R.string.error_404;
-            } else if (exception.code() >= 300 && exception.code() < 500) {
+            } else if (exception.getCode() >= 300 && exception.getCode() < 500) {
                 errorStringId = R.string.error_300_400;
-            } else if (exception.code() >= 500 && exception.code() < 600) {
+            } else if (exception.getCode() >= 500 && exception.getCode() < 600) {
                 errorStringId = R.string.error_500;
             }
         }

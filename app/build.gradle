@@ -107,7 +107,7 @@ dependencies {
     implementation libs.easyPrefs
 
     // Retrofit
-    implementation libs.retrofit
+    implementation libs.okHttp
 
     //Glide
     implementation libs.glide
