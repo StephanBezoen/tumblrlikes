@@ -1,0 +1,103 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+        maven { url rootProject.ext.Repos.fabric }
+    }
+
+    dependencies {
+        def classpaths = rootProject.ext.ClassPaths
+
+        classpath classpaths.greenDAO
+        classpath classpaths.fabric
+    }
+}
+
+def config = rootProject.ext
+def plugins = config.Plugins
+def libs = config.Libraries
+
+apply plugin: plugins.android_lib
+apply plugin: plugins.greenDAO
+
+apply from: "$rootDir/config/config.gradle", to: config
+
+android {
+    def versions = config.Versions
+    def appConfig = config.AppConfig
+
+    compileSdkVersion versions.compileSdk
+
+    defaultConfig {
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
+
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+
+greendao {
+    schemaVersion 5
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation libs.support_appCompat
+
+    androidTestImplementation(libs.test_espresso, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testImplementation libs.test_junit
+
+    // GreenDAO
+    implementation libs.greenDAO
+
+    // AutoValue
+    api libs.autoValue
+    annotationProcessor libs.autoValue
+
+    // Rx
+    implementation libs.rxAndroid
+
+    // Pixplicity Prefs
+    implementation libs.easyPrefs
+
+    // Retrofit
+    implementation libs.retrofit
+    implementation libs.retrofit_moshiConverter
+    implementation libs.retrofit_rxAdapter
+
+    // OkHttp
+    implementation libs.okHttp
+    implementation libs.okHttp_loggingInterceptor
+
+    // Dagger
+    implementation libs.dagger
+    annotationProcessor libs.annotationProcessorDagger
+
+    // Moshi
+    implementation libs.moshi
+    annotationProcessor libs.moshi_autovalue
+    compileOnly libs.moshi_autovalue_annotations
+}

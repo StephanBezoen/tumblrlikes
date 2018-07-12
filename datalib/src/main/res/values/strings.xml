@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DataLib</string>
+
+    <string name="filter_all">All</string>
+    <string name="filter_favorite">Favorite</string>
+    <string name="filter_popular">Popular</string>
+    <string name="filter_latest">Latest</string>
+    <string name="filter_least_seen">Least Seen</string>
+</resources>

@@ -33,7 +33,7 @@ import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.data.vo.Photo;
-import retrofit2.adapter.rxjava.HttpException;
+import retrofit2.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**

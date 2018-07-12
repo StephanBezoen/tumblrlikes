@@ -2,13 +2,6 @@ buildscript {
 
     repositories {
         mavenCentral()
-        maven { url rootProject.ext.Repos.fabric }
-    }
-
-    dependencies {
-        def classpaths = rootProject.ext.ClassPaths
-
-        classpath classpaths.fabric
     }
 }
 
@@ -18,7 +11,6 @@ def libs = config.Libraries
 def repos = config.Repos
 
 apply plugin: plugins.android_app
-apply plugin: plugins.fabric
 
 apply from: "$rootDir/config/config.gradle", to: config
 
@@ -32,9 +24,9 @@ android {
         minSdkVersion versions.minSdk
         targetSdkVersion versions.compileSdk
 
-        applicationId appConfig.id
-        versionCode appConfig.versionCode
-        versionName appConfig.versionName
+        applicationId "nl.acidcats.tumblrlikes.testmoshi"
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner libs.test_runner
 
@@ -48,20 +40,8 @@ android {
         }
     }
 
-    signingConfigs {
-        release_keystore {
-            storeFile file(config.keystore_file)
-            storePassword config.keystore_password
-            keyAlias config.keystore_key
-            keyPassword config.key_password
-        }
-    }
-
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release_keystore
         }
         debug {
             applicationIdSuffix appConfig.debugSuffix
@@ -73,9 +53,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
 repositories {
-    maven { url repos.fabric }
     mavenCentral()
 }
 
@@ -126,12 +104,10 @@ dependencies {
     // Stetho
     implementation libs.stetho
 
-    // Fabric
-    implementation(libs.fabric) {
-        transitive = true;
-    }
     implementation libs.firebase
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
 
-apply plugin: 'com.google.gms.google-services'
+    // Butterknife
+    implementation libs.butterknife
+    annotationProcessor libs.annotationProcessorButterknife
+}

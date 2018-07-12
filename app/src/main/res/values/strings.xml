@@ -33,12 +33,6 @@
     <string name="pincode_no_match">Pincode doesn\'t match</string>
     <string name="error_load">There was an error loading a file. Please start the app to continue.</string>
 
-    <string name="filter_all">All</string>
-    <string name="filter_favorite">Favorite</string>
-    <string name="filter_popular">Popular</string>
-    <string name="filter_latest">Latest</string>
-    <string name="filter_least_seen">Least Seen</string>
-
     <string name="error_title">Error!</string>
     <string name="error_403">Access to the blog has been denied</string>
     <string name="error_404">Blog could not be found</string>
