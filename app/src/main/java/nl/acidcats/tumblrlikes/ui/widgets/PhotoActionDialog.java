@@ -142,7 +142,7 @@ public class PhotoActionDialog extends FrameLayout {
         _photoHiddenListener = listener;
     }
 
-    public void onDestroy() {
+    public void onDestroyView() {
         _favoriteButton.setOnClickListener(null);
         _likeButton.setOnClickListener(null);
         _unlikeButton.setOnClickListener(null);

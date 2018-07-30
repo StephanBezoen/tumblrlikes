@@ -2,14 +2,13 @@ package nl.acidcats.tumblrlikes.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,12 +16,10 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
+import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 
@@ -30,7 +27,7 @@ import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
  * Created by stephan on 13/04/2017.
  */
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
     private static final String TAG = LoginFragment.class.getSimpleName();
 
     private static final String KEY_MODE = "key_mode";
@@ -54,7 +51,6 @@ public class LoginFragment extends Fragment {
     @BindView(R.id.tv_pincode_no_match)
     TextView _pincodeNoMatchText;
 
-    private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
     private Mode _mode;
     private String _tempPincodeHash;
@@ -70,6 +66,11 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
+    protected void injectFrom(AppComponent appComponent) {
+        appComponent.inject(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -80,24 +81,21 @@ public class LoginFragment extends Fragment {
         } else if (args != null && args.containsKey(KEY_MODE)) {
             _mode = Mode.values()[args.getInt(KEY_MODE)];
         }
-
-        ((LikesApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        _unbinder = ButterKnife.bind(this, view);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_login, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         InputFilter filter = new InputFilter.LengthFilter(PINCODE_LENGTH);
         _passwordInput.setFilters(new InputFilter[]{filter});
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         _textWatcher = new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -129,7 +127,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void onSkipButtonClick(View view) {
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
+        sendBroadcast(Broadcasts.PASSWORD_OK);
     }
 
     private void onTextChanged(String pincode) {
@@ -138,7 +136,7 @@ public class LoginFragment extends Fragment {
         switch (_mode) {
             case LOGIN:
                 if (_appRepo.isPincodeCorrect(pincode)) {
-                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
+                    sendBroadcast(Broadcasts.PASSWORD_OK);
                 }
                 break;
             case NEW_PINCODE:
@@ -158,7 +156,7 @@ public class LoginFragment extends Fragment {
                     if (newPincodeHash.equals(_tempPincodeHash)) {
                         _appRepo.setPincode(pincode);
 
-                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.PASSWORD_OK));
+                        sendBroadcast(Broadcasts.PASSWORD_OK);
                     } else {
                         _passwordInput.setText("");
 
@@ -175,27 +173,23 @@ public class LoginFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Window window = getActivity().getWindow();
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        if (getActivity() != null) {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(KEY_MODE, _mode.ordinal());
 
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         _passwordInput.removeTextChangedListener(_textWatcher);
         _skipButton.setOnClickListener(null);
 
-        if (_unbinder != null) {
-            _unbinder.unbind();
-            _unbinder = null;
-        }
-
-        super.onDestroy();
+        super.onDestroyView();
     }
 }

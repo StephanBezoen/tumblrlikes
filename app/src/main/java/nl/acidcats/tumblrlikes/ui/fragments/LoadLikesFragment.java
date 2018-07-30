@@ -1,14 +1,12 @@
 package nl.acidcats.tumblrlikes.ui.fragments;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,9 +22,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
@@ -34,13 +29,14 @@ import nl.acidcats.tumblrlikes.data.repo.like.LoadLikesException;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.data.vo.Photo;
+import nl.acidcats.tumblrlikes.di.AppComponent;
 import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by stephan on 13/04/2017.
  */
 
-public class LoadLikesFragment extends Fragment {
+public class LoadLikesFragment extends BaseFragment {
     private static final String TAG = LoadLikesFragment.class.getSimpleName();
 
     @Inject
@@ -60,33 +56,31 @@ public class LoadLikesFragment extends Fragment {
     Button _cancelButton;
 
     private int _pageCount;
-    private Unbinder _unbinder;
     private boolean _isLoadingCancelled;
 
     public static LoadLikesFragment newInstance() {
         return new LoadLikesFragment();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        ((LikesApplication) getActivity().getApplication()).getAppComponent().inject(this);
-    }
-
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_loadlikes, container, false);
-        _unbinder = ButterKnife.bind(this, view);
-
-        _spinner.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
-
-        return view;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_loadlikes, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    protected void injectFrom(AppComponent appComponent) {
+        appComponent.inject(this);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getContext() != null) {
+            _spinner.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
+        }
+
         _cancelButton.setOnClickListener(v -> cancelLoading());
 
         _photoRepo
@@ -138,18 +132,20 @@ public class LoadLikesFragment extends Fragment {
             }
         }
 
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.error_title)
-                .setMessage(errorStringId)
-                .setPositiveButton(R.string.btn_retry, (dialog, which) -> loadLikesPage())
-                .setNeutralButton(R.string.btn_settings, (dialog, which) -> onSettings())
-                .setNegativeButton(R.string.btn_cancel, (dialog, which) -> onComplete())
-                .create()
-                .show();
+        if (getContext() != null) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.error_title)
+                    .setMessage(errorStringId)
+                    .setPositiveButton(R.string.btn_retry, (dialog, which) -> loadLikesPage())
+                    .setNeutralButton(R.string.btn_settings, (dialog, which) -> onSettings())
+                    .setNegativeButton(R.string.btn_cancel, (dialog, which) -> onComplete())
+                    .create()
+                    .show();
+        }
     }
 
     private void onSettings() {
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.SETTINGS_REQUEST));
+        sendBroadcast(Broadcasts.SETTINGS_REQUEST);
     }
 
     private void handleLikesPageLoaded(List<Photo> photos) {
@@ -176,16 +172,6 @@ public class LoadLikesFragment extends Fragment {
     }
 
     private void onComplete() {
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.ALL_LIKES_LOADED));
-    }
-
-    @Override
-    public void onDestroy() {
-        if (_unbinder != null) {
-            _unbinder.unbind();
-            _unbinder = null;
-        }
-
-        super.onDestroy();
+        sendBroadcast(Broadcasts.ALL_LIKES_LOADED);
     }
 }

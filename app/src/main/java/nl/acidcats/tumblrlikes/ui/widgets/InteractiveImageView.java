@@ -234,4 +234,8 @@ public class InteractiveImageView extends AppCompatImageView {
             _gestureListener.onGesture(gesture);
         }
     }
+
+    public void onDestroyView() {
+        _gestureListener = null;
+    }
 }

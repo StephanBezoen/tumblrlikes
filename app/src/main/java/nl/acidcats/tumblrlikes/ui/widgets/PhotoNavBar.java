@@ -102,11 +102,15 @@ public class PhotoNavBar extends FrameLayout {
     }
 
     private void onRefreshButtonClick(View view) {
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.REFRESH_REQUEST));
+        sendBroadcast(Broadcasts.REFRESH_REQUEST);
     }
 
     private void onSettingsButtonClick(View view) {
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.SETTINGS_REQUEST));
+        sendBroadcast(Broadcasts.SETTINGS_REQUEST);
+    }
+
+    private void sendBroadcast(String action) {
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(action));
     }
 
     private void onFilterButtonClick(View view) {

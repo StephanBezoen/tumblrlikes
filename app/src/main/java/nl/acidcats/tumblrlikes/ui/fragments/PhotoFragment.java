@@ -2,26 +2,23 @@ package nl.acidcats.tumblrlikes.ui.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
-//import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.FilterType;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.vo.Photo;
+import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoNavBar;
@@ -31,8 +28,7 @@ import nl.acidcats.tumblrlikes.util.GlideApp;
  * Created by stephan on 13/04/2017.
  */
 
-public class PhotoFragment extends Fragment {
-    private static final String TAG = PhotoFragment.class.getSimpleName();
+public class PhotoFragment extends BaseFragment {
 
     private static final String KEY_PHOTO_URL = "key_photoUrl";
     private static final String KEY_PHOTO_ID = "key_photoId";
@@ -52,8 +48,7 @@ public class PhotoFragment extends Fragment {
     private String _photoUrl;
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
-    private Unbinder _unbinder;
-    private boolean _isTest = true;
+    private boolean _isTest = false;
     private Long _photoId;
 
     public static PhotoFragment newInstance() {
@@ -61,22 +56,29 @@ public class PhotoFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        ((LikesApplication) getActivity().getApplication()).getAppComponent().inject(this);
+    protected void injectFrom(AppComponent appComponent) {
+        appComponent.inject(this);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_photo, container, false);
-        _unbinder = ButterKnife.bind(this, view);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
             _photoUrl = savedInstanceState.getString(KEY_PHOTO_URL);
             _photoId = savedInstanceState.getLong(KEY_PHOTO_ID);
         }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_photo, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         _photoView.setGestureListener(this::onGesture);
 
@@ -90,7 +92,7 @@ public class PhotoFragment extends Fragment {
         _photoNavBar.setFilterType(_photoRepo.getFilterType());
         _photoNavBar.setFilterOptionSelectionListener(this::setFilterType);
 
-        return view;
+        showPhoto();
     }
 
     private void onPhotoHidden() {
@@ -143,11 +145,6 @@ public class PhotoFragment extends Fragment {
         );
 
         _photoNavBar.hide();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        showPhoto();
     }
 
     private void showPhoto() {
@@ -218,7 +215,7 @@ public class PhotoFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         if (_photoUrl != null) {
@@ -230,11 +227,10 @@ public class PhotoFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        _photoActionDialog.onDestroy();
+    public void onDestroyView() {
+        _photoActionDialog.onDestroyView();
+        _photoView.onDestroyView();
 
-        _unbinder.unbind();
-
-        super.onDestroy();
+        super.onDestroyView();
     }
 }

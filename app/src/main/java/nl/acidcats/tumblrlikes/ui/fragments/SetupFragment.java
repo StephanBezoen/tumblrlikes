@@ -1,10 +1,8 @@
 package nl.acidcats.tumblrlikes.ui.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,14 +15,12 @@ import android.widget.Toast;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.BuildConfig;
-import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
 import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
+import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -32,7 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by stephan on 29/04/2017.
  */
 
-public class SetupFragment extends Fragment {
+public class SetupFragment extends BaseFragment {
     private static final String TAG = SetupFragment.class.getSimpleName();
 
     private static final String BLOG_EXT = ".tumblr.com";
@@ -53,7 +49,6 @@ public class SetupFragment extends Fragment {
     @BindView(R.id.btn_check_cache)
     TextView _checkCacheButton;
 
-    private Unbinder _unbinder;
     private TextWatcherAdapter _textWatcher;
 
     public static SetupFragment newInstance() {
@@ -61,23 +56,20 @@ public class SetupFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        ((LikesApplication) getActivity().getApplication()).getAppComponent().inject(this);
+    protected void injectFrom(AppComponent appComponent) {
+        appComponent.inject(this);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_setup, container, false);
-        _unbinder = ButterKnife.bind(this, view);
-
-        return view;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_setup, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         _textWatcher = new TextWatcherAdapter() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -120,13 +112,13 @@ public class SetupFragment extends Fragment {
     }
 
     private void onCacheChecked(Integer cacheMissCount) {
-        Toast.makeText(getContext(), getString(R.string.cache_miss_count, cacheMissCount), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.cache_miss_count, cacheMissCount.toString()), Toast.LENGTH_SHORT).show();
     }
 
     private void onOkButtonClick(View view) {
         _appRepo.setTumblrBlog(_tumblrBlogInput.getText().toString() + BLOG_EXT);
 
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(Broadcasts.SETUP_COMPLETE));
+        sendBroadcast(Broadcasts.SETUP_COMPLETE);
     }
 
     private void onTextChanged(String blog) {
@@ -134,11 +126,9 @@ public class SetupFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         _tumblrBlogInput.removeTextChangedListener(_textWatcher);
 
-        _unbinder.unbind();
-
-        super.onDestroy();
+        super.onDestroyView();
     }
 }
