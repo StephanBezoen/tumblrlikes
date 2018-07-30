@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -8,8 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 
 import javax.inject.Inject;
 
@@ -50,6 +55,7 @@ public class PhotoFragment extends BaseFragment {
     private Runnable _uiHider = this::hideUI;
     private boolean _isTest = false;
     private Long _photoId;
+    private String _photoFallbackUrl;
 
     public static PhotoFragment newInstance() {
         return new PhotoFragment();
@@ -158,13 +164,30 @@ public class PhotoFragment extends BaseFragment {
 
         _photoView.resetScale();
 
+        loadPhoto(url, new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                loadPhoto(_photoFallbackUrl, null);
+
+                return true;
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                return false;
+            }
+        });
+
+        _photoRepo.startPhotoView(_photoId);
+    }
+
+    private void loadPhoto(String url, @Nullable RequestListener<Drawable> listener) {
         GlideApp.with(getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
+                .listener(listener)
                 .into(new DrawableImageViewTarget(_photoView));
-
-        _photoRepo.startPhotoView(_photoId);
     }
 
     private void getNextPhoto() {
@@ -177,7 +200,9 @@ public class PhotoFragment extends BaseFragment {
 
         _photoId = photo.id();
 
+        // todo remove _photoUrl completely, store Photo instance instead
         _photoUrl = photo.isCached() ? photo.filePath() : photo.url();
+        _photoFallbackUrl = photo.url();
     }
 
     private void showNextPhoto() {
