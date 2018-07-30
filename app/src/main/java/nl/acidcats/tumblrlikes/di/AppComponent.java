@@ -16,8 +16,8 @@ import nl.acidcats.tumblrlikes.ui.fragments.SetupFragment;
  */
 
 @Singleton
-@Component(modules = MyModule.class)
-public interface MyComponent {
+@Component(modules = {AppModule.class, DataModule.class})
+public interface AppComponent {
     void inject(MainActivity activity);
 
     void inject(LoginFragment fragment);

@@ -71,7 +71,7 @@ public class LoadLikesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((LikesApplication) getActivity().getApplication()).getMyComponent().inject(this);
+        ((LikesApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Nullable

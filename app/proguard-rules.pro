@@ -40,6 +40,8 @@
 -dontwarn retrofit.**
 -dontwarn retrofit2.Platform$Java8
 
+-dontwarn com.google.auto.value.processor.**
+
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
 public static java.lang.String TABLENAME;
 }

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 //import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
@@ -65,7 +64,7 @@ public class PhotoFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((LikesApplication) getActivity().getApplication()).getMyComponent().inject(this);
+        ((LikesApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Nullable

@@ -81,7 +81,7 @@ public class LoginFragment extends Fragment {
             _mode = Mode.values()[args.getInt(KEY_MODE)];
         }
 
-        ((LikesApplication) getActivity().getApplication()).getMyComponent().inject(this);
+        ((LikesApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Nullable

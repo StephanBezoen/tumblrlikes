@@ -2,13 +2,10 @@ package nl.acidcats.tumblrlikes.di;
 
 import android.content.Context;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
 import nl.acidcats.tumblrlikes.data.repo.app.AppRepoImpl;
 import nl.acidcats.tumblrlikes.data.repo.app.store.AppStore;
@@ -20,35 +17,24 @@ import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
 import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepoImpl;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
 import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStoreImpl;
-import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCaseImpl;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelperImpl;
 
 /**
- * Created by stephan on 28/03/2017.
+ * Created on 30/07/2018.
  */
-
 @Module
-public class MyModule {
-    private LikesApplication _application;
-    private FirebaseAnalytics _analytics;
+public class DataModule {
+    private Context _context;
 
-    public MyModule(LikesApplication application, FirebaseAnalytics analytics) {
-        _application = application;
-        _analytics = analytics;
-    }
-
-    @Provides
-    @Singleton
-    Context providesContext() {
-        return _application;
+    public DataModule(Context context) {
+        _context = context;
     }
 
     @Provides
     @Singleton
     LikesRepo provideLikesRepos() {
-        return new LikesRepoImpl(new NetLikesStore(_application));
+        return new LikesRepoImpl(new NetLikesStore(_context));
     }
 
     @Provides
@@ -58,14 +44,9 @@ public class MyModule {
     }
 
     @Provides
-    GetLikesPageUseCase provideLikesPageUseCase(GetLikesPageUseCaseImpl impl) {
-        return impl;
-    }
-
-    @Provides
     @Singleton
     PhotoStore providePhotoStore() {
-        return new PhotoStoreImpl(_application);
+        return new PhotoStoreImpl(_context);
     }
 
     @Provides
@@ -86,8 +67,4 @@ public class MyModule {
         return impl;
     }
 
-    @Provides
-    FirebaseAnalytics provideAnalytics() {
-        return _analytics;
-    }
 }

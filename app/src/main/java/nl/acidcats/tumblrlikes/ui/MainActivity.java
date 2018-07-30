@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        ((LikesApplication) getApplication()).getMyComponent().inject(this);
+        ((LikesApplication) getApplication()).getAppComponent().inject(this);
 
         _receiver = new BroadcastReceiver(this);
         _receiver.addActionHandler(Broadcasts.PASSWORD_OK, this::onPasswordOk);

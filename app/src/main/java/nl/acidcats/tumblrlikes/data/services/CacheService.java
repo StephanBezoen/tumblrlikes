@@ -64,7 +64,7 @@ public class CacheService extends Service {
 
         _client = new OkHttpClient();
 
-        ((LikesApplication) getApplication()).getMyComponent().inject(this);
+        ((LikesApplication) getApplication()).getAppComponent().inject(this);
     }
 
     @Override

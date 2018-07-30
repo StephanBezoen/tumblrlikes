@@ -84,9 +84,6 @@ dependencies {
     // Pixplicity Prefs
     implementation libs.easyPrefs
 
-    // Retrofit
-    implementation libs.retrofit
-
     //Glide
     implementation libs.glide
     annotationProcessor libs.annotationProcessorGlide

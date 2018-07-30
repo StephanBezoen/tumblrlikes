@@ -74,7 +74,7 @@ dependencies {
     implementation libs.greenDAO
 
     // AutoValue
-    api libs.autoValue
+    implementation libs.autoValue
     annotationProcessor libs.autoValue
 
     // Rx
@@ -99,5 +99,5 @@ dependencies {
     // Moshi
     implementation libs.moshi
     annotationProcessor libs.moshi_autovalue
-    compileOnly libs.moshi_autovalue_annotations
+    implementation libs.moshi_autovalue_annotations
 }

@@ -8,9 +8,10 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import io.fabric.sdk.android.Fabric;
-import nl.acidcats.tumblrlikes.di.DaggerMyComponent;
-import nl.acidcats.tumblrlikes.di.MyComponent;
-import nl.acidcats.tumblrlikes.di.MyModule;
+import nl.acidcats.tumblrlikes.di.AppComponent;
+import nl.acidcats.tumblrlikes.di.AppModule;
+import nl.acidcats.tumblrlikes.di.DaggerAppComponent;
+import nl.acidcats.tumblrlikes.di.DataModule;
 
 /**
  * Created by stephan on 28/03/2017.
@@ -19,7 +20,7 @@ import nl.acidcats.tumblrlikes.di.MyModule;
 public class LikesApplication extends Application {
     private static final String TAG = LikesApplication.class.getSimpleName();
 
-    private MyComponent _myComponent;
+    private AppComponent _appComponent;
     private boolean _isFreshRun = true;
 
     @Override
@@ -35,14 +36,15 @@ public class LikesApplication extends Application {
 
         FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(this);
 
-        _myComponent = DaggerMyComponent.builder()
-                .myModule(new MyModule(this, analytics))
+        _appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this, analytics))
+                .dataModule(new DataModule(this))
                 .build();
 
     }
 
-    public MyComponent getMyComponent() {
-        return _myComponent;
+    public AppComponent getAppComponent() {
+        return _appComponent;
     }
 
     public boolean isFreshRun() {
