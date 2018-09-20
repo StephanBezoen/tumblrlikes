@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,6 +50,8 @@ public class SetupFragment extends BaseFragment {
     TextView _versionText;
     @BindView(R.id.btn_check_cache)
     TextView _checkCacheButton;
+    @BindView(R.id.btn_privacy_policy)
+    TextView _privacyPolicyButton;
 
     private TextWatcherAdapter _textWatcher;
 
@@ -103,6 +107,12 @@ public class SetupFragment extends BaseFragment {
         _okButton.setOnClickListener(this::onOkButtonClick);
 
         _checkCacheButton.setOnClickListener(this::onCheckCacheButtonClick);
+
+        _privacyPolicyButton.setOnClickListener(this::onPrivacyPolicyButtonClick);
+    }
+
+    private void onPrivacyPolicyButtonClick(View view) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.PRIVACY_URL)));
     }
 
     private void onCheckCacheButtonClick(View view) {

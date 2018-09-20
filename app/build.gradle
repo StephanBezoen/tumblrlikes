@@ -41,6 +41,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
+        buildConfigField "String", "PRIVACY_URL", "\"" + config.privacy_url + "\""
         if (config.has('blog')) {
             buildConfigField "String", "BLOG", "\"" + config.blog + "\""
         } else {

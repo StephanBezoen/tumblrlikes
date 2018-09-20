@@ -22,11 +22,24 @@
         />
 
     <TextView
+        android:id="@+id/introduction_text"
         android:text="@string/introduction"
         android:textColor="@color/body_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/title"
+        />
+
+    <TextView
+        android:id="@+id/btn_privacy_policy"
+        android:text="@string/privacy_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/introduction_text"
+        android:layout_marginTop="16dp"
         />
 
     <TextView
@@ -101,8 +114,8 @@
         android:id="@+id/btn_check_cache"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorAccent"
         android:text="@string/check_cache"
+        android:textColor="@color/colorAccent"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/btn_ok"

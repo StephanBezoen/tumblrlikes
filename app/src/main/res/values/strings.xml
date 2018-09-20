@@ -49,4 +49,5 @@
     <string name="view_count">View count: %d</string>
     <string name="check_cache">Check cache</string>
     <string name="cache_miss_count">%s cache misses found</string>
+    <string name="privacy_policy">Privacy Policy</string>
 </resources>
