@@ -1,1 +1,1 @@
-include ':app', ':testmoshi', ':datalib'
+include ':app', ':datalib'
