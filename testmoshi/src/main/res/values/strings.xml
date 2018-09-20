@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">testmoshi</string>
-    <string name="btn_start_loading">Start loading</string>
-    <string name="loading">Loading&#8230;</string>
-    <string name="done">Done</string>
-</resources>
