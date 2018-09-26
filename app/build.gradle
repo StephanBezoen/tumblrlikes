@@ -121,9 +121,6 @@ dependencies {
     // AutoValue
     annotationProcessor libs.autoValue
 
-    // AutoValue Gson
-    annotationProcessor libs.autoValue_gson
-
     // Stetho
     implementation libs.stetho
 
@@ -131,7 +128,9 @@ dependencies {
     implementation(libs.fabric) {
         transitive = true;
     }
+
     implementation libs.firebase
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
