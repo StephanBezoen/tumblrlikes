@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
+import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
@@ -45,6 +46,8 @@ public class LoadLikesFragment extends BaseFragment {
     PhotoDataRepository _photoRepo;
     @Inject
     GetLikesPageUseCase _likesPageUseCase;
+    @Inject
+    AppDataRepository _appDataRepository;
 
     @BindView(R.id.tv_image_count)
     TextView _imageCountText;
@@ -158,13 +161,13 @@ public class LoadLikesFragment extends BaseFragment {
         if (_isLoadingCancelled) {
             onComplete();
         } else {
-            if (_likesRepo.hasMoreLikes()) {
+            if (_likesRepo.hasMoreLikes(_appDataRepository.getMostRecentCheckTime())) {
                 loadLikesPage(_likesRepo.getLastLikeTime());
             } else {
                 _imageCountText.setText(getString(R.string.total_image_count, count));
                 _loadingText.setText(R.string.all_loaded);
 
-                _likesRepo.setCheckComplete();
+                _appDataRepository.setCheckComplete();
 
                 new Handler().postDelayed(this::onComplete, 500);
             }

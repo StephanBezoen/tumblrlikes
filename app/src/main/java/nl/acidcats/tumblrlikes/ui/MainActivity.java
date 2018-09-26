@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data_impl.appdata.PrefKeys;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     LikesDataRepository _likesRepo;
     @Inject
-    AppDataRepository _appRepo;
+    AppDataRepository _appDataRepository;
     @Inject
     FirebaseAnalytics _analytics;
 
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.REFRESH_REQUEST, this::onRefreshRequest);
         _receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST, this::onSettingsRequest);
 
-        if (_appRepo.isSetupComplete()) {
+        if (_appDataRepository.isSetupComplete()) {
             if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
                 checkLogin();
             }
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkLogin() {
-        if (_appRepo.hasPincode()) {
+        if (_appDataRepository.hasPincode()) {
             showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
         } else {
             enterApp();
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private void onSetupComplete(String action, Intent intent) {
         _isShowingSetup = false;
 
-        if (_appRepo.hasPincode()) {
+        if (_appDataRepository.hasPincode()) {
             enterApp();
         } else {
             showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onDatabaseReset(String action, Intent intent) {
-        _likesRepo.reset();
+        _appDataRepository.resetCheckTime();
     }
 
     private void onAllLikesLoaded(String action, Intent intent) {
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void enterApp() {
-        showFragment(_likesRepo.isTimeToCheck()
+        showFragment(_appDataRepository.isTimeToCheck()
                 ? LoadLikesFragment.newInstance()
                 : PhotoFragment.newInstance());
     }
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
-        long timeDiff = System.currentTimeMillis() - Prefs.getLong(PrefKeys.KEY_APP_STOP_TIME, 0L);
+        long timeDiff = System.currentTimeMillis() - _appDataRepository.getAppStopTime();
         _isStoppedTooLong = (timeDiff > MAX_STOP_TIME_MS);
     }
 
@@ -168,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        Prefs.putLong(PrefKeys.KEY_APP_STOP_TIME, System.currentTimeMillis());
+        _appDataRepository.setAppStopTime(System.currentTimeMillis());
     }
 
     @Override

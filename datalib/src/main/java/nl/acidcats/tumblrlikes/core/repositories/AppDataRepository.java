@@ -24,4 +24,16 @@ public interface AppDataRepository {
     boolean hasPincode();
 
     boolean isPincodeCorrect(@NonNull String pinCode);
+
+    void setCheckComplete();
+
+    long getMostRecentCheckTime();
+
+    boolean isTimeToCheck();
+
+    void resetCheckTime();
+
+    long getAppStopTime();
+
+    void setAppStopTime(long appStopTime);
 }

@@ -12,15 +12,7 @@ import rx.Observable;
 public interface LikesDataRepository {
     Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime);
 
-    boolean hasMoreLikes();
+    boolean hasMoreLikes(long mostRecentCheckTime);
 
     long getLastLikeTime();
-
-    void setCheckComplete();
-
-    long getMostRecentCheckTime();
-
-    boolean isTimeToCheck();
-
-    void reset();
 }

@@ -23,4 +23,12 @@ public interface AppDataGateway {
 
     @Nullable
     String getPincodeHash();
+
+    long getAppStopTime();
+
+    void setAppStopTime(long appStopTime);
+
+    void setLatestCheckTimestamp(long latestCheckTimestamp);
+
+    long getLatestCheckTimestamp();
 }

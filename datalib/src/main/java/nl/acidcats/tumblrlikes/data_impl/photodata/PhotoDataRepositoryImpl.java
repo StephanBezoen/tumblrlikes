@@ -25,52 +25,51 @@ import rx.schedulers.Schedulers;
 public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     private static final String TAG = PhotoDataRepositoryImpl.class.getSimpleName();
 
-    @Inject
-    PhotoDataGateway _photoStore;
-
+    private PhotoDataGateway _photoDataGateway;
     private long _startViewTime;
     private long _currentPhotoId;
     private final boolean _debug = BuildConfig.DEBUG;
 
     @Inject
-    public PhotoDataRepositoryImpl() {
+    public PhotoDataRepositoryImpl(PhotoDataGateway photoDataGateway) {
+        _photoDataGateway = photoDataGateway;
     }
 
     @Override
     public boolean hasPhoto(long postId) {
-        return _photoStore.hasPhoto(postId);
+        return _photoDataGateway.hasPhoto(postId);
     }
 
     @Override
     public List<Photo> storePhotos(List<Photo> photos) {
-        _photoStore.storePhotos(photos);
+        _photoDataGateway.storePhotos(photos);
 
         return photos;
     }
 
     @Override
     public long getPhotoCount() {
-        return _photoStore.getPhotoCount();
+        return _photoDataGateway.getPhotoCount();
     }
 
     @Override
     public Photo getNextPhoto() {
-        return _photoStore.getNextPhoto();
+        return _photoDataGateway.getNextPhoto();
     }
 
     @Override
     public boolean hasUncachedPhotos() {
-        return _photoStore.hasUncachedPhotos();
+        return _photoDataGateway.hasUncachedPhotos();
     }
 
     @Override
     public Photo getNextUncachedPhoto() {
-        return _photoStore.getNextUncachedPhoto();
+        return _photoDataGateway.getNextUncachedPhoto();
     }
 
     @Override
     public void markAsCached(long id, String path) {
-        _photoStore.setAsCached(id, path);
+        _photoDataGateway.setAsCached(id, path);
     }
 
     private Void uncachePhoto(Photo photo) {
@@ -86,7 +85,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
             if (file.delete()) {
                 if (_debug) Log.d(TAG, "uncachePhoto: file deleted");
 
-                _photoStore.setAsUncached(photo.id());
+                _photoDataGateway.setAsUncached(photo.id());
             }
         }
 
@@ -96,7 +95,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     @Override
     public Observable<Void> removeCachedHiddenPhotos() {
         return Observable
-                .just(_photoStore.getCachedHiddenPhotos())
+                .just(_photoDataGateway.getCachedHiddenPhotos())
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable(photoEntities -> photoEntities)
                 .map(this::uncachePhoto)
@@ -115,29 +114,29 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     public void endPhotoView(long id) {
         if (id == 0 || id != _currentPhotoId) return;
 
-        _photoStore.addViewTime(id, SystemClock.elapsedRealtime() - _startViewTime);
+        _photoDataGateway.addViewTime(id, SystemClock.elapsedRealtime() - _startViewTime);
     }
 
     @Override
     public void likePhoto(long id) {
-        _photoStore.likePhoto(id);
+        _photoDataGateway.likePhoto(id);
     }
 
     @Override
     public void unlikePhoto(long id) {
-        _photoStore.unlikePhoto(id);
+        _photoDataGateway.unlikePhoto(id);
     }
 
     @Override
     public void setPhotoFavorite(long id, boolean isFavorite) {
-        _photoStore.setPhotoFavorite(id, isFavorite);
+        _photoDataGateway.setPhotoFavorite(id, isFavorite);
     }
 
     @Override
     public void setPhotoHidden(long id) {
-        _photoStore.setPhotoHidden(id);
+        _photoDataGateway.setPhotoHidden(id);
 
-        Photo photo = _photoStore.getPhotoById(id);
+        Photo photo = _photoDataGateway.getPhotoById(id);
         if (photo != null) {
             uncachePhoto(photo);
         }
@@ -146,24 +145,24 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     @Override
     @Nullable
     public Photo getPhotoById(long id) {
-        return _photoStore.getPhotoById(id);
+        return _photoDataGateway.getPhotoById(id);
     }
 
     @Override
     public void setFilterType(FilterType filterType) {
-        _photoStore.setFilterType(filterType);
+        _photoDataGateway.setFilterType(filterType);
     }
 
     @Override
     public FilterType getFilterType() {
-        return _photoStore.getFilterType();
+        return _photoDataGateway.getFilterType();
     }
 
 
     @Override
     public Observable<Integer> checkCachedPhotos() {
         return Observable
-                .fromCallable(() -> _photoStore.getCachedPhotos())
+                .fromCallable(() -> _photoDataGateway.getCachedPhotos())
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable(photoEntities -> photoEntities)
                 .map(this::checkPhotoCache)
@@ -209,7 +208,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
                 ids.add(allIds.get(idIndex));
             }
 
-            _photoStore.setAsUncached(ids);
+            _photoDataGateway.setAsUncached(ids);
         }
 
 
