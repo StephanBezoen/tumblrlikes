@@ -27,7 +27,7 @@ import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
-import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import rx.android.schedulers.AndroidSchedulers;

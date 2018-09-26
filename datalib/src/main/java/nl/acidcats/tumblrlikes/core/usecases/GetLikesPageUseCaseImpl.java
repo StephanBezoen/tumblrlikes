@@ -1,15 +1,15 @@
-package nl.acidcats.tumblrlikes.data.usecase;
+package nl.acidcats.tumblrlikes.core.usecases;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.util.PhotoUtil;
-import nl.acidcats.tumblrlikes.core.models.Photo;
-import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -20,27 +20,29 @@ import rx.android.schedulers.AndroidSchedulers;
 public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     private static final String TAG = GetLikesPageUseCaseImpl.class.getSimpleName();
 
-    @Inject
-    LikesDataRepository _likesRepo;
-    @Inject
-    PhotoDataRepository _photoRepo;
-    @Inject
-    AppDataRepository _appRepo;
+    private LikesDataRepository _likesDataRepository;
+    private PhotoDataRepository _photoDataRepository;
+    private AppDataRepository _appDataRepository;
 
     @Inject
-    public GetLikesPageUseCaseImpl() {
+    public GetLikesPageUseCaseImpl(LikesDataRepository likesDataRepository,
+                                   PhotoDataRepository photoDataRepository,
+                                   AppDataRepository appDataRepository) {
+        _likesDataRepository = likesDataRepository;
+        _photoDataRepository = photoDataRepository;
+        _appDataRepository = appDataRepository;
     }
 
     @Override
     public Observable<List<Photo>> getPageOfLikesBefore(long timestamp) {
-        return _likesRepo.getLikes(_appRepo.getTumblrBlog(), 20, timestamp)
+        return _likesDataRepository.getLikes(_appDataRepository.getTumblrBlog(), 20, timestamp)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapIterable(tumblrLikeVOs -> tumblrLikeVOs)
                 .filter(TumblrLikeVO::isPhoto)
-                .filter(tumblrLikeVO -> !_photoRepo.hasPhoto(tumblrLikeVO.id()))
+                .filter(tumblrLikeVO -> !_photoDataRepository.hasPhoto(tumblrLikeVO.id()))
                 .map(PhotoUtil::toPhotos)
                 .flatMapIterable(photos -> photos)
                 .toList()
-                .map(_photoRepo::storePhotos);
+                .map(_photoDataRepository::storePhotos);
     }
 }

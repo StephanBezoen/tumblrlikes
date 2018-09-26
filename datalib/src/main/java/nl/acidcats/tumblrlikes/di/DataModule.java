@@ -16,7 +16,7 @@ import nl.acidcats.tumblrlikes.data_impl.likesdata.NetLikesDataGateway;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.data_impl.photodata.PhotoDataRepositoryImpl;
 import nl.acidcats.tumblrlikes.core.repositories.gateways.PhotoDataGateway;
-import nl.acidcats.tumblrlikes.data_impl.photodata.PhotoDataGatewayImpl;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.GreenDAOPhotoDataGatewayImpl;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelperImpl;
 
@@ -46,7 +46,7 @@ public class DataModule {
     @Provides
     @Singleton
     PhotoDataGateway providePhotoDataGateway() {
-        return new PhotoDataGatewayImpl(_context);
+        return new GreenDAOPhotoDataGatewayImpl(_context);
     }
 
     @Provides

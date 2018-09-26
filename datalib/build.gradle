@@ -58,6 +58,7 @@ android {
 
 greendao {
     schemaVersion 5
+    daoPackage 'nl.acidcats.tumblrlikes.db_impl_greendao'
 }
 
 dependencies {

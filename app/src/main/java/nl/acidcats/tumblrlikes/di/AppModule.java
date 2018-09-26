@@ -9,8 +9,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import nl.acidcats.tumblrlikes.LikesApplication;
-import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.GetLikesPageUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.GetLikesPageUseCaseImpl;
 
 /**
  * Created by stephan on 28/03/2017.

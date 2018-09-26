@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.data_impl.photodata;
+package nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -15,25 +15,25 @@ import java.util.Map;
 
 import nl.acidcats.tumblrlikes.core.repositories.gateways.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
-import nl.acidcats.tumblrlikes.data_impl.photodata.dbentity.PhotoEntity;
-import nl.acidcats.tumblrlikes.data_impl.photodata.dbentity.DaoMaster;
-import nl.acidcats.tumblrlikes.data_impl.photodata.dbentity.PhotoEntityDao;
-import nl.acidcats.tumblrlikes.data_impl.photodata.filters.FavoriteFilterOptionImpl;
-import nl.acidcats.tumblrlikes.data_impl.photodata.filters.FilterOption;
-import nl.acidcats.tumblrlikes.data_impl.photodata.filters.LatestFilterOptionImpl;
-import nl.acidcats.tumblrlikes.data_impl.photodata.filters.LeastSeenFilterOptionImpl;
-import nl.acidcats.tumblrlikes.data_impl.photodata.filters.PopularFilterOptionImpl;
-import nl.acidcats.tumblrlikes.data_impl.photodata.filters.UnhiddenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.entities.PhotoEntity;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.filters.FavoriteFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.filters.FilterOption;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.filters.LatestFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.filters.LeastSeenFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.filters.PopularFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.filters.UnhiddenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
-import nl.acidcats.tumblrlikes.util.database.DbOpenHelper;
+import nl.acidcats.tumblrlikes.db_impl_greendao.DaoMaster;
+import nl.acidcats.tumblrlikes.db_impl_greendao.PhotoEntityDao;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.database.DbOpenHelper;
 
 /**
  * Created by stephan on 11/04/2017.
  */
 
-public class PhotoDataGatewayImpl implements PhotoDataGateway {
-    private static final String TAG = PhotoDataGatewayImpl.class.getSimpleName();
+public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
+    private static final String TAG = GreenDAOPhotoDataGatewayImpl.class.getSimpleName();
 
     private static final String DATABASE_NAME = "photos.db";
 
@@ -48,7 +48,7 @@ public class PhotoDataGatewayImpl implements PhotoDataGateway {
     private int _runningIndex;
     private List<PhotoEntity> _currentPhotoList;
 
-    public PhotoDataGatewayImpl(Context context) {
+    public GreenDAOPhotoDataGatewayImpl(Context context) {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
         _photoEntityDao = new DaoMaster(helper.getWritableDatabase()).newSession().getPhotoEntityDao();
 

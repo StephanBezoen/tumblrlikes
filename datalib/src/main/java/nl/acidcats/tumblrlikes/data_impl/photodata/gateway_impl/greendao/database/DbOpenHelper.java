@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.util.database;
+package nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data_impl.photodata.dbentity.DaoMaster;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
-import nl.acidcats.tumblrlikes.util.database.migration.Migration;
-import nl.acidcats.tumblrlikes.util.database.migration.MigrationV5;
+import nl.acidcats.tumblrlikes.db_impl_greendao.DaoMaster;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.database.migration.Migration;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.database.migration.MigrationV5;
 
 /**
  * Created by stephan on 18/04/2017.

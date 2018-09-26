@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.data_impl.photodata.filters;
+package nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.filters;
 
 import android.support.annotation.Nullable;
 
@@ -7,8 +7,8 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data_impl.photodata.dbentity.PhotoEntity;
-import nl.acidcats.tumblrlikes.data_impl.photodata.dbentity.PhotoEntityDao;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.entities.PhotoEntity;
+import nl.acidcats.tumblrlikes.db_impl_greendao.PhotoEntityDao;
 
 /**
  * Created by stephan on 17/05/2017.

@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.util.database.migration;
+package nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.database.migration;
 
 import org.greenrobot.greendao.database.Database;
 
