@@ -1,7 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.widgets.filterdropdown;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.constants.FilterType;
+import nl.acidcats.tumblrlikes.core.constants.FilterType;
 
 /**
  * Created by stephan on 18/05/2017.

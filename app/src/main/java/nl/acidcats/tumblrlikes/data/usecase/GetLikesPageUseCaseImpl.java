@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
-import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
-import nl.acidcats.tumblrlikes.data.util.PhotoUtil;
-import nl.acidcats.tumblrlikes.data.vo.Photo;
-import nl.acidcats.tumblrlikes.data.vo.tumblr.TumblrLikeVO;
+import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
+import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.util.PhotoUtil;
+import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -21,11 +21,11 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     private static final String TAG = GetLikesPageUseCaseImpl.class.getSimpleName();
 
     @Inject
-    LikesRepo _likesRepo;
+    LikesDataRepository _likesRepo;
     @Inject
-    PhotoRepo _photoRepo;
+    PhotoDataRepository _photoRepo;
     @Inject
-    AppRepo _appRepo;
+    AppDataRepository _appRepo;
 
     @Inject
     public GetLikesPageUseCaseImpl() {

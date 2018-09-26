@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.repo.photo.store.entity.DaoMaster;
+import nl.acidcats.tumblrlikes.data_impl.photodata.dbentity.DaoMaster;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import nl.acidcats.tumblrlikes.util.database.migration.Migration;
 import nl.acidcats.tumblrlikes.util.database.migration.MigrationV5;

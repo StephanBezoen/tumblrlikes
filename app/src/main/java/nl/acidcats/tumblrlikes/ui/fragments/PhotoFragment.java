@@ -20,9 +20,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.constants.FilterType;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
-import nl.acidcats.tumblrlikes.data.vo.Photo;
+import nl.acidcats.tumblrlikes.core.constants.FilterType;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
@@ -41,7 +41,7 @@ public class PhotoFragment extends BaseFragment {
     private static final long HIDE_UI_DELAY_MS = 2000L;
 
     @Inject
-    PhotoRepo _photoRepo;
+    PhotoDataRepository _photoRepo;
 
     @BindView(R.id.photo)
     InteractiveImageView _photoView;
@@ -53,7 +53,7 @@ public class PhotoFragment extends BaseFragment {
     private String _photoUrl;
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
-    private boolean _isTest = false;
+    private boolean _isTest = true;
     private Long _photoId;
     private String _photoFallbackUrl;
 

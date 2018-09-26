@@ -23,12 +23,12 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
-import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
-import nl.acidcats.tumblrlikes.data.repo.like.LoadLikesException;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
+import nl.acidcats.tumblrlikes.ui.Broadcasts;
+import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.data.usecase.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.data.vo.Photo;
+import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -40,9 +40,9 @@ public class LoadLikesFragment extends BaseFragment {
     private static final String TAG = LoadLikesFragment.class.getSimpleName();
 
     @Inject
-    LikesRepo _likesRepo;
+    LikesDataRepository _likesRepo;
     @Inject
-    PhotoRepo _photoRepo;
+    PhotoDataRepository _photoRepo;
     @Inject
     GetLikesPageUseCase _likesPageUseCase;
 

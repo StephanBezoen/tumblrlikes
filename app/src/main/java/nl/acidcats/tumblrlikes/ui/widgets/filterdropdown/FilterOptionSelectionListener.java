@@ -1,6 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.widgets.filterdropdown;
 
-import nl.acidcats.tumblrlikes.data.constants.FilterType;
+import nl.acidcats.tumblrlikes.core.constants.FilterType;
 
 /**
  * Created by stephan on 18/05/2017.

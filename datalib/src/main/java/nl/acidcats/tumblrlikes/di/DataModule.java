@@ -6,17 +6,17 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
-import nl.acidcats.tumblrlikes.data.repo.app.AppRepoImpl;
-import nl.acidcats.tumblrlikes.data.repo.app.store.AppStore;
-import nl.acidcats.tumblrlikes.data.repo.app.store.AppStoreImpl;
-import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
-import nl.acidcats.tumblrlikes.data.repo.like.LikesRepoImpl;
-import nl.acidcats.tumblrlikes.data.repo.like.store.NetLikesStore;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepoImpl;
-import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStore;
-import nl.acidcats.tumblrlikes.data.repo.photo.store.PhotoStoreImpl;
+import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
+import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataRepositoryImpl;
+import nl.acidcats.tumblrlikes.core.repositories.gateways.AppDataGateway;
+import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataGatewayImpl;
+import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.LikesDataRepositoryImpl;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.NetLikesDataGateway;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.data_impl.photodata.PhotoDataRepositoryImpl;
+import nl.acidcats.tumblrlikes.core.repositories.gateways.PhotoDataGateway;
+import nl.acidcats.tumblrlikes.data_impl.photodata.PhotoDataGatewayImpl;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelperImpl;
 
@@ -33,8 +33,8 @@ public class DataModule {
 
     @Provides
     @Singleton
-    LikesRepo provideLikesRepos() {
-        return new LikesRepoImpl(new NetLikesStore(_context));
+    LikesDataRepository provideLikesDataRepository() {
+        return new LikesDataRepositoryImpl(new NetLikesDataGateway(_context));
     }
 
     @Provides
@@ -45,25 +45,25 @@ public class DataModule {
 
     @Provides
     @Singleton
-    PhotoStore providePhotoStore() {
-        return new PhotoStoreImpl(_context);
+    PhotoDataGateway providePhotoDataGateway() {
+        return new PhotoDataGatewayImpl(_context);
     }
 
     @Provides
     @Singleton
-    PhotoRepo providePhotoRepo(PhotoRepoImpl impl) {
+    PhotoDataRepository providePhotoDataRepository(PhotoDataRepositoryImpl impl) {
         return impl;
     }
 
     @Provides
     @Singleton
-    AppStore provideAppStore() {
-        return new AppStoreImpl();
+    AppDataGateway provideAppDataGateway() {
+        return new AppDataGatewayImpl();
     }
 
     @Provides
     @Singleton
-    AppRepo provideAppRepo(AppRepoImpl impl) {
+    AppDataRepository provideAppDataRepository(AppDataRepositoryImpl impl) {
         return impl;
     }
 

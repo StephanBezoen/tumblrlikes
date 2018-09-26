@@ -3,13 +3,12 @@ package nl.acidcats.tumblrlikes.ui.widgets.filterdropdown;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.constants.FilterType;
+import nl.acidcats.tumblrlikes.core.constants.FilterType;
 
 /**
  * Created by stephan on 18/05/2017.

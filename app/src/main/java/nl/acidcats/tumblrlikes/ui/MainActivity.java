@@ -14,10 +14,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
-import nl.acidcats.tumblrlikes.data.constants.PrefKeys;
-import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
-import nl.acidcats.tumblrlikes.data.repo.like.LikesRepo;
+import nl.acidcats.tumblrlikes.data_impl.appdata.PrefKeys;
+import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
+import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
@@ -31,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private static final long MAX_STOP_TIME_MS = 1000L;
 
     @Inject
-    LikesRepo _likesRepo;
+    LikesDataRepository _likesRepo;
     @Inject
-    AppRepo _appRepo;
+    AppDataRepository _appRepo;
     @Inject
     FirebaseAnalytics _analytics;
 

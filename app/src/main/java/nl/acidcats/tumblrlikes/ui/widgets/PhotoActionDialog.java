@@ -14,8 +14,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
-import nl.acidcats.tumblrlikes.data.vo.Photo;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.models.Photo;
 
 /**
  * Created by stephan on 28/04/2017.
@@ -38,7 +38,7 @@ public class PhotoActionDialog extends FrameLayout {
     TextView _viewCountText;
 
     private Unbinder _unbinder;
-    private PhotoRepo _photoRepo;
+    private PhotoDataRepository _photoRepo;
     private Photo _photo;
     private PhotoHiddenListener _photoHiddenListener;
 
@@ -60,7 +60,7 @@ public class PhotoActionDialog extends FrameLayout {
         init();
     }
 
-    public void setPhotoRepo(PhotoRepo photoRepo) {
+    public void setPhotoRepo(PhotoDataRepository photoRepo) {
         _photoRepo = photoRepo;
     }
 

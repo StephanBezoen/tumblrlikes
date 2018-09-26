@@ -19,9 +19,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
-import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
+import nl.acidcats.tumblrlikes.ui.Broadcasts;
+import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,9 +36,9 @@ public class SetupFragment extends BaseFragment {
     private static final String BLOG_EXT = ".tumblr.com";
 
     @Inject
-    AppRepo _appRepo;
+    AppDataRepository _appRepo;
     @Inject
-    PhotoRepo _photoRepo;
+    PhotoDataRepository _photoRepo;
 
     @BindView(R.id.input_tumblr_blog)
     EditText _tumblrBlogInput;

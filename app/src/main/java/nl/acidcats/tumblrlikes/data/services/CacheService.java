@@ -21,8 +21,9 @@ import javax.inject.Inject;
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.repo.photo.PhotoRepo;
-import nl.acidcats.tumblrlikes.data.vo.Photo;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.util.ServiceBinder;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -41,7 +42,7 @@ public class CacheService extends Service {
     private static final String TAG = CacheService.class.getSimpleName();
 
     @Inject
-    PhotoRepo _photoRepo;
+    PhotoDataRepository _photoRepo;
     @Inject
     SecurityHelper _securityHelper;
 

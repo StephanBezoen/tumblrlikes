@@ -1,10 +1,8 @@
 package nl.acidcats.tumblrlikes.ui.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.data.constants.Broadcasts;
-import nl.acidcats.tumblrlikes.data.repo.app.AppRepo;
+import nl.acidcats.tumblrlikes.ui.Broadcasts;
+import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
@@ -40,7 +38,7 @@ public class LoginFragment extends BaseFragment {
     @Inject
     SecurityHelper _securityHelper;
     @Inject
-    AppRepo _appRepo;
+    AppDataRepository _appRepo;
 
     @BindView(R.id.input_password)
     EditText _passwordInput;

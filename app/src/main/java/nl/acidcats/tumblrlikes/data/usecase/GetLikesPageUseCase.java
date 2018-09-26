@@ -2,7 +2,7 @@ package nl.acidcats.tumblrlikes.data.usecase;
 
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.data.vo.Photo;
+import nl.acidcats.tumblrlikes.core.models.Photo;
 import rx.Observable;
 
 /**
