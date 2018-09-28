@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.gateways.LikesDataGateway;
 import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
@@ -20,28 +21,36 @@ public class LikesDataRepositoryImpl implements LikesDataRepository {
 
     private final LikesDataGateway _likesDataGateway;
     private final boolean _debug = BuildConfig.DEBUG;
+    private final TumblrLikeTransformer _transformer;
     private boolean _hasMore;
     private long _timeOfLastLike;
 
     @Inject
     public LikesDataRepositoryImpl(LikesDataGateway likesDataGateway) {
         _likesDataGateway = likesDataGateway;
+
+        _transformer = new TumblrLikeTransformer();
     }
 
     @Override
-    public Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime) {
+    public Observable<List<Photo>> getLikedPhotos(String blogName, int count, long beforeTime) {
         return _likesDataGateway
                 .getLikes(blogName, count, beforeTime)
-                .doOnNext(tumblrLikeVOs -> {
-                    if (tumblrLikeVOs.size() == 0) {
-                        _hasMore = false;
-                    } else {
-                        _hasMore = true;
+                .doOnNext(this::checkHasMore)
+                .doOnError(throwable -> new LoadLikesException(((HttpException) throwable).code()))
+                .flatMapIterable(tumblrLikeVOs -> tumblrLikeVOs)
+                .filter(TumblrLikeVO::isPhoto)
+                .map(_transformer::transformToPhotos);
+    }
 
-                        _timeOfLastLike = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).timestamp();
-                    }
-                })
-                .doOnError(throwable -> new LoadLikesException(((HttpException) throwable).code()));
+    private void checkHasMore(List<TumblrLikeVO> tumblrLikeVOs) {
+        if (tumblrLikeVOs.size() == 0) {
+            _hasMore = false;
+        } else {
+            _hasMore = true;
+
+            _timeOfLastLike = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).timestamp();
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package nl.acidcats.tumblrlikes.core.repositories;
 
 import java.util.List;
 
+import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
 import rx.Observable;
 
@@ -10,7 +11,7 @@ import rx.Observable;
  */
 
 public interface LikesDataRepository {
-    Observable<List<TumblrLikeVO>> getLikes(String blogName, int count, long beforeTime);
+    Observable<List<Photo>> getLikedPhotos(String blogName, int count, long beforeTime);
 
     boolean hasMoreLikes(long mostRecentCheckTime);
 

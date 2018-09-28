@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.util;
+package nl.acidcats.tumblrlikes.data_impl.likesdata;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,8 +13,8 @@ import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrPhotoVO;
  * Created by stephan on 11/04/2017.
  */
 
-public class PhotoUtil {
-    public static List<Photo> toPhotos(TumblrLikeVO likeVO) {
+public class TumblrLikeTransformer {
+    public List<Photo> transformToPhotos(TumblrLikeVO likeVO) {
         List<TumblrPhotoPostVO> postVOs = likeVO.photos();
         if (postVOs == null || postVOs.size() == 0) return null;
 

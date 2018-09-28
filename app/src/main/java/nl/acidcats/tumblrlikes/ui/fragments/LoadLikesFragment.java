@@ -41,13 +41,13 @@ public class LoadLikesFragment extends BaseFragment {
     private static final String TAG = LoadLikesFragment.class.getSimpleName();
 
     @Inject
-    LikesDataRepository _likesRepo;
+    LikesDataRepository _likesDataRepository;
     @Inject
-    PhotoDataRepository _photoRepo;
-    @Inject
-    GetLikesPageUseCase _likesPageUseCase;
+    PhotoDataRepository _photoDataRepository;
     @Inject
     AppDataRepository _appDataRepository;
+    @Inject
+    GetLikesPageUseCase _likesPageUseCase;
 
     @BindView(R.id.tv_image_count)
     TextView _imageCountText;
@@ -86,7 +86,7 @@ public class LoadLikesFragment extends BaseFragment {
 
         _cancelButton.setOnClickListener(v -> cancelLoading());
 
-        _photoRepo
+        _photoDataRepository
                 .removeCachedHiddenPhotos()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -154,15 +154,15 @@ public class LoadLikesFragment extends BaseFragment {
     private void handleLikesPageLoaded(List<Photo> photos) {
         _pageCount++;
 
-        long count = _photoRepo.getPhotoCount();
+        long count = _photoDataRepository.getPhotoCount();
 
         _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
 
         if (_isLoadingCancelled) {
             onComplete();
         } else {
-            if (_likesRepo.hasMoreLikes(_appDataRepository.getMostRecentCheckTime())) {
-                loadLikesPage(_likesRepo.getLastLikeTime());
+            if (_likesDataRepository.hasMoreLikes(_appDataRepository.getMostRecentCheckTime())) {
+                loadLikesPage(_likesDataRepository.getLastLikeTime());
             } else {
                 _imageCountText.setText(getString(R.string.total_image_count, count));
                 _loadingText.setText(R.string.all_loaded);

@@ -5,11 +5,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.core.models.Photo;
-import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
-import nl.acidcats.tumblrlikes.util.PhotoUtil;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -35,13 +33,10 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
 
     @Override
     public Observable<List<Photo>> getPageOfLikesBefore(long timestamp) {
-        return _likesDataRepository.getLikes(_appDataRepository.getTumblrBlog(), 20, timestamp)
+        return _likesDataRepository.getLikedPhotos(_appDataRepository.getTumblrBlog(), 20, timestamp)
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMapIterable(tumblrLikeVOs -> tumblrLikeVOs)
-                .filter(TumblrLikeVO::isPhoto)
-                .filter(tumblrLikeVO -> !_photoDataRepository.hasPhoto(tumblrLikeVO.id()))
-                .map(PhotoUtil::toPhotos)
                 .flatMapIterable(photos -> photos)
+                .filter(photo -> !_photoDataRepository.hasPhoto(photo.tumblrId()))
                 .toList()
                 .map(_photoDataRepository::storePhotos);
     }
