@@ -9,8 +9,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import nl.acidcats.tumblrlikes.LikesApplication;
-import nl.acidcats.tumblrlikes.core.usecases.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.core.usecases.GetLikesPageUseCaseImpl;
 
 /**
  * Created by stephan on 28/03/2017.
@@ -24,11 +22,6 @@ public class AppModule {
     public AppModule(LikesApplication application, FirebaseAnalytics analytics) {
         _application = application;
         _analytics = analytics;
-    }
-
-    @Provides
-    GetLikesPageUseCase provideLikesPageUseCase(GetLikesPageUseCaseImpl impl) {
-        return impl;
     }
 
     @Provides

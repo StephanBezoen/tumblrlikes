@@ -14,6 +14,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.di.AppComponent;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created on 30/07/2018.
@@ -21,6 +23,7 @@ import nl.acidcats.tumblrlikes.di.AppComponent;
 public abstract class BaseFragment extends Fragment {
 
     private Unbinder _unbinder;
+    private CompositeSubscription _unsubscriber = new CompositeSubscription();
 
     @Override
     public void onAttach(Context context) {
@@ -50,6 +53,12 @@ public abstract class BaseFragment extends Fragment {
     public void onDestroyView() {
         _unbinder.unbind();
 
+        _unsubscriber.unsubscribe();
+
         super.onDestroyView();
+    }
+
+    protected void registerSubscription(Subscription subscription) {
+        _unsubscriber.add(subscription);
     }
 }

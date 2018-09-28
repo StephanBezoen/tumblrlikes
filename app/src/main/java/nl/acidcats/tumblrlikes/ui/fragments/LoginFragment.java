@@ -15,9 +15,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.ui.Broadcasts;
-import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
+import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 
@@ -38,7 +38,7 @@ public class LoginFragment extends BaseFragment {
     @Inject
     SecurityHelper _securityHelper;
     @Inject
-    AppDataRepository _appRepo;
+    PincodeUseCase _pincodeUseCase;
 
     @BindView(R.id.input_password)
     EditText _passwordInput;
@@ -133,9 +133,13 @@ public class LoginFragment extends BaseFragment {
 
         switch (_mode) {
             case LOGIN:
-                if (_appRepo.isPincodeCorrect(pincode)) {
-                    sendBroadcast(Broadcasts.PASSWORD_OK);
-                }
+                registerSubscription(
+                        _pincodeUseCase.checkPincode(pincode).subscribe(
+                                isCorrect -> {
+                                    if (isCorrect) {
+                                        sendBroadcast(Broadcasts.PASSWORD_OK);
+                                    }
+                                }));
                 break;
             case NEW_PINCODE:
                 if (pincode.length() == PINCODE_LENGTH) {
@@ -152,9 +156,12 @@ public class LoginFragment extends BaseFragment {
                 if (pincode.length() == PINCODE_LENGTH) {
                     String newPincodeHash = _securityHelper.getHash(pincode);
                     if (newPincodeHash.equals(_tempPincodeHash)) {
-                        _appRepo.setPincode(pincode);
-
-                        sendBroadcast(Broadcasts.PASSWORD_OK);
+                        registerSubscription(_pincodeUseCase.storePincode(pincode).subscribe(
+                                isStored -> {
+                                    if (isStored) {
+                                        sendBroadcast(Broadcasts.PASSWORD_OK);
+                                    }
+                                }));
                     } else {
                         _passwordInput.setText("");
 

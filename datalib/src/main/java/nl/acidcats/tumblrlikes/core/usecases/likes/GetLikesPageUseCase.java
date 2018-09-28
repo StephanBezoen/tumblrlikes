@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.core.usecases;
+package nl.acidcats.tumblrlikes.core.usecases.likes;
 
 import java.util.List;
 

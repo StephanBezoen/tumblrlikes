@@ -7,15 +7,19 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
-import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataRepositoryImpl;
-import nl.acidcats.tumblrlikes.core.repositories.gateways.AppDataGateway;
-import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataGatewayImpl;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.repositories.gateways.AppDataGateway;
+import nl.acidcats.tumblrlikes.core.repositories.gateways.PhotoDataGateway;
+import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCaseImpl;
+import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataGatewayImpl;
+import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataRepositoryImpl;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LikesDataRepositoryImpl;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.NetLikesDataGateway;
-import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.data_impl.photodata.PhotoDataRepositoryImpl;
-import nl.acidcats.tumblrlikes.core.repositories.gateways.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway_impl.greendao.GreenDAOPhotoDataGatewayImpl;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelperImpl;
@@ -67,4 +71,13 @@ public class DataModule {
         return impl;
     }
 
+    @Provides
+    GetLikesPageUseCase provideLikesPageUseCase(GetLikesPageUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    PincodeUseCase provideCheckPincodeUseCase(PincodeUseCaseImpl impl) {
+        return impl;
+    }
 }
