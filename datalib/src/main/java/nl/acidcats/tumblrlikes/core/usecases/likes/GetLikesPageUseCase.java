@@ -2,6 +2,7 @@ package nl.acidcats.tumblrlikes.core.usecases.likes;
 
 import java.util.List;
 
+import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode;
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import rx.Observable;
 
@@ -10,5 +11,7 @@ import rx.Observable;
  */
 
 public interface GetLikesPageUseCase {
-    Observable<List<Photo>> getPageOfLikesBefore(long timestamp);
+    Observable<List<Photo>> loadLikesPage(LoadLikesMode mode);
+
+    Observable<Boolean> checkLoadLikesComplete();
 }

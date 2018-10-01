@@ -9,6 +9,8 @@ import dagger.Provides;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoCacheUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoCacheUseCaseImpl;
 import nl.acidcats.tumblrlikes.data_impl.appdata.gateway.AppDataGateway;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
@@ -78,6 +80,11 @@ public class DataModule {
 
     @Provides
     PincodeUseCase provideCheckPincodeUseCase(PincodeUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    PhotoCacheUseCase providePhotoCacheUseCase(PhotoCacheUseCaseImpl impl) {
         return impl;
     }
 }

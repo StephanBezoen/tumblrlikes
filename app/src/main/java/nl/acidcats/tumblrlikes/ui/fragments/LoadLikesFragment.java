@@ -16,22 +16,20 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
-import nl.acidcats.tumblrlikes.ui.Broadcasts;
-import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
-import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
+import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode;
+import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoCacheUseCase;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
 import nl.acidcats.tumblrlikes.di.AppComponent;
-import rx.android.schedulers.AndroidSchedulers;
+import nl.acidcats.tumblrlikes.ui.Broadcasts;
 
 /**
  * Created by stephan on 13/04/2017.
@@ -41,13 +39,11 @@ public class LoadLikesFragment extends BaseFragment {
     private static final String TAG = LoadLikesFragment.class.getSimpleName();
 
     @Inject
-    LikesDataRepository _likesDataRepository;
-    @Inject
     PhotoDataRepository _photoDataRepository;
     @Inject
-    AppDataRepository _appDataRepository;
-    @Inject
     GetLikesPageUseCase _likesPageUseCase;
+    @Inject
+    PhotoCacheUseCase _photoCacheUseCase;
 
     @BindView(R.id.tv_image_count)
     TextView _imageCountText;
@@ -86,15 +82,14 @@ public class LoadLikesFragment extends BaseFragment {
 
         _cancelButton.setOnClickListener(v -> cancelLoading());
 
-        _photoDataRepository
+        _photoCacheUseCase
                 .removeCachedHiddenPhotos()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        uncachedCount -> loadLikesPage(),
+                        uncachedCount -> startLoadingLikesPages(),
                         throwable -> {
                             Log.e(TAG, "onViewCreated: removeCachedHiddenPhotos: " + throwable.getMessage());
 
-                            loadLikesPage();
+                            startLoadingLikesPages();
                         }
                 );
     }
@@ -107,13 +102,13 @@ public class LoadLikesFragment extends BaseFragment {
         _cancelButton.setEnabled(false);
     }
 
-    private void loadLikesPage() {
-        loadLikesPage(new Date().getTime());
+    private void startLoadingLikesPages() {
+        loadLikesPage(LoadLikesMode.FRESH);
     }
 
-    private void loadLikesPage(long time) {
+    private void loadLikesPage(LoadLikesMode mode) {
         _likesPageUseCase
-                .getPageOfLikesBefore(time)
+                .loadLikesPage(mode)
                 .subscribe(this::handleLikesPageLoaded, this::handleError);
     }
 
@@ -139,9 +134,9 @@ public class LoadLikesFragment extends BaseFragment {
             new AlertDialog.Builder(getContext())
                     .setTitle(R.string.error_title)
                     .setMessage(errorStringId)
-                    .setPositiveButton(R.string.btn_retry, (dialog, which) -> loadLikesPage())
+                    .setPositiveButton(R.string.btn_retry, (dialog, which) -> startLoadingLikesPages())
                     .setNeutralButton(R.string.btn_settings, (dialog, which) -> onSettings())
-                    .setNegativeButton(R.string.btn_cancel, (dialog, which) -> onComplete())
+                    .setNegativeButton(R.string.btn_cancel, (dialog, which) -> notifyLoadingComplete())
                     .create()
                     .show();
         }
@@ -156,25 +151,31 @@ public class LoadLikesFragment extends BaseFragment {
 
         long count = _photoDataRepository.getPhotoCount();
 
-        _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
-
         if (_isLoadingCancelled) {
-            onComplete();
+            notifyLoadingComplete();
         } else {
-            if (_likesDataRepository.hasMoreLikes(_appDataRepository.getMostRecentCheckTime())) {
-                loadLikesPage(_likesDataRepository.getLastLikeTime());
-            } else {
-                _imageCountText.setText(getString(R.string.total_image_count, count));
-                _loadingText.setText(R.string.all_loaded);
+            _likesPageUseCase
+                    .checkLoadLikesComplete()
+                    .subscribe(isComplete -> {
+                        if (isComplete) {
+                            onAllLikesLoaded(count);
+                        } else {
+                            _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
 
-                _appDataRepository.setCheckComplete();
-
-                new Handler().postDelayed(this::onComplete, 500);
-            }
+                            loadLikesPage(LoadLikesMode.CONTINUED);
+                        }
+                    }, throwable -> Log.e(TAG, "handleLikesPageLoaded: " + throwable.getMessage()));
         }
     }
 
-    private void onComplete() {
+    private void onAllLikesLoaded(long count) {
+        _imageCountText.setText(getString(R.string.total_image_count, count));
+        _loadingText.setText(R.string.all_loaded);
+
+        new Handler().postDelayed(this::notifyLoadingComplete, 500);
+    }
+
+    private void notifyLoadingComplete() {
         sendBroadcast(Broadcasts.ALL_LIKES_LOADED);
     }
 }
