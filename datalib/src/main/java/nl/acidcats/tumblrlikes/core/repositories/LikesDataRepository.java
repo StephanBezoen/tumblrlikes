@@ -3,7 +3,6 @@ package nl.acidcats.tumblrlikes.core.repositories;
 import java.util.List;
 
 import nl.acidcats.tumblrlikes.core.models.Photo;
-import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
 import rx.Observable;
 
 /**

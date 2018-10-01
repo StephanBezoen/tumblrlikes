@@ -9,7 +9,7 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
-import nl.acidcats.tumblrlikes.core.repositories.gateways.AppDataGateway;
+import nl.acidcats.tumblrlikes.data_impl.appdata.gateway.AppDataGateway;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 

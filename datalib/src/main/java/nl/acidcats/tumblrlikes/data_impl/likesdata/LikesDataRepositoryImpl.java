@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
-import nl.acidcats.tumblrlikes.core.repositories.gateways.LikesDataGateway;
-import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.gateway.LikesDataGateway;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikeVO;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import retrofit2.HttpException;
 import rx.Observable;

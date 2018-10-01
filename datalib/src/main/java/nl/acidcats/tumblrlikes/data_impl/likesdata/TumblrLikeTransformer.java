@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import nl.acidcats.tumblrlikes.core.models.Photo;
-import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrLikeVO;
-import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrPhotoPostVO;
-import nl.acidcats.tumblrlikes.core.models.tumblr.TumblrPhotoVO;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikeVO;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrPhotoPostVO;
+import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrPhotoVO;
 
 /**
  * Created by stephan on 11/04/2017.

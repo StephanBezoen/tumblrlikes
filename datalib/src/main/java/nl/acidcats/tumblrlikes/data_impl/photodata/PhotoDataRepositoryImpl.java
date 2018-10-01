@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
-import nl.acidcats.tumblrlikes.core.repositories.gateways.PhotoDataGateway;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import rx.Observable;
