@@ -21,35 +21,31 @@ public interface PhotoDataGateway {
     @Nullable
     Photo getNextPhoto();
 
-    boolean hasUncachedPhotos();
-
-    @Nullable
-    Photo getNextUncachedPhoto();
-
-    void setAsCached(long id, String filePath);
-
-    void setAsUncached(long id);
-
-    void setAsUncached(List<Long> ids);
-
-    void addViewTime(long id, long timeInMs);
-
     @Nullable
     Photo getPhotoById(long id);
 
-    void likePhoto(long id);
-
-    void unlikePhoto(long id);
+    void setPhotoLiked(long id, boolean isLiked);
 
     void setPhotoFavorite(long id, boolean isFavorite);
 
     void setPhotoHidden(long id);
 
-    List<Photo> getCachedHiddenPhotos();
+    void setPhotoCached(long id, boolean isCached, @Nullable String filepath);
+
+    void setPhotosCached(List<Long> ids, boolean isCached);
+
+    void addPhotoViewTime(long id, long timeInMs);
 
     void setFilterType(FilterType filterType);
 
     FilterType getFilterType();
 
     List<Photo> getCachedPhotos();
+
+    List<Photo> getCachedHiddenPhotos();
+
+    boolean hasUncachedPhotos();
+
+    @Nullable
+    Photo getUncachedPhoto();
 }

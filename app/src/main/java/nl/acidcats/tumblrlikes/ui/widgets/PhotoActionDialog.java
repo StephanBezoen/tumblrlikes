@@ -79,7 +79,7 @@ public class PhotoActionDialog extends FrameLayout {
     }
 
     private void onHideButtonClick(View view) {
-        _photoRepo.setPhotoHidden(_photo.id());
+        _photoRepo.hidePhoto(_photo.id());
 
         hide();
 
@@ -89,13 +89,13 @@ public class PhotoActionDialog extends FrameLayout {
     }
 
     private void onUnlikeButtonClick(View view) {
-        _photoRepo.unlikePhoto(_photo.id());
+        _photoRepo.setPhotoLiked(_photo.id(), false);
 
         hide();
     }
 
     private void onLikeButtonClick(View view) {
-        _photoRepo.likePhoto(_photo.id());
+        _photoRepo.setPhotoLiked(_photo.id(), true);
 
         hide();
     }

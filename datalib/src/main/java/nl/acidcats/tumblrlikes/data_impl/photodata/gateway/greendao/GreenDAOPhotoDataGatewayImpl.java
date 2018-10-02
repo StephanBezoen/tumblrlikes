@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
 import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.DbOpenHelper;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.entities.PhotoEntity;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.filters.FavoriteFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.filters.FilterOption;
@@ -26,7 +27,6 @@ import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.filters.Unhi
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import nl.acidcats.tumblrlikes.db_impl_greendao.DaoMaster;
 import nl.acidcats.tumblrlikes.db_impl_greendao.PhotoEntityDao;
-import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.DbOpenHelper;
 
 /**
  * Created by stephan on 11/04/2017.
@@ -176,12 +176,12 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
 
     @Override
     public boolean hasUncachedPhotos() {
-        return getNextUncachedPhoto() != null;
+        return getUncachedPhoto() != null;
     }
 
     @Override
     @Nullable
-    public Photo getNextUncachedPhoto() {
+    public Photo getUncachedPhoto() {
         PhotoEntity photoEntity = _uncachedQuery.forCurrentThread().unique();
         return photoEntity == null ? null : toPhoto(photoEntity);
     }
@@ -191,31 +191,21 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     }
 
     @Override
-    public void setAsCached(long id, String filePath) {
+    public void setPhotoCached(long id, boolean isCached, @Nullable String filepath) {
         PhotoEntity photoEntity = getPhotoEntityById(id);
         if (photoEntity == null) return;
 
-        photoEntity.setIsCached(true);
-        photoEntity.setFilePath(filePath);
+        photoEntity.setIsCached(isCached);
+        photoEntity.setFilePath(filepath);
 
         storePhoto(photoEntity);
     }
 
     @Override
-    public void setAsUncached(long id) {
-        PhotoEntity photoEntity = getPhotoEntityById(id);
-        if (photoEntity == null) return;
-
-        photoEntity.setIsCached(false);
-
-        storePhoto(photoEntity);
-    }
-
-    @Override
-    public void setAsUncached(List<Long> ids) {
+    public void setPhotosCached(List<Long> ids, boolean isCached) {
         List<PhotoEntity> photoEntities = createQueryBuilder().where(PhotoEntityDao.Properties.Id.in(ids)).list();
         for (PhotoEntity photoEntity : photoEntities) {
-            photoEntity.setIsCached(false);
+            photoEntity.setIsCached(isCached);
         }
 
         _photoEntityDao.saveInTx(photoEntities);
@@ -224,7 +214,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     }
 
     @Override
-    public void addViewTime(long id, long timeInMs) {
+    public void addPhotoViewTime(long id, long timeInMs) {
         PhotoEntity photoEntity = getPhotoEntityById(id);
         if (photoEntity == null) return;
 
@@ -246,30 +236,15 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     }
 
     @Override
-    public void likePhoto(long id) {
+    public void setPhotoLiked(long id, boolean isLiked) {
         PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
-        if (photo.getLikeCount() < 0) {
-            photo.setLikeCount(0);
-        } else {
-            photo.setLikeCount(1);
-        }
+        int currentLikeCount = photo.getLikeCount();
+        int newLikeCount = isLiked ? 1 : 0;
+        if (currentLikeCount == newLikeCount) return;
 
-        storePhoto(photo);
-    }
-
-    @Override
-    public void unlikePhoto(long id) {
-        PhotoEntity photo = getPhotoEntityById(id);
-        if (photo == null) return;
-
-        if (photo.getLikeCount() > 0) {
-            photo.setLikeCount(0);
-        } else {
-            photo.setLikeCount(-1);
-        }
-
+        photo.setLikeCount(newLikeCount);
         storePhoto(photo);
     }
 
@@ -281,10 +256,10 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
         photo.setIsFavorite(isFavorite);
 
         if (isFavorite) {
-            likePhoto(id);
-        } else {
-            storePhoto(photo);
+            photo.setLikeCount(1);
         }
+
+        storePhoto(photo);
     }
 
     @Override

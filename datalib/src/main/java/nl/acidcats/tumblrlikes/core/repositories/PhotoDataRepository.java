@@ -21,25 +21,15 @@ public interface PhotoDataRepository {
 
     Photo getNextPhoto();
 
-    boolean hasUncachedPhotos();
-
-    Photo getNextUncachedPhoto();
-
-    void markAsCached(long id, String path);
-
-    Observable<Void> removeCachedHiddenPhotos();
-
     void startPhotoView(long id);
 
     void endPhotoView(long id);
 
-    void likePhoto(long id);
-
-    void unlikePhoto(long id);
+    void setPhotoLiked(long id, boolean isLiked);
 
     void setPhotoFavorite(long id, boolean isFavorite);
 
-    void setPhotoHidden(long id);
+    void hidePhoto(long id);
 
     @Nullable
     Photo getPhotoById(long id);
@@ -49,4 +39,12 @@ public interface PhotoDataRepository {
     FilterType getFilterType();
 
     Observable<Integer> checkCachedPhotos();
+
+    boolean hasUncachedPhotos();
+
+    Photo getNextUncachedPhoto();
+
+    void markAsCached(long id, String path);
+
+    Observable<Void> removeCachedHiddenPhotos();
 }

@@ -199,8 +199,6 @@ public class PhotoFragment extends BaseFragment {
         if (photo == null) return;
 
         _photoId = photo.id();
-
-        // todo remove _photoUrl completely, store Photo instance instead
         _photoUrl = photo.isCached() ? photo.filePath() : photo.url();
         _photoFallbackUrl = photo.url();
     }

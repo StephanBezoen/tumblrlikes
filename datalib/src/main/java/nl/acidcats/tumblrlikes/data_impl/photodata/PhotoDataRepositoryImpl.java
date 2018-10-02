@@ -64,12 +64,12 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
 
     @Override
     public Photo getNextUncachedPhoto() {
-        return _photoDataGateway.getNextUncachedPhoto();
+        return _photoDataGateway.getUncachedPhoto();
     }
 
     @Override
     public void markAsCached(long id, String path) {
-        _photoDataGateway.setAsCached(id, path);
+        _photoDataGateway.setPhotoCached(id, true, path);
     }
 
     private Void uncachePhoto(Photo photo) {
@@ -85,7 +85,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
             if (file.delete()) {
                 if (_debug) Log.d(TAG, "uncachePhoto: file deleted");
 
-                _photoDataGateway.setAsUncached(photo.id());
+                _photoDataGateway.setPhotoCached(photo.id(), false, null);
             }
         }
 
@@ -114,17 +114,12 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     public void endPhotoView(long id) {
         if (id == 0 || id != _currentPhotoId) return;
 
-        _photoDataGateway.addViewTime(id, SystemClock.elapsedRealtime() - _startViewTime);
+        _photoDataGateway.addPhotoViewTime(id, SystemClock.elapsedRealtime() - _startViewTime);
     }
 
     @Override
-    public void likePhoto(long id) {
-        _photoDataGateway.likePhoto(id);
-    }
-
-    @Override
-    public void unlikePhoto(long id) {
-        _photoDataGateway.unlikePhoto(id);
+    public void setPhotoLiked(long id, boolean isLiked) {
+        _photoDataGateway.setPhotoLiked(id, isLiked);
     }
 
     @Override
@@ -133,7 +128,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     }
 
     @Override
-    public void setPhotoHidden(long id) {
+    public void hidePhoto(long id) {
         _photoDataGateway.setPhotoHidden(id);
 
         Photo photo = _photoDataGateway.getPhotoById(id);
@@ -208,7 +203,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
                 ids.add(allIds.get(idIndex));
             }
 
-            _photoDataGateway.setAsUncached(ids);
+            _photoDataGateway.setPhotosCached(ids, false);
         }
 
 
