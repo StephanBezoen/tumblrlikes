@@ -203,14 +203,29 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
 
     @Override
     public void setPhotosCached(List<Long> ids, boolean isCached) {
-        List<PhotoEntity> photoEntities = createQueryBuilder().where(PhotoEntityDao.Properties.Id.in(ids)).list();
-        for (PhotoEntity photoEntity : photoEntities) {
-            photoEntity.setIsCached(isCached);
+        final int totalCount = ids.size();
+        final int maxPerPage = 500;
+        final int pageCount = (int) Math.ceil((float) totalCount / (float) maxPerPage);
+        final List<Long> idsPage = new ArrayList<>();
+
+        for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+            idsPage.clear();
+
+            final int baseIndex = pageIndex * maxPerPage;
+            final int endIndex = Math.min(baseIndex + maxPerPage, totalCount);
+            for (int idIndex = baseIndex; idIndex < endIndex; idIndex++) {
+                idsPage.add(ids.get(idIndex));
+            }
+
+            List<PhotoEntity> photoEntities = createQueryBuilder().where(PhotoEntityDao.Properties.Id.in(idsPage)).list();
+            for (PhotoEntity photoEntity : photoEntities) {
+                photoEntity.setIsCached(isCached);
+            }
+
+            _photoEntityDao.saveInTx(photoEntities);
         }
 
-        _photoEntityDao.saveInTx(photoEntities);
-
-        if (_debug) Log.d(TAG, "setAsUncached: " + photoEntities.size() + " photos uncached");
+        if (_debug) Log.d(TAG, "setAsUncached: " + ids.size() + " photos uncached");
     }
 
     @Override

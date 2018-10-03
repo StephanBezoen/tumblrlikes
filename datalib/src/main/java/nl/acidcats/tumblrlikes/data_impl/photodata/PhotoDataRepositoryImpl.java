@@ -5,15 +5,14 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
-import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -153,60 +152,27 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
         return _photoDataGateway.getFilterType();
     }
 
-
     @Override
-    public Observable<Integer> checkCachedPhotos() {
-        return Observable
-                .fromCallable(() -> _photoDataGateway.getCachedPhotos())
-                .subscribeOn(Schedulers.io())
-                .flatMapIterable(photoEntities -> photoEntities)
-                .map(this::checkPhotoCache)
-                .toList()
-                .flatMap(this::unCache);
-    }
-
-    private Long checkPhotoCache(Photo photo) {
+    public boolean isPhotoCacheMissing(Photo photo) {
         String filePath = photo.filePath();
 
         if (filePath != null) {
             File file = new File(filePath);
-            if (!file.exists()) {
-                return photo.id();
-            }
+            return !file.exists();
         }
 
-        return -1L;
+        return false;
     }
 
-    private Observable<Integer> unCache(final List<Long> idList) {
-        int sum = 0;
-        List<Long> allIds = new ArrayList<>();
+    @Override
+    public List<Long> setPhotosUncached(final List<Long> idList) {
+        _photoDataGateway.setPhotosCached(idList, false);
 
-        for (Long id : idList) {
-            if (id == -1L) continue;
+        return idList;
+    }
 
-            allIds.add(id);
-            sum++;
-        }
-
-        final int totalCount = allIds.size();
-        final int maxPerPage = 500;
-        final int pageCount = (int) Math.ceil((float) totalCount / (float) maxPerPage);
-
-        for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
-            final List<Long> ids = new ArrayList<>();
-
-            final int baseIndex = pageIndex * maxPerPage;
-            final int endIndex = Math.min(baseIndex + maxPerPage, totalCount);
-
-            for (int idIndex = baseIndex; idIndex < endIndex; idIndex++) {
-                ids.add(allIds.get(idIndex));
-            }
-
-            _photoDataGateway.setPhotosCached(ids, false);
-        }
-
-
-        return Observable.just(sum);
+    @Override
+    public List<Photo> getCachedPhotos() {
+        return _photoDataGateway.getCachedPhotos();
     }
 }

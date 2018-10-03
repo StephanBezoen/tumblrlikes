@@ -7,4 +7,6 @@ import rx.Observable;
  */
 public interface PhotoCacheUseCase {
     Observable<Void> removeCachedHiddenPhotos();
+
+    Observable<Integer> checkCachedPhotos();
 }

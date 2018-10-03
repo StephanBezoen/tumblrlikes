@@ -19,10 +19,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
-import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoCacheUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
+import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -38,7 +38,7 @@ public class SetupFragment extends BaseFragment {
     @Inject
     AppDataRepository _appRepo;
     @Inject
-    PhotoDataRepository _photoRepo;
+    PhotoCacheUseCase _photoCacheUseCase;
 
     @BindView(R.id.input_tumblr_blog)
     EditText _tumblrBlogInput;
@@ -116,7 +116,7 @@ public class SetupFragment extends BaseFragment {
     }
 
     private void onCheckCacheButtonClick(View view) {
-        _photoRepo.checkCachedPhotos()
+        _photoCacheUseCase.checkCachedPhotos()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onCacheChecked, throwable -> Log.e(TAG, "onCheckCacheButtonClick: " + throwable.getMessage()));
     }

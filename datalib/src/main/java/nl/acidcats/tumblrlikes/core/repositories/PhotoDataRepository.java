@@ -38,8 +38,6 @@ public interface PhotoDataRepository {
 
     FilterType getFilterType();
 
-    Observable<Integer> checkCachedPhotos();
-
     boolean hasUncachedPhotos();
 
     Photo getNextUncachedPhoto();
@@ -47,4 +45,10 @@ public interface PhotoDataRepository {
     void markAsCached(long id, String path);
 
     Observable<Void> removeCachedHiddenPhotos();
+
+    boolean isPhotoCacheMissing(Photo photo);
+
+    List<Long> setPhotosUncached(final List<Long> idList);
+
+    List<Photo> getCachedPhotos();
 }
