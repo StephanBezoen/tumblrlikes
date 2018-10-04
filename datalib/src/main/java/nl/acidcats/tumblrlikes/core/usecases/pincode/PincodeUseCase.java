@@ -10,4 +10,6 @@ public interface PincodeUseCase {
     Observable<Boolean> checkPincode(String pincode);
 
     Observable<Boolean> storePincode(String pincode);
+
+    Observable<Boolean> isAppPincodeProtected();
 }

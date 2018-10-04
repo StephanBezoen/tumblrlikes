@@ -1,6 +1,7 @@
 package nl.acidcats.tumblrlikes.data_impl.appdata;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -9,9 +10,8 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
-import nl.acidcats.tumblrlikes.data_impl.appdata.gateway.AppDataGateway;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
-import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
+import nl.acidcats.tumblrlikes.util.prefs.PrefsHelper;
 
 /**
  * Created by stephan on 29/04/2017.
@@ -22,15 +22,18 @@ public class AppDataRepositoryImpl implements AppDataRepository {
 
     private static final long TIME_BETWEEN_CHECKS_MS = 24L * 60L * 60L * 1000L; // 24 hours
 
-    private AppDataGateway _appDataGateway;
-    private SecurityHelper _securityHelper;
+    private static final String KEY_APP_STOP_TIME = "key_appStopTime";
+    private static final String KEY_TUMBLR_API_KEY = "key_tumblrApiKey";
+    private static final String KEY_TUMBLR_BLOG = "key_tumblrBlog";
+    private static final String KEY_PINCODE_HASH = "key_pincodeHash";
+    private static final String KEY_LATEST_CHECK_TIMESTAMP = "key_latestCheckTimestamp";
 
+    private final PrefsHelper _prefsHelper;
     private final boolean _debug = BuildConfig.DEBUG;
 
     @Inject
-    public AppDataRepositoryImpl(AppDataGateway appDataGateway, SecurityHelper securityHelper) {
-        _appDataGateway = appDataGateway;
-        _securityHelper = securityHelper;
+    public AppDataRepositoryImpl(Context context) {
+        _prefsHelper = new PrefsHelper(context, context.getPackageName());
     }
 
     @Override
@@ -42,57 +45,39 @@ public class AppDataRepositoryImpl implements AppDataRepository {
     }
 
     @Override
-    public void setTumblrApiKey(String tumblrApiKey) {
-        _appDataGateway.setTumblrApiKey(tumblrApiKey);
-    }
-
-    @Override
     public String getTumblrApiKey() {
-        return _appDataGateway.getTumblrApiKey();
+        return _prefsHelper.getString(KEY_TUMBLR_API_KEY, BuildConfig.CONSUMER_KEY);
     }
 
     @Override
     public void setTumblrBlog(String tumblrBlog) {
-        _appDataGateway.setTumblrBlog(tumblrBlog);
+        _prefsHelper.putString(KEY_TUMBLR_BLOG, tumblrBlog);
     }
 
     @Override
     public String getTumblrBlog() {
-        return _appDataGateway.getTumblrBlog();
+        return _prefsHelper.getString(KEY_TUMBLR_BLOG);
     }
 
     @Override
-    public void setPincode(String pinCode) {
-        _appDataGateway.storePincodeHash(_securityHelper.getHash(pinCode));
+    public void setPincodeHash(String pincodeHash) {
+        _prefsHelper.putString(KEY_PINCODE_HASH, pincodeHash);
     }
 
     @Override
-    public void clearPincode() {
-        _appDataGateway.clearPincodeHash();
-    }
-
-    @Override
-    public boolean hasPincode() {
-        return (_appDataGateway.getPincodeHash() != null);
-    }
-
-    @Override
-    public boolean isPincodeCorrect(@NonNull String pinCode) {
-        if (!hasPincode()) return true;
-
-        String pinCodeHash = _securityHelper.getHash(pinCode);
-        String storedPinCodeHash = _appDataGateway.getPincodeHash();
-        return pinCodeHash.equals(storedPinCodeHash);
+    @Nullable
+    public String getPincodeHash() {
+        return _prefsHelper.getString(KEY_PINCODE_HASH);
     }
 
     @Override
     public void setCheckComplete() {
-        _appDataGateway.setLatestCheckTimestamp(new Date().getTime());
+        setLatestCheckTimestamp(new Date().getTime());
     }
 
     @Override
     public long getMostRecentCheckTime() {
-        return _appDataGateway.getLatestCheckTimestamp();
+        return _prefsHelper.getLong(KEY_LATEST_CHECK_TIMESTAMP);
     }
 
     @Override
@@ -105,16 +90,20 @@ public class AppDataRepositoryImpl implements AppDataRepository {
     public void resetCheckTime() {
         if (_debug) Log.d(TAG, "reset: ");
 
-        _appDataGateway.setLatestCheckTimestamp(0L);
+        setLatestCheckTimestamp(0L);
+    }
+
+    private void setLatestCheckTimestamp(long time) {
+        _prefsHelper.putLong(KEY_LATEST_CHECK_TIMESTAMP, time);
     }
 
     @Override
     public long getAppStopTime() {
-        return _appDataGateway.getAppStopTime();
+        return _prefsHelper.getLong(KEY_APP_STOP_TIME);
     }
 
     @Override
     public void setAppStopTime(long appStopTime) {
-        _appDataGateway.setAppStopTime(appStopTime);
+        _prefsHelper.putLong(KEY_APP_STOP_TIME, appStopTime);
     }
 }

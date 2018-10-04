@@ -5,7 +5,6 @@ import android.app.Application;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.pixplicity.easyprefs.library.Prefs;
 
 import io.fabric.sdk.android.Fabric;
 import nl.acidcats.tumblrlikes.di.AppComponent;
@@ -27,8 +26,6 @@ public class LikesApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-
-        Prefs.initPrefs(this);
 
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this);

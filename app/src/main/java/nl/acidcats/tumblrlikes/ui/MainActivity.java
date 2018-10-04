@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.pixplicity.easyprefs.library.Prefs;
 
 import javax.inject.Inject;
 
@@ -16,6 +15,7 @@ import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     AppDataRepository _appDataRepository;
     @Inject
     FirebaseAnalytics _analytics;
+    @Inject
+    PincodeUseCase _pincodeUseCase;
 
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;
@@ -75,21 +77,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkLogin() {
-        if (_appDataRepository.hasPincode()) {
-            showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
-        } else {
-            enterApp();
-        }
+        _pincodeUseCase.isAppPincodeProtected().subscribe(
+                isPincodeProtected -> {
+                    if (isPincodeProtected) {
+                        showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
+                    } else {
+                        enterApp();
+                    }
+                }
+        );
     }
 
     private void onSetupComplete(String action, Intent intent) {
         _isShowingSetup = false;
 
-        if (_appDataRepository.hasPincode()) {
-            enterApp();
-        } else {
-            showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
-        }
+        _pincodeUseCase.isAppPincodeProtected().subscribe(
+                isPincodeProtected -> {
+                    if (isPincodeProtected) {
+                        enterApp();
+                    } else {
+                        showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
+                    }
+                }
+        );
     }
 
     private void onDatabaseReset(String action, Intent intent) {

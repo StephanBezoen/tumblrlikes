@@ -104,9 +104,6 @@ dependencies {
     implementation libs.butterknife
     annotationProcessor libs.annotationProcessorButterknife
 
-    // Pixplicity Prefs
-    implementation libs.easyPrefs
-
     // Retrofit
     implementation libs.okHttp
 

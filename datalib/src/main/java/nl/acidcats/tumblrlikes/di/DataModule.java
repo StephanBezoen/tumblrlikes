@@ -9,21 +9,19 @@ import dagger.Provides;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCaseImpl;
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCaseImpl;
-import nl.acidcats.tumblrlikes.data_impl.appdata.gateway.AppDataGateway;
-import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCaseImpl;
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCaseImpl;
-import nl.acidcats.tumblrlikes.data_impl.appdata.gateway.AppDataGatewayImpl;
 import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataRepositoryImpl;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LikesDataRepositoryImpl;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.gateway.NetLikesDataGateway;
 import nl.acidcats.tumblrlikes.data_impl.photodata.PhotoDataRepositoryImpl;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.GreenDAOPhotoDataGatewayImpl;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelperImpl;
@@ -61,12 +59,6 @@ public class DataModule {
     @Singleton
     PhotoDataRepository providePhotoDataRepository(PhotoDataRepositoryImpl impl) {
         return impl;
-    }
-
-    @Provides
-    @Singleton
-    AppDataGateway provideAppDataGateway() {
-        return new AppDataGatewayImpl();
     }
 
     @Provides

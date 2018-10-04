@@ -1,6 +1,6 @@
 package nl.acidcats.tumblrlikes.core.repositories;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Created by stephan on 29/04/2017.
@@ -9,21 +9,16 @@ import android.support.annotation.NonNull;
 public interface AppDataRepository {
     boolean isSetupComplete();
 
-    void setTumblrApiKey(String tumblrApiKey);
-
     String getTumblrApiKey();
 
     void setTumblrBlog(String tumblrBlog);
 
     String getTumblrBlog();
 
-    void setPincode(String pinCode);
+    void setPincodeHash(String pinCode);
 
-    void clearPincode();
-
-    boolean hasPincode();
-
-    boolean isPincodeCorrect(@NonNull String pinCode);
+    @Nullable
+    String getPincodeHash();
 
     void setCheckComplete();
 

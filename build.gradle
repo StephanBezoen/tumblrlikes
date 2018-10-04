@@ -108,9 +108,6 @@ ext {
             okHttp                        : "com.squareup.okhttp3:okhttp:${Versions.okHttp}",
             okHttp_loggingInterceptor     : "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}",
 
-            // EasyPrefs
-            easyPrefs                     : 'com.pixplicity.easyprefs:library:1.3',
-
             // AutValue
             autoValue                     : "com.google.auto.value:auto-value:1.5",
 

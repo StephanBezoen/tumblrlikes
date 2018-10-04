@@ -81,9 +81,6 @@ dependencies {
     // Rx
     implementation libs.rxAndroid
 
-    // Pixplicity Prefs
-    implementation libs.easyPrefs
-
     // Retrofit
     implementation libs.retrofit
     implementation libs.retrofit_moshiConverter
