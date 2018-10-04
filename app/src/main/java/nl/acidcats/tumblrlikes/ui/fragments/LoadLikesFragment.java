@@ -26,7 +26,7 @@ import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode;
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoCacheUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
@@ -43,7 +43,7 @@ public class LoadLikesFragment extends BaseFragment {
     @Inject
     GetLikesPageUseCase _likesPageUseCase;
     @Inject
-    PhotoCacheUseCase _photoCacheUseCase;
+    UpdatePhotoCacheUseCase _photoCacheUseCase;
 
     @BindView(R.id.tv_image_count)
     TextView _imageCountText;

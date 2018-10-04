@@ -10,12 +10,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.auto.value.AutoValue;
+
+import javax.annotation.Nonnull;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
-import nl.acidcats.tumblrlikes.core.models.Photo;
 
 /**
  * Created by stephan on 28/04/2017.
@@ -38,9 +40,8 @@ public class PhotoActionDialog extends FrameLayout {
     TextView _viewCountText;
 
     private Unbinder _unbinder;
-    private PhotoDataRepository _photoRepo;
-    private Photo _photo;
-    private PhotoHiddenListener _photoHiddenListener;
+    private PhotoActionListener _photoActionListener;
+    private PhotoActionDialogViewModel _viewModel;
 
     public PhotoActionDialog(Context context) {
         super(context);
@@ -60,10 +61,6 @@ public class PhotoActionDialog extends FrameLayout {
         init();
     }
 
-    public void setPhotoRepo(PhotoDataRepository photoRepo) {
-        _photoRepo = photoRepo;
-    }
-
     private void init() {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.popup_photo_menu, this, true);
         _unbinder = ButterKnife.bind(this, view);
@@ -79,53 +76,52 @@ public class PhotoActionDialog extends FrameLayout {
     }
 
     private void onHideButtonClick(View view) {
-        _photoRepo.hidePhoto(_photo.id());
+        if (_photoActionListener != null) {
+            _photoActionListener.onHidePhoto(_viewModel.photoId());
+        }
 
         hide();
-
-        if (_photoHiddenListener != null) {
-            _photoHiddenListener.onPhotoHidden();
-        }
     }
 
     private void onUnlikeButtonClick(View view) {
-        _photoRepo.setPhotoLiked(_photo.id(), false);
+        if (_photoActionListener != null) {
+            _photoActionListener.onUpdatePhotoLike(_viewModel.photoId(), false);
+        }
 
         hide();
     }
 
     private void onLikeButtonClick(View view) {
-        _photoRepo.setPhotoLiked(_photo.id(), true);
+        if (_photoActionListener != null) {
+            _photoActionListener.onUpdatePhotoLike(_viewModel.photoId(), true);
+        }
 
         hide();
     }
 
     private void onFavoriteButtonClick(View view) {
-        _photoRepo.setPhotoFavorite(_photo.id(), !_photo.isFavorite());
+        if (_photoActionListener != null) {
+            _photoActionListener.onUpdatePhotoFavorite(_viewModel.photoId(), !_viewModel.isPhotoFavorite());
+        }
 
         hide();
     }
 
-    public void show(long id) {
-        _photo = _photoRepo.getPhotoById(id);
-        if (_photo == null) return;
+    public void show(@Nonnull PhotoActionDialogViewModel viewModel) {
+        _viewModel = viewModel;
 
-        @DrawableRes int iconId = _photo.isFavorite() ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp;
+        @DrawableRes int iconId = _viewModel.isPhotoFavorite() ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp;
         _favoriteButton.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
 
-        int likes = _photo.likeCount();
-        if (likes > 0) {
+        if (_viewModel.isPhotoLiked()) {
             _likeButton.setText(getContext().getString(R.string.photo_action_like_count, 1));
             _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
-        } else if (likes < 0) {
-            _likeButton.setText(getContext().getString(R.string.photo_action_like));
-            _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike_count, -1));
         } else {
             _likeButton.setText(getContext().getString(R.string.photo_action_like));
             _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
         }
 
-        _viewCountText.setText(getContext().getString(R.string.view_count, _photo.viewCount()));
+        _viewCountText.setText(getContext().getString(R.string.view_count, _viewModel.viewCount()));
 
         setVisibility(VISIBLE);
     }
@@ -134,12 +130,31 @@ public class PhotoActionDialog extends FrameLayout {
         setVisibility(GONE);
     }
 
-    public interface PhotoHiddenListener {
-        void onPhotoHidden();
+    public interface PhotoActionListener {
+        void onHidePhoto(long id);
+
+        void onUpdatePhotoLike(long id, boolean isLiked);
+
+        void onUpdatePhotoFavorite(long id, boolean isFavorite);
     }
 
-    public void setPhotoHiddenListener(PhotoHiddenListener listener) {
-        _photoHiddenListener = listener;
+    public void setPhotoActionListener(PhotoActionListener listener) {
+        _photoActionListener = listener;
+    }
+
+    @AutoValue
+    public static abstract class PhotoActionDialogViewModel {
+        public abstract long photoId();
+
+        public abstract boolean isPhotoFavorite();
+
+        public abstract boolean isPhotoLiked();
+
+        public abstract int viewCount();
+
+        public static PhotoActionDialogViewModel create(long id, boolean isFavorite, boolean isLiked, int viewCount) {
+            return new AutoValue_PhotoActionDialog_PhotoActionDialogViewModel(id, isFavorite, isLiked, viewCount);
+        }
     }
 
     public void onDestroyView() {

@@ -9,8 +9,10 @@ import dagger.Provides;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoCacheUseCase;
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoCacheUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCaseImpl;
 import nl.acidcats.tumblrlikes.data_impl.appdata.gateway.AppDataGateway;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
@@ -84,7 +86,12 @@ public class DataModule {
     }
 
     @Provides
-    PhotoCacheUseCase providePhotoCacheUseCase(PhotoCacheUseCaseImpl impl) {
+    UpdatePhotoCacheUseCase providePhotoCacheUseCase(UpdatePhotoCacheUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    UpdatePhotoPropertyUseCase provideUpdatePhotoProperty(UpdatePhotoPropertyUseCaseImpl impl) {
         return impl;
     }
 }

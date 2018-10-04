@@ -21,8 +21,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
-import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.models.Photo;
+import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
@@ -42,6 +43,8 @@ public class PhotoFragment extends BaseFragment {
 
     @Inject
     PhotoDataRepository _photoRepo;
+    @Inject
+    UpdatePhotoPropertyUseCase _updatePhotoPropertyUseCase;
 
     @BindView(R.id.photo)
     InteractiveImageView _photoView;
@@ -92,17 +95,29 @@ public class PhotoFragment extends BaseFragment {
             _photoView.setAlpha(0.1f);
         }
 
-        _photoActionDialog.setPhotoRepo(_photoRepo);
-        _photoActionDialog.setPhotoHiddenListener(this::onPhotoHidden);
+        _photoActionDialog.setPhotoActionListener(new PhotoActionDialog.PhotoActionListener() {
+            @Override
+            public void onHidePhoto(long id) {
+                registerSubscription(_updatePhotoPropertyUseCase.setHidden(id).subscribe(
+                        isHidden -> showNextPhoto()
+                ));
+            }
+
+            @Override
+            public void onUpdatePhotoLike(long id, boolean isLiked) {
+                registerSubscription(_updatePhotoPropertyUseCase.updateLike(id, isLiked).subscribe());
+            }
+
+            @Override
+            public void onUpdatePhotoFavorite(long id, boolean isFavorite) {
+                registerSubscription(_updatePhotoPropertyUseCase.updateFavorite(id, isFavorite).subscribe());
+            }
+        });
 
         _photoNavBar.setFilterType(_photoRepo.getFilterType());
         _photoNavBar.setFilterOptionSelectionListener(this::setFilterType);
 
         showPhoto();
-    }
-
-    private void onPhotoHidden() {
-        showNextPhoto();
     }
 
     private void setFilterType(FilterType filterType) {
@@ -120,12 +135,21 @@ public class PhotoFragment extends BaseFragment {
                 showUI();
                 break;
             case LONG_PRESS:
-                _photoActionDialog.show(_photoId);
+                showPhotoActionDialog(_photoId);
                 break;
             case DOUBLE_TAP:
                 _photoView.resetScale();
                 break;
         }
+    }
+
+    private void showPhotoActionDialog(long photoId) {
+        Photo photo = _photoRepo.getPhotoById(photoId);
+        if (photo == null) return;
+
+        _photoActionDialog.show(
+                PhotoActionDialog.PhotoActionDialogViewModel.create(photo.id(), photo.isFavorite(), photo.likeCount() > 0, photo.viewCount())
+        );
     }
 
     private void showUI() {

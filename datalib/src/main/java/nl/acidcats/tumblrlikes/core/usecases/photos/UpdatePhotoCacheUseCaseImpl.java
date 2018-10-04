@@ -13,12 +13,12 @@ import rx.schedulers.Schedulers;
 /**
  * Created on 01/10/2018.
  */
-public class PhotoCacheUseCaseImpl implements PhotoCacheUseCase {
+public class UpdatePhotoCacheUseCaseImpl implements UpdatePhotoCacheUseCase {
 
     private PhotoDataRepository _photoDataRepository;
 
     @Inject
-    PhotoCacheUseCaseImpl(PhotoDataRepository photoDataRepository) {
+    UpdatePhotoCacheUseCaseImpl(PhotoDataRepository photoDataRepository) {
         _photoDataRepository = photoDataRepository;
     }
 
