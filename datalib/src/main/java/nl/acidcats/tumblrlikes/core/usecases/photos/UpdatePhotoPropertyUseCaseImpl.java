@@ -37,6 +37,10 @@ public class UpdatePhotoPropertyUseCaseImpl implements UpdatePhotoPropertyUseCas
                 .fromCallable(() -> {
                     _photoDataRepository.setPhotoFavorite(id, isFavorite);
 
+                    if (isFavorite) {
+                        _photoDataRepository.setPhotoLiked(id, true);
+                    }
+
                     return true;
                 })
                 .subscribeOn(Schedulers.io())
@@ -47,6 +51,9 @@ public class UpdatePhotoPropertyUseCaseImpl implements UpdatePhotoPropertyUseCas
     public Observable<Boolean> setHidden(long id) {
         return Observable
                 .fromCallable(() -> {
+                    _photoDataRepository.setPhotoFavorite(id, false);
+                    _photoDataRepository.setPhotoLiked(id, false);
+
                     _photoDataRepository.hidePhoto(id);
 
                     return true;

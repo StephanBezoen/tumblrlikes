@@ -256,9 +256,7 @@ public class PhotoFragment extends BaseFragment {
     }
 
     private void endPhotoView() {
-        if (!_isTest) {
-            _photoRepo.endPhotoView(_photoId);
-        }
+        _photoRepo.endPhotoView(_photoId);
     }
 
     @Override

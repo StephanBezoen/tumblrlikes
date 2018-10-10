@@ -270,10 +270,6 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
 
         photo.setIsFavorite(isFavorite);
 
-        if (isFavorite) {
-            photo.setLikeCount(1);
-        }
-
         storePhoto(photo);
     }
 
