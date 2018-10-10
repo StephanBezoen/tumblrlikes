@@ -56,7 +56,7 @@ public class PhotoFragment extends BaseFragment {
     private String _photoUrl;
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
-    private boolean _isTest = true;
+    private boolean _isTest = false;
     private Long _photoId;
     private String _photoFallbackUrl;
 

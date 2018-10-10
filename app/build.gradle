@@ -130,6 +130,8 @@ dependencies {
     implementation libs.firebase
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation libs.sqlCipher
 }
 
 apply plugin: 'com.google.gms.google-services'
