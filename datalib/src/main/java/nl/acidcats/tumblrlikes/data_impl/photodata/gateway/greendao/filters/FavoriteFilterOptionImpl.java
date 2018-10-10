@@ -16,6 +16,12 @@ public class FavoriteFilterOptionImpl extends AbstractFilterOptionImpl {
 
     @Override
     protected QueryBuilder<PhotoEntity> getQueryBuilder() {
-        return _photoEntityDao.queryBuilder().where(PhotoEntityDao.Properties.IsFavorite.eq(true));
+        QueryBuilder<PhotoEntity> queryBuilder = _photoEntityDao.queryBuilder();
+        return queryBuilder.where(
+                queryBuilder.and(
+                        PhotoEntityDao.Properties.IsFavorite.eq(true),
+                        PhotoEntityDao.Properties.IsHidden.eq(false)
+                )
+        );
     }
 }
