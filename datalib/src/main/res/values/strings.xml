@@ -6,4 +6,5 @@
     <string name="filter_popular">Popular</string>
     <string name="filter_latest">Latest</string>
     <string name="filter_least_seen">Least Seen</string>
+    <string name="filter_most_time_per_view">Most time per view</string>
 </resources>

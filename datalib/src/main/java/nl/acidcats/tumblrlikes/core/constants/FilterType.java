@@ -13,6 +13,7 @@ public enum FilterType {
     POPULAR(R.string.filter_popular, true),
     LATEST(R.string.filter_latest, false),
     LEAST_SEEN(R.string.filter_least_seen, false),
+//    MOST_TIME_PER_VIEW(R.string.filter_most_time_per_view, false)
     ;
 
     private final int _resId;

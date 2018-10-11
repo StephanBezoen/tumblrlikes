@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.migration.MigrationV6;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import nl.acidcats.tumblrlikes.db_impl_greendao.DaoMaster;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.migration.Migration;
@@ -43,7 +44,8 @@ public class DbOpenHelper extends DaoMaster.OpenHelper {
         if (_debug) Log.d(TAG, "onUpgrade: from " + oldVersion + " to " + newVersion);
 
         for (Migration migration : getMigrations()) {
-            if (migration.getVersion() <= newVersion) {
+            int migrationVersion = migration.getVersion();
+            if (migrationVersion > oldVersion && migrationVersion <= newVersion) {
                 migration.runMigration(db);
             }
         }
@@ -54,6 +56,7 @@ public class DbOpenHelper extends DaoMaster.OpenHelper {
     private List<Migration> getMigrations() {
         List<Migration> migrations = new ArrayList<>();
         migrations.add(new MigrationV5());
+        migrations.add(new MigrationV6());
 
         // Sorting just to be safe, in case other people add migrations in the wrong order.
         Collections.sort(migrations, (m1, m2) -> m1.getVersion().compareTo(m2.getVersion()));
