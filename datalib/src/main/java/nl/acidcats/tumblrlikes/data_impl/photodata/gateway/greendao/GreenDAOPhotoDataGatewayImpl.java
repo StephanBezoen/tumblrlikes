@@ -149,6 +149,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
                 photoEntity.getFilePath(),
                 photoEntity.getUrl(),
                 photoEntity.getIsFavorite(),
+                photoEntity.getIsLiked(),
                 photoEntity.getLikeCount(),
                 photoEntity.getIsCached(),
                 photoEntity.getViewCount(),

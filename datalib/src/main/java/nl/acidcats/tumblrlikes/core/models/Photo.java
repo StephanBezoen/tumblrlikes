@@ -22,6 +22,8 @@ public abstract class Photo {
 
     public abstract boolean isFavorite();
 
+    public abstract boolean isLiked();
+
     public abstract int likeCount();
 
     public abstract boolean isCached();
@@ -33,7 +35,7 @@ public abstract class Photo {
     public abstract long timePerView();
 
     public static Photo create(String url, long tumblrId) {
-        return new AutoValue_Photo(0, tumblrId, null, url, false, 0, false, 0, 0, 0);
+        return new AutoValue_Photo(0, tumblrId, null, url, false, false, 0, false, 0, 0, 0);
     }
 
     public static Photo create(long id,
@@ -41,11 +43,12 @@ public abstract class Photo {
                                @Nullable String filePath,
                                @Nullable String url,
                                boolean isFavorite,
+                               boolean isLiked,
                                int likeCount,
                                boolean isCached,
                                int viewCount,
                                long viewTime,
                                long timePerView) {
-        return new AutoValue_Photo(id, tumblrId, filePath, url, isFavorite, likeCount, isCached, viewCount, viewTime, timePerView);
+        return new AutoValue_Photo(id, tumblrId, filePath, url, isFavorite, isLiked, likeCount, isCached, viewCount, viewTime, timePerView);
     }
 }
