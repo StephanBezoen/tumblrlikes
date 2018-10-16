@@ -15,6 +15,7 @@ import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAnalytics _analytics;
     @Inject
     PincodeUseCase _pincodeUseCase;
+    @Inject
+    CheckTimeUseCase _checkTimeUseCase;
 
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;
@@ -103,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onDatabaseReset(String action, Intent intent) {
-        _appDataRepository.resetCheckTime();
+        _checkTimeUseCase.resetCheckTime().subscribe();
     }
 
     private void onAllLikesLoaded(String action, Intent intent) {
@@ -117,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void enterApp() {
-        showFragment(_appDataRepository.isTimeToCheck()
-                ? LoadLikesFragment.newInstance()
-                : PhotoFragment.newInstance());
+        _checkTimeUseCase.isTimeToCheck().subscribe(
+                isTimeToCheck -> showFragment(isTimeToCheck ? LoadLikesFragment.newInstance() : PhotoFragment.newInstance())
+        );
     }
 
     private void showFragment(Fragment fragment) {

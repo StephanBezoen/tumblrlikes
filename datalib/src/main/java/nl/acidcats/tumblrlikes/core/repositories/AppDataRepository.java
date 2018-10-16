@@ -20,13 +20,9 @@ public interface AppDataRepository {
     @Nullable
     String getPincodeHash();
 
-    void setCheckComplete();
+    long getLatestCheckTimestamp();
 
-    long getMostRecentCheckTime();
-
-    boolean isTimeToCheck();
-
-    void resetCheckTime();
+    void setLatestCheckTimestamp(long time);
 
     long getAppStopTime();
 

@@ -57,10 +57,10 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
 
     @Override
     public Observable<Boolean> checkLoadLikesComplete() {
-        boolean isComplete = !_likesDataRepository.hasMoreLikes(_appDataRepository.getMostRecentCheckTime());
+        boolean isComplete = !_likesDataRepository.hasMoreLikes(_appDataRepository.getLatestCheckTimestamp());
 
         if (isComplete) {
-            _appDataRepository.setCheckComplete();
+            _appDataRepository.setLatestCheckTimestamp(new Date().getTime());
         }
 
         return Observable.just(isComplete);

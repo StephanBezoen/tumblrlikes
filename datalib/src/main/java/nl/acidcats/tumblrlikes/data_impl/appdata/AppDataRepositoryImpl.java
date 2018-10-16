@@ -71,29 +71,12 @@ public class AppDataRepositoryImpl implements AppDataRepository {
     }
 
     @Override
-    public void setCheckComplete() {
-        setLatestCheckTimestamp(new Date().getTime());
-    }
-
-    @Override
-    public long getMostRecentCheckTime() {
+    public long getLatestCheckTimestamp() {
         return _prefsHelper.getLong(KEY_LATEST_CHECK_TIMESTAMP);
     }
 
     @Override
-    public boolean isTimeToCheck() {
-        long timeSinceLastCheck = new Date().getTime() - getMostRecentCheckTime();
-        return timeSinceLastCheck > TIME_BETWEEN_CHECKS_MS;
-    }
-
-    @Override
-    public void resetCheckTime() {
-        if (_debug) Log.d(TAG, "reset: ");
-
-        setLatestCheckTimestamp(0L);
-    }
-
-    private void setLatestCheckTimestamp(long time) {
+    public void setLatestCheckTimestamp(long time) {
         _prefsHelper.putLong(KEY_LATEST_CHECK_TIMESTAMP, time);
     }
 
