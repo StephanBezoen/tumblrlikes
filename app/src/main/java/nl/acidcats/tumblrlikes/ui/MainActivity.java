@@ -8,6 +8,8 @@ import android.view.WindowManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void enterApp() {
-        _checkTimeUseCase.isTimeToCheck().subscribe(
+        _checkTimeUseCase.isTimeToCheck(new Date().getTime()).subscribe(
                 isTimeToCheck -> showFragment(isTimeToCheck ? LoadLikesFragment.newInstance() : PhotoFragment.newInstance())
         );
     }

@@ -8,7 +8,7 @@ import rx.Observable;
  */
 public interface CheckTimeUseCase {
 
-    Observable<Boolean> isTimeToCheck();
+    Observable<Boolean> isTimeToCheck(long currentTimeInMs);
 
     Observable<Long> resetCheckTime();
 }

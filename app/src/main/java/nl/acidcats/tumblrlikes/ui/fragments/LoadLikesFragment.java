@@ -112,6 +112,28 @@ public class LoadLikesFragment extends BaseFragment {
                 .subscribe(this::handleLikesPageLoaded, this::handleError);
     }
 
+    private void handleLikesPageLoaded(List<Photo> photos) {
+        _pageCount++;
+
+        long count = _photoDataRepository.getPhotoCount();
+
+        if (_isLoadingCancelled) {
+            notifyLoadingComplete();
+        } else {
+            _likesPageUseCase
+                    .checkLoadLikesComplete()
+                    .subscribe(isComplete -> {
+                        if (isComplete) {
+                            onAllLikesLoaded(count);
+                        } else {
+                            _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
+
+                            loadLikesPage(LoadLikesMode.CONTINUED);
+                        }
+                    }, throwable -> Log.e(TAG, "handleLikesPageLoaded: " + throwable.getMessage()));
+        }
+    }
+
     private void handleError(Throwable throwable) {
         Log.e(TAG, "handleError: " + throwable.getMessage());
 
@@ -144,28 +166,6 @@ public class LoadLikesFragment extends BaseFragment {
 
     private void onSettings() {
         sendBroadcast(Broadcasts.SETTINGS_REQUEST);
-    }
-
-    private void handleLikesPageLoaded(List<Photo> photos) {
-        _pageCount++;
-
-        long count = _photoDataRepository.getPhotoCount();
-
-        if (_isLoadingCancelled) {
-            notifyLoadingComplete();
-        } else {
-            _likesPageUseCase
-                    .checkLoadLikesComplete()
-                    .subscribe(isComplete -> {
-                        if (isComplete) {
-                            onAllLikesLoaded(count);
-                        } else {
-                            _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
-
-                            loadLikesPage(LoadLikesMode.CONTINUED);
-                        }
-                    }, throwable -> Log.e(TAG, "handleLikesPageLoaded: " + throwable.getMessage()));
-        }
     }
 
     private void onAllLikesLoaded(long count) {

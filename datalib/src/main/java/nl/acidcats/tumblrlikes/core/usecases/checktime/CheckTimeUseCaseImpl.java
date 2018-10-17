@@ -22,8 +22,8 @@ public class CheckTimeUseCaseImpl implements CheckTimeUseCase {
     }
 
     @Override
-    public Observable<Boolean> isTimeToCheck() {
-        long timeSinceLastCheck = new Date().getTime() - _appDataRepository.getLatestCheckTimestamp();
+    public Observable<Boolean> isTimeToCheck(long currentTimeInMs) {
+        long timeSinceLastCheck = currentTimeInMs - _appDataRepository.getLatestCheckTimestamp();
         return Observable.just(timeSinceLastCheck > TIME_BETWEEN_CHECKS_MS);
     }
 
