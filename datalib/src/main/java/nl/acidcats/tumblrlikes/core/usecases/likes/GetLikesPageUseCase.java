@@ -11,7 +11,7 @@ import rx.Observable;
  */
 
 public interface GetLikesPageUseCase {
-    Observable<List<Photo>> loadLikesPage(LoadLikesMode mode);
+    Observable<Long> loadLikesPage(LoadLikesMode mode);
 
     Observable<Boolean> checkLoadLikesComplete(long currentTimeInMs);
 }

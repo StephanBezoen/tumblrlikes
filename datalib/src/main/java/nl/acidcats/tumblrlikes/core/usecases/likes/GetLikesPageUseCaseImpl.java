@@ -34,7 +34,7 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
     }
 
     @Override
-    public Observable<List<Photo>> loadLikesPage(LoadLikesMode mode) {
+    public Observable<Long> loadLikesPage(LoadLikesMode mode) {
         long timestamp;
         switch (mode) {
             case FRESH:
@@ -52,7 +52,8 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
                 .flatMapIterable(photos -> photos)
                 .filter(photo -> !_photoDataRepository.hasPhoto(photo.tumblrId()))
                 .toList()
-                .map(_photoDataRepository::storePhotos);
+                .map(_photoDataRepository::storePhotos)
+                .map(photos -> _photoDataRepository.getPhotoCount());
     }
 
     @Override

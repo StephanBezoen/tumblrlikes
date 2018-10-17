@@ -17,15 +17,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode;
-import nl.acidcats.tumblrlikes.core.models.Photo;
-import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
@@ -39,8 +36,6 @@ import nl.acidcats.tumblrlikes.ui.Broadcasts;
 public class LoadLikesFragment extends BaseFragment {
     private static final String TAG = LoadLikesFragment.class.getSimpleName();
 
-    @Inject
-    PhotoDataRepository _photoDataRepository;
     @Inject
     GetLikesPageUseCase _likesPageUseCase;
     @Inject
@@ -113,26 +108,26 @@ public class LoadLikesFragment extends BaseFragment {
                 .subscribe(this::handleLikesPageLoaded, this::handleError);
     }
 
-    private void handleLikesPageLoaded(List<Photo> photos) {
-        _pageCount++;
-
-        long count = _photoDataRepository.getPhotoCount();
-
+    private void handleLikesPageLoaded(long totalPhotoCount) {
         if (_isLoadingCancelled) {
             notifyLoadingComplete();
-        } else {
-            _likesPageUseCase
-                    .checkLoadLikesComplete(new Date().getTime())
-                    .subscribe(isComplete -> {
-                        if (isComplete) {
-                            onAllLikesLoaded(count);
-                        } else {
-                            _imageCountText.setText(getString(R.string.image_page_count, _pageCount, count));
 
-                            loadLikesPage(LoadLikesMode.CONTINUED);
-                        }
-                    }, throwable -> Log.e(TAG, "handleLikesPageLoaded: " + throwable.getMessage()));
+            return;
         }
+
+        _pageCount++;
+
+        _likesPageUseCase
+                .checkLoadLikesComplete(new Date().getTime())
+                .subscribe(isComplete -> {
+                    if (isComplete) {
+                        onAllLikesLoaded(totalPhotoCount);
+                    } else {
+                        _imageCountText.setText(getString(R.string.image_page_count, _pageCount, totalPhotoCount));
+
+                        loadLikesPage(LoadLikesMode.CONTINUED);
+                    }
+                }, throwable -> Log.e(TAG, "handleLikesPageLoaded: " + throwable.getMessage()));
     }
 
     private void handleError(Throwable throwable) {

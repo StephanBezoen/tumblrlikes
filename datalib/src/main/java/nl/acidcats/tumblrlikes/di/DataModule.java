@@ -106,7 +106,7 @@ public class DataModule {
     }
 
     @Provides
-    AppSetupUseCase providesAppSetupUseCase (AppSetupUseCaseImpl impl) {
+    AppSetupUseCase providesAppSetupUseCase(AppSetupUseCaseImpl impl) {
         return impl;
     }
 
