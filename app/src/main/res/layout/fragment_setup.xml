@@ -95,7 +95,7 @@
         android:paddingEnd="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/button_background"
         android:textColor="@color/white"
         android:textStyle="bold"
         />
@@ -115,7 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/check_cache"
-        android:textColor="@color/borderless_button_textcolor"
+        android:textColor="@color/button_color"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/btn_ok"
