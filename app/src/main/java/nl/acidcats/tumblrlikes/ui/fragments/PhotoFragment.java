@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
@@ -47,6 +49,8 @@ public class PhotoFragment extends BaseFragment {
     PhotoDataRepository _photoRepo;
     @Inject
     UpdatePhotoPropertyUseCase _updatePhotoPropertyUseCase;
+    @Inject
+    PhotoViewUseCase _photoViewUseCase;
 
     @BindView(R.id.photo)
     InteractiveImageView _photoView;
@@ -219,7 +223,7 @@ public class PhotoFragment extends BaseFragment {
             }
         });
 
-        _photoRepo.startPhotoView(_viewModel.photoId());
+        registerSubscription(_photoViewUseCase.startPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
     }
 
     private void loadPhoto(String url, @Nullable RequestListener<Drawable> listener) {
@@ -267,7 +271,7 @@ public class PhotoFragment extends BaseFragment {
 
         _photoView.setVisibility(View.VISIBLE);
 
-        _photoRepo.startPhotoView(_viewModel.photoId());
+        registerSubscription(_photoViewUseCase.startPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
 
         hideUI();
     }
@@ -284,7 +288,7 @@ public class PhotoFragment extends BaseFragment {
     }
 
     private void endPhotoView() {
-        _photoRepo.endPhotoView(_viewModel.photoId());
+        registerSubscription(_photoViewUseCase.endPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
     }
 
     @Override

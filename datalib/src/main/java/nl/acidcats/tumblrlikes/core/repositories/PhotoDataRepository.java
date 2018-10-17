@@ -21,9 +21,9 @@ public interface PhotoDataRepository {
 
     Photo getNextPhoto();
 
-    void startPhotoView(long id);
+    void setPhotoViewStartTime(long id, long currentTime);
 
-    void endPhotoView(long id);
+    void updatePhotoViewTime(long id, long currentTime);
 
     void setPhotoLiked(long id, boolean isLiked);
 

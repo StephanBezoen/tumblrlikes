@@ -103,16 +103,16 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     }
 
     @Override
-    public void startPhotoView(long id) {
+    public void setPhotoViewStartTime(long id, long currentTime) {
         if (_debug) Log.d(TAG, "startPhotoView: id = " + id);
 
         _currentPhotoId = id;
 
-        _startViewTime = SystemClock.elapsedRealtime();
+        _startViewTime = currentTime;
     }
 
     @Override
-    public void endPhotoView(long id) {
+    public void updatePhotoViewTime(long id, long currentTime) {
         if (_debug) Log.d(TAG, "endPhotoView: id = " + id + ", _currentPhotoId = " + _currentPhotoId);
 
         if (id == 0 || id != _currentPhotoId) {
@@ -120,7 +120,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
             return;
         }
 
-        _photoDataGateway.addPhotoViewTime(id, SystemClock.elapsedRealtime() - _startViewTime);
+        _photoDataGateway.addPhotoViewTime(id, currentTime - _startViewTime);
     }
 
     @Override
