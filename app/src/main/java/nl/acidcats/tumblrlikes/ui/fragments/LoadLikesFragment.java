@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -121,7 +122,7 @@ public class LoadLikesFragment extends BaseFragment {
             notifyLoadingComplete();
         } else {
             _likesPageUseCase
-                    .checkLoadLikesComplete()
+                    .checkLoadLikesComplete(new Date().getTime())
                     .subscribe(isComplete -> {
                         if (isComplete) {
                             onAllLikesLoaded(count);
