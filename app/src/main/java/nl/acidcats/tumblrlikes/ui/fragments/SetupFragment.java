@@ -120,16 +120,24 @@ public class SetupFragment extends BaseFragment {
     }
 
     private void onCheckCacheButtonClick(View view) {
+        _checkCacheButton.setEnabled(false);
+
         registerSubscription(
                 _photoCacheUseCase
                         .checkCachedPhotos()
                         .subscribe(
                                 this::onCacheChecked,
-                                throwable -> Log.e(TAG, "onCheckCacheButtonClick: " + throwable.getMessage()))
+                                throwable -> {
+                                    _checkCacheButton.setEnabled(true);
+
+                                    Log.e(TAG, "onCheckCacheButtonClick: " + throwable.getMessage());
+                                })
         );
     }
 
     private void onCacheChecked(Integer cacheMissCount) {
+        _checkCacheButton.setEnabled(true);
+
         Toast.makeText(getContext(), getString(R.string.cache_miss_count, cacheMissCount.toString()), Toast.LENGTH_SHORT).show();
     }
 
