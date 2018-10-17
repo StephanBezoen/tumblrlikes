@@ -98,9 +98,11 @@ public class PhotoFragment extends BaseFragment {
         _photoActionDialog.setPhotoActionListener(new PhotoActionDialog.PhotoActionListener() {
             @Override
             public void onHidePhoto(long id) {
-                registerSubscription(_updatePhotoPropertyUseCase.setHidden(id).subscribe(
-                        isHidden -> showNextPhoto()
-                ));
+                registerSubscription(
+                        _updatePhotoPropertyUseCase
+                                .setHidden(id)
+                                .subscribe(isHidden -> showNextPhoto())
+                );
             }
 
             @Override
