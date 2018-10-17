@@ -15,9 +15,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import nl.acidcats.tumblrlikes.LikesApplication;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
-import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.appsetup.AppSetupUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
@@ -29,18 +29,16 @@ import nl.acidcats.tumblrlikes.util.BroadcastReceiver;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final long MAX_STOP_TIME_MS = 1000L;
-
-    @Inject
-    LikesDataRepository _likesRepo;
-    @Inject
-    AppDataRepository _appDataRepository;
     @Inject
     FirebaseAnalytics _analytics;
     @Inject
     PincodeUseCase _pincodeUseCase;
     @Inject
     CheckTimeUseCase _checkTimeUseCase;
+    @Inject
+    AppLifecycleUseCase _appLifecycleUseCase;
+    @Inject
+    AppSetupUseCase _appSetupUseCase;
 
     private BroadcastReceiver _receiver;
     private boolean _isRestarted;
@@ -62,15 +60,19 @@ public class MainActivity extends AppCompatActivity {
         _receiver.addActionHandler(Broadcasts.REFRESH_REQUEST, this::onRefreshRequest);
         _receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST, this::onSettingsRequest);
 
-        if (_appDataRepository.isSetupComplete()) {
-            if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
-                checkLogin();
-            }
-        } else {
-            _isShowingSetup = true;
+        _appSetupUseCase
+                .isSetupComplete()
+                .subscribe(isSetupComplete -> {
+                    if (isSetupComplete) {
+                        if (savedInstanceState == null || ((LikesApplication) getApplication()).isFreshRun()) {
+                            checkLogin();
+                        }
+                    } else {
+                        _isShowingSetup = true;
 
-            showFragment(SetupFragment.newInstance());
-        }
+                        showFragment(SetupFragment.newInstance());
+                    }
+                });
     }
 
     private void onSettingsRequest(String action, Intent intent) {
@@ -158,8 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
-        long timeDiff = System.currentTimeMillis() - _appDataRepository.getAppStopTime();
-        _isStoppedTooLong = (timeDiff > MAX_STOP_TIME_MS);
+        _appLifecycleUseCase
+                .isAppStoppedTooLong(System.currentTimeMillis())
+                .subscribe(isStoppedTooLong -> _isStoppedTooLong = isStoppedTooLong);
     }
 
     @Override
@@ -182,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        _appDataRepository.setAppStopTime(System.currentTimeMillis());
+        _appLifecycleUseCase.setAppStopped(System.currentTimeMillis()).subscribe();
     }
 
     @Override

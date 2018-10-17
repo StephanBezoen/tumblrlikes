@@ -9,8 +9,14 @@ import dagger.Provides;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.appsetup.AppSetupUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.appsetup.AppSetupUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.appsetup.TumblrBlogUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.appsetup.TumblrBlogUseCaseImpl;
 import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCaseImpl;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCaseImpl;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
@@ -91,6 +97,21 @@ public class DataModule {
 
     @Provides
     CheckTimeUseCase provideCheckTimeUseCase(CheckTimeUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    AppLifecycleUseCase provideAppLifecycleUseCase(AppLifecycleUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    AppSetupUseCase providesAppSetupUseCase (AppSetupUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    TumblrBlogUseCase providesTumblrBlogUseCase(TumblrBlogUseCaseImpl impl) {
         return impl;
     }
 }

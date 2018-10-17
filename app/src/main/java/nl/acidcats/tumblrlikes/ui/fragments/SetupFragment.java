@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.appsetup.TumblrBlogUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
@@ -35,9 +35,9 @@ public class SetupFragment extends BaseFragment {
     private static final String BLOG_EXT = ".tumblr.com";
 
     @Inject
-    AppDataRepository _appRepo;
-    @Inject
     UpdatePhotoCacheUseCase _photoCacheUseCase;
+    @Inject
+    TumblrBlogUseCase _tumblrBlogUseCase;
 
     @BindView(R.id.input_tumblr_blog)
     EditText _tumblrBlogInput;
@@ -81,23 +81,28 @@ public class SetupFragment extends BaseFragment {
         };
         _tumblrBlogInput.addTextChangedListener(_textWatcher);
 
-        String tumblrBlog = _appRepo.getTumblrBlog();
-        if (tumblrBlog == null && BuildConfig.DEBUG && !TextUtils.isEmpty(BuildConfig.BLOG)) {
-            tumblrBlog = BuildConfig.BLOG;
-        }
+        registerSubscription(
+                _tumblrBlogUseCase
+                        .getTumblrBlog()
+                        .subscribe(tumblrBlog -> {
+                            if (tumblrBlog == null && BuildConfig.DEBUG && !TextUtils.isEmpty(BuildConfig.BLOG)) {
+                                tumblrBlog = BuildConfig.BLOG;
+                            }
 
-        if (tumblrBlog != null) {
-            if (tumblrBlog.endsWith(BLOG_EXT)) {
-                tumblrBlog = tumblrBlog.replace(BLOG_EXT, "");
-            }
+                            if (tumblrBlog != null) {
+                                if (tumblrBlog.endsWith(BLOG_EXT)) {
+                                    tumblrBlog = tumblrBlog.replace(BLOG_EXT, "");
+                                }
 
-            _tumblrBlogInput.setText(tumblrBlog);
-            _tumblrBlogInput.setSelection(tumblrBlog.length());
+                                _tumblrBlogInput.setText(tumblrBlog);
+                                _tumblrBlogInput.setSelection(tumblrBlog.length());
 
-            _okButton.setEnabled(true);
-        } else {
-            _okButton.setEnabled(false);
-        }
+                                _okButton.setEnabled(true);
+                            } else {
+                                _okButton.setEnabled(false);
+                            }
+                        })
+        );
 
         _blogExtensionText.setText(BLOG_EXT);
 
@@ -115,11 +120,13 @@ public class SetupFragment extends BaseFragment {
     }
 
     private void onCheckCacheButtonClick(View view) {
-        _photoCacheUseCase
-                .checkCachedPhotos()
-                .subscribe(
-                        this::onCacheChecked,
-                        throwable -> Log.e(TAG, "onCheckCacheButtonClick: " + throwable.getMessage()));
+        registerSubscription(
+                _photoCacheUseCase
+                        .checkCachedPhotos()
+                        .subscribe(
+                                this::onCacheChecked,
+                                throwable -> Log.e(TAG, "onCheckCacheButtonClick: " + throwable.getMessage()))
+        );
     }
 
     private void onCacheChecked(Integer cacheMissCount) {
@@ -127,7 +134,7 @@ public class SetupFragment extends BaseFragment {
     }
 
     private void onOkButtonClick(View view) {
-        _appRepo.setTumblrBlog(_tumblrBlogInput.getText().toString() + BLOG_EXT);
+        registerSubscription(_tumblrBlogUseCase.setTumblrBlog(_tumblrBlogInput.getText().toString() + BLOG_EXT).subscribe());
 
         sendBroadcast(Broadcasts.SETUP_COMPLETE);
     }

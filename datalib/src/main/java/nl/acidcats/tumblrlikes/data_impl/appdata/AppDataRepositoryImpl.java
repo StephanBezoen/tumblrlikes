@@ -2,10 +2,6 @@ package nl.acidcats.tumblrlikes.data_impl.appdata;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
-
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -20,8 +16,6 @@ import nl.acidcats.tumblrlikes.util.prefs.PrefsHelper;
 public class AppDataRepositoryImpl implements AppDataRepository {
     private static final String TAG = AppDataRepositoryImpl.class.getSimpleName();
 
-    private static final long TIME_BETWEEN_CHECKS_MS = 24L * 60L * 60L * 1000L; // 24 hours
-
     private static final String KEY_APP_STOP_TIME = "key_appStopTime";
     private static final String KEY_TUMBLR_API_KEY = "key_tumblrApiKey";
     private static final String KEY_TUMBLR_BLOG = "key_tumblrBlog";
@@ -34,14 +28,6 @@ public class AppDataRepositoryImpl implements AppDataRepository {
     @Inject
     public AppDataRepositoryImpl(Context context) {
         _prefsHelper = new PrefsHelper(context, context.getPackageName());
-    }
-
-    @Override
-    public boolean isSetupComplete() {
-        String apiKey = getTumblrApiKey();
-        String blog = getTumblrBlog();
-
-        return !TextUtils.isEmpty(apiKey) && !TextUtils.isEmpty(blog);
     }
 
     @Override

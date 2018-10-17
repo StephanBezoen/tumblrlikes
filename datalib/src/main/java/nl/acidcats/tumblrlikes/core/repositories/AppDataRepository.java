@@ -7,8 +7,6 @@ import android.support.annotation.Nullable;
  */
 
 public interface AppDataRepository {
-    boolean isSetupComplete();
-
     String getTumblrApiKey();
 
     void setTumblrBlog(String tumblrBlog);
