@@ -5,11 +5,7 @@ package nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.iterators;
  */
 public class LinearPhotoIterator extends AbstractPhotoIterator {
 
-    private int _currentIndex;
-
-    public LinearPhotoIterator() {
-        _currentIndex = 0;
-    }
+    private int _currentIndex = 0;
 
     @Override
     protected int getNextIndex() {

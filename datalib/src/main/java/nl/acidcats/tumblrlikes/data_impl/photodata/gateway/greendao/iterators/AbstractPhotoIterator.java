@@ -31,7 +31,7 @@ public abstract class AbstractPhotoIterator implements Iterator<PhotoEntity> {
 
     protected abstract int getNextIndex();
 
-    protected int getTotalCount() {
+    int getTotalCount() {
         return _size;
     }
 }

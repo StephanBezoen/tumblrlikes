@@ -10,6 +10,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     private final PhotoEntityDao _photoEntityDao;
     private final boolean _debug = BuildConfig.DEBUG;
     private final Map<FilterType, FilterOption> _filters = new HashMap<>();
-    private AbstractPhotoIterator _photoIterator;
+    private Iterator<PhotoEntity> _photoIterator;
 
     public GreenDAOPhotoDataGatewayImpl(Context context) {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
@@ -280,7 +281,8 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     @Override
     public void initFilter(FilterType filterType) {
         _photoIterator = filterType.isLinear() ? new LinearPhotoIterator() : new RandomPhotoIterator();
-        _photoIterator.setFilterOption(_filters.get(filterType));
+
+        ((AbstractPhotoIterator)_photoIterator).setFilterOption(_filters.get(filterType));
     }
 
     @Override
