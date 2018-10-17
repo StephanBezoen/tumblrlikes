@@ -101,18 +101,29 @@ public class PhotoFragment extends BaseFragment {
                 registerSubscription(
                         _updatePhotoPropertyUseCase
                                 .setHidden(id)
-                                .subscribe(isHidden -> showNextPhoto())
+                                .subscribe(photo -> {
+                                    _photoActionDialog.hide(PhotoActionDialog.HideFlow.INSTANT);
+
+                                    showNextPhoto();
+                                })
                 );
             }
 
             @Override
             public void onUpdatePhotoLike(long id, boolean isLiked) {
-                registerSubscription(_updatePhotoPropertyUseCase.updateLike(id, isLiked).subscribe());
+                registerSubscription(
+                        _updatePhotoPropertyUseCase
+                                .updateLike(id, isLiked)
+                                .subscribe(photo -> hidePhotoActionDialog(photo))
+                );
             }
 
             @Override
             public void onUpdatePhotoFavorite(long id, boolean isFavorite) {
-                registerSubscription(_updatePhotoPropertyUseCase.updateFavorite(id, isFavorite).subscribe());
+                registerSubscription(
+                        _updatePhotoPropertyUseCase
+                                .updateFavorite(id, isFavorite)
+                                .subscribe(photo -> hidePhotoActionDialog(photo)));
             }
         });
 
@@ -120,6 +131,12 @@ public class PhotoFragment extends BaseFragment {
         _photoNavBar.setFilterOptionSelectionListener(this::setFilterType);
 
         showPhoto();
+    }
+
+    private void hidePhotoActionDialog(Photo photo) {
+        _photoActionDialog.setViewModel(getPhotoActionDialogViewModel(photo));
+
+        _photoActionDialog.hide(PhotoActionDialog.HideFlow.ANIMATED);
     }
 
     private void setFilterType(FilterType filterType) {
@@ -149,9 +166,12 @@ public class PhotoFragment extends BaseFragment {
         Photo photo = _photoRepo.getPhotoById(photoId);
         if (photo == null) return;
 
-        _photoActionDialog.show(
-                PhotoActionDialog.PhotoActionDialogViewModel.create(photo.id(), photo.isFavorite(), photo.likeCount() > 0, photo.viewCount())
-        );
+        _photoActionDialog.show(getPhotoActionDialogViewModel(photo));
+    }
+
+    @NonNull
+    private PhotoActionDialog.PhotoActionDialogViewModel getPhotoActionDialogViewModel(Photo photo) {
+        return PhotoActionDialog.PhotoActionDialogViewModel.create(photo.id(), photo.isFavorite(), photo.likeCount() > 0, photo.viewCount());
     }
 
     private void showUI() {

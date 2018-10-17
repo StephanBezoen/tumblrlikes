@@ -1,12 +1,16 @@
 package nl.acidcats.tumblrlikes.ui.widgets;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -26,6 +30,10 @@ import nl.acidcats.tumblrlikes.R;
 public class PhotoActionDialog extends FrameLayout {
     public static final String TAG = PhotoActionDialog.class.getSimpleName();
 
+    public enum HideFlow {
+        INSTANT, ANIMATED
+    }
+
     @BindView(R.id.btn_favorite)
     TextView _favoriteButton;
     @BindView(R.id.btn_hide)
@@ -42,6 +50,8 @@ public class PhotoActionDialog extends FrameLayout {
     private Unbinder _unbinder;
     private PhotoActionListener _photoActionListener;
     private PhotoActionDialogViewModel _viewModel;
+    private ViewPropertyAnimator _hideAnimator;
+    private int _hideDuration;
 
     public PhotoActionDialog(Context context) {
         super(context);
@@ -70,9 +80,11 @@ public class PhotoActionDialog extends FrameLayout {
         _unlikeButton.setOnClickListener(this::onUnlikeButtonClick);
         _hideButton.setOnClickListener(this::onHideButtonClick);
 
-        _background.setOnClickListener(v -> hide());
+        _background.setOnClickListener(v -> hide(HideFlow.ANIMATED));
 
-        hide();
+        _hideDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        hide(HideFlow.INSTANT);
     }
 
     private void onHideButtonClick(View view) {
@@ -80,36 +92,41 @@ public class PhotoActionDialog extends FrameLayout {
             _photoActionListener.onHidePhoto(_viewModel.photoId());
         }
 
-        hide();
+        hide(HideFlow.INSTANT);
     }
 
     private void onUnlikeButtonClick(View view) {
         if (_photoActionListener != null) {
             _photoActionListener.onUpdatePhotoLike(_viewModel.photoId(), false);
         }
-
-        hide();
     }
 
     private void onLikeButtonClick(View view) {
         if (_photoActionListener != null) {
             _photoActionListener.onUpdatePhotoLike(_viewModel.photoId(), true);
         }
-
-        hide();
     }
 
     private void onFavoriteButtonClick(View view) {
         if (_photoActionListener != null) {
             _photoActionListener.onUpdatePhotoFavorite(_viewModel.photoId(), !_viewModel.isPhotoFavorite());
         }
-
-        hide();
     }
 
     public void show(@Nonnull PhotoActionDialogViewModel viewModel) {
+        setViewModel(viewModel);
+
+        setVisibility(VISIBLE);
+        setAlpha(1f);
+    }
+
+    public void setViewModel(@NonNull PhotoActionDialogViewModel viewModel) {
         _viewModel = viewModel;
 
+        updateUI();
+    }
+
+    private void updateUI() {
         @DrawableRes int iconId = _viewModel.isPhotoFavorite() ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp;
         _favoriteButton.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0);
 
@@ -122,12 +139,33 @@ public class PhotoActionDialog extends FrameLayout {
         }
 
         _viewCountText.setText(getContext().getString(R.string.view_count, _viewModel.viewCount()));
-
-        setVisibility(VISIBLE);
     }
 
-    public void hide() {
-        setVisibility(GONE);
+    public void hide(HideFlow hideFlow) {
+        switch (hideFlow) {
+            case INSTANT:
+                setVisibility(GONE);
+                break;
+            case ANIMATED:
+                if (_hideAnimator == null) {
+                    startHideAnimation();
+                }
+                break;
+        }
+    }
+
+    private void startHideAnimation() {
+        _hideAnimator = animate()
+                .alpha(0f)
+                .setDuration(_hideDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        setVisibility(GONE);
+
+                        _hideAnimator = null;
+                    }
+                });
     }
 
     public interface PhotoActionListener {

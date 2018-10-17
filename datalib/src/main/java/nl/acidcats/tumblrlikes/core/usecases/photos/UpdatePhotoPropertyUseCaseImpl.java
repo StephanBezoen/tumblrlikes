@@ -2,6 +2,7 @@ package nl.acidcats.tumblrlikes.core.usecases.photos;
 
 import javax.inject.Inject;
 
+import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -20,19 +21,19 @@ public class UpdatePhotoPropertyUseCaseImpl implements UpdatePhotoPropertyUseCas
     }
 
     @Override
-    public Observable<Boolean> updateLike(long id, boolean isLiked) {
+    public Observable<Photo> updateLike(long id, boolean isLiked) {
         return Observable
                 .fromCallable(() -> {
                     _photoDataRepository.setPhotoLiked(id, isLiked);
 
-                    return true;
+                    return _photoDataRepository.getPhotoById(id);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<Boolean> updateFavorite(long id, boolean isFavorite) {
+    public Observable<Photo> updateFavorite(long id, boolean isFavorite) {
         return Observable
                 .fromCallable(() -> {
                     _photoDataRepository.setPhotoFavorite(id, isFavorite);
@@ -41,14 +42,14 @@ public class UpdatePhotoPropertyUseCaseImpl implements UpdatePhotoPropertyUseCas
                         _photoDataRepository.setPhotoLiked(id, true);
                     }
 
-                    return true;
+                    return _photoDataRepository.getPhotoById(id);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public Observable<Boolean> setHidden(long id) {
+    public Observable<Photo> setHidden(long id) {
         return Observable
                 .fromCallable(() -> {
                     _photoDataRepository.setPhotoFavorite(id, false);
@@ -56,7 +57,7 @@ public class UpdatePhotoPropertyUseCaseImpl implements UpdatePhotoPropertyUseCas
 
                     _photoDataRepository.hidePhoto(id);
 
-                    return true;
+                    return _photoDataRepository.getPhotoById(id);
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
