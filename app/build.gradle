@@ -118,6 +118,8 @@ dependencies {
     // AutoValue
     implementation libs.autoValue
     annotationProcessor libs.autoValue
+    implementation libs.autoValueParcel
+    annotationProcessor libs.autoValueParcel
 
     // Stetho
     implementation libs.stetho

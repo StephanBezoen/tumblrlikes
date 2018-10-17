@@ -3,6 +3,7 @@ package nl.acidcats.tumblrlikes.ui.fragments;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
+import com.google.auto.value.AutoValue;
 
 import javax.inject.Inject;
 
@@ -35,9 +37,9 @@ import nl.acidcats.tumblrlikes.util.GlideApp;
  */
 
 public class PhotoFragment extends BaseFragment {
+    private static final String TAG = PhotoFragment.class.getSimpleName();
 
-    private static final String KEY_PHOTO_URL = "key_photoUrl";
-    private static final String KEY_PHOTO_ID = "key_photoId";
+    private static final String KEY_VIEW_MODEL = "key_" + TAG + "_viewModel";
 
     private static final long HIDE_UI_DELAY_MS = 2000L;
 
@@ -53,12 +55,10 @@ public class PhotoFragment extends BaseFragment {
     @BindView(R.id.photo_nav_bar)
     PhotoNavBar _photoNavBar;
 
-    private String _photoUrl;
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
     private boolean _isTest = true;
-    private Long _photoId;
-    private String _photoFallbackUrl;
+    private PhotoFragmentViewModel _viewModel;
 
     public static PhotoFragment newInstance() {
         return new PhotoFragment();
@@ -74,8 +74,7 @@ public class PhotoFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            _photoUrl = savedInstanceState.getString(KEY_PHOTO_URL);
-            _photoId = savedInstanceState.getLong(KEY_PHOTO_ID);
+            _viewModel = savedInstanceState.getParcelable(KEY_VIEW_MODEL);
         }
     }
 
@@ -114,7 +113,7 @@ public class PhotoFragment extends BaseFragment {
                 registerSubscription(
                         _updatePhotoPropertyUseCase
                                 .updateLike(id, isLiked)
-                                .subscribe(photo -> hidePhotoActionDialog(photo))
+                                .subscribe(photo -> onPhotoPropertyUpdated(photo))
                 );
             }
 
@@ -123,7 +122,7 @@ public class PhotoFragment extends BaseFragment {
                 registerSubscription(
                         _updatePhotoPropertyUseCase
                                 .updateFavorite(id, isFavorite)
-                                .subscribe(photo -> hidePhotoActionDialog(photo)));
+                                .subscribe(photo -> onPhotoPropertyUpdated(photo)));
             }
         });
 
@@ -133,8 +132,10 @@ public class PhotoFragment extends BaseFragment {
         showPhoto();
     }
 
-    private void hidePhotoActionDialog(Photo photo) {
-        _photoActionDialog.setViewModel(getPhotoActionDialogViewModel(photo));
+    private void onPhotoPropertyUpdated(Photo photo) {
+        createViewModel(photo);
+
+        _photoActionDialog.updateViewModel(createPhotoActionDialogViewModel());
 
         _photoActionDialog.hide(PhotoActionDialog.HideFlow.ANIMATED);
     }
@@ -154,7 +155,7 @@ public class PhotoFragment extends BaseFragment {
                 showUI();
                 break;
             case LONG_PRESS:
-                showPhotoActionDialog(_photoId);
+                _photoActionDialog.show(createPhotoActionDialogViewModel());
                 break;
             case DOUBLE_TAP:
                 _photoView.resetScale();
@@ -162,16 +163,13 @@ public class PhotoFragment extends BaseFragment {
         }
     }
 
-    private void showPhotoActionDialog(long photoId) {
-        Photo photo = _photoRepo.getPhotoById(photoId);
-        if (photo == null) return;
-
-        _photoActionDialog.show(getPhotoActionDialogViewModel(photo));
-    }
-
     @NonNull
-    private PhotoActionDialog.PhotoActionDialogViewModel getPhotoActionDialogViewModel(Photo photo) {
-        return PhotoActionDialog.PhotoActionDialogViewModel.create(photo.id(), photo.isFavorite(), photo.likeCount() > 0, photo.viewCount());
+    private PhotoActionDialog.PhotoActionDialogViewModel createPhotoActionDialogViewModel() {
+        return PhotoActionDialog.PhotoActionDialogViewModel.create(
+                _viewModel.photoId(),
+                _viewModel.isFavorite(),
+                _viewModel.isLiked(),
+                _viewModel.viewCount());
     }
 
     private void showUI() {
@@ -200,20 +198,17 @@ public class PhotoFragment extends BaseFragment {
     }
 
     private void showPhoto() {
-        if (_photoUrl == null) {
+        if (_viewModel == null || _viewModel.url() == null) {
             getNextPhoto();
         }
-        if (_photoUrl == null) return;
-
-        String url = _photoUrl;
-        if (!_photoUrl.startsWith("http")) url = "file:" + url;
+        if (_viewModel == null || _viewModel.url() == null) return;
 
         _photoView.resetScale();
 
-        loadPhoto(url, new RequestListener<Drawable>() {
+        loadPhoto(_viewModel.url(), new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                loadPhoto(_photoFallbackUrl, null);
+                loadPhoto(_viewModel.fallbackUrl(), null);
 
                 return true;
             }
@@ -224,7 +219,7 @@ public class PhotoFragment extends BaseFragment {
             }
         });
 
-        _photoRepo.startPhotoView(_photoId);
+        _photoRepo.startPhotoView(_viewModel.photoId());
     }
 
     private void loadPhoto(String url, @Nullable RequestListener<Drawable> listener) {
@@ -237,16 +232,27 @@ public class PhotoFragment extends BaseFragment {
     }
 
     private void getNextPhoto() {
-        if (_photoUrl != null) {
+        if (_viewModel != null && _viewModel.url() != null) {
             endPhotoView();
         }
 
         Photo photo = _photoRepo.getNextPhoto();
         if (photo == null) return;
 
-        _photoId = photo.id();
-        _photoUrl = photo.isCached() ? photo.filePath() : photo.url();
-        _photoFallbackUrl = photo.url();
+        createViewModel(photo);
+    }
+
+    private void createViewModel(Photo photo) {
+        String url = photo.isCached() ? photo.filePath() : photo.url();
+        if (url != null && !url.startsWith("http")) url = "file:" + url;
+
+        _viewModel = PhotoFragmentViewModel.create(
+                photo.id(),
+                url,
+                photo.url(),
+                photo.isFavorite(),
+                photo.likeCount() > 0,
+                photo.viewCount());
     }
 
     private void showNextPhoto() {
@@ -261,7 +267,7 @@ public class PhotoFragment extends BaseFragment {
 
         _photoView.setVisibility(View.VISIBLE);
 
-        _photoRepo.startPhotoView(_photoId);
+        _photoRepo.startPhotoView(_viewModel.photoId());
 
         hideUI();
     }
@@ -278,18 +284,15 @@ public class PhotoFragment extends BaseFragment {
     }
 
     private void endPhotoView() {
-        _photoRepo.endPhotoView(_photoId);
+        _photoRepo.endPhotoView(_viewModel.photoId());
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (_photoUrl != null) {
-            outState.putString(KEY_PHOTO_URL, _photoUrl);
-        }
-        if (_photoId != null) {
-            outState.putLong(KEY_PHOTO_ID, _photoId);
+        if (_viewModel != null) {
+            outState.putParcelable(KEY_VIEW_MODEL, _viewModel);
         }
     }
 
@@ -299,5 +302,24 @@ public class PhotoFragment extends BaseFragment {
         _photoView.onDestroyView();
 
         super.onDestroyView();
+    }
+
+    @AutoValue
+    static abstract class PhotoFragmentViewModel implements Parcelable {
+        abstract long photoId();
+
+        abstract String url();
+
+        abstract String fallbackUrl();
+
+        abstract boolean isFavorite();
+
+        abstract boolean isLiked();
+
+        abstract int viewCount();
+
+        static PhotoFragmentViewModel create(long photoId, String url, String fallbackUrl, boolean isFavorite, boolean isLiked, int viewCount) {
+            return new AutoValue_PhotoFragment_PhotoFragmentViewModel(photoId, url, fallbackUrl, isFavorite, isLiked, viewCount);
+        }
     }
 }

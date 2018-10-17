@@ -55,20 +55,20 @@ ext {
     ]
 
     Versions = [
-            minSdk      : 21,
-            targetSdk   : 28,
-            compileSdk  : 28,
+            minSdk     : 21,
+            targetSdk  : 28,
+            compileSdk : 28,
 
             // Support libraries
-            supportLibs : '27.1.1',
+            supportLibs: '27.1.1',
 
             // Library versions
-            dagger      : '2.11',
-            butterknife : '8.8.1',
-            okHttp      : '3.9.1',
-            retrofit    : '2.3.0',
-            rx          : '1.2.1',
-            glide       : '4.1.1'
+            dagger     : '2.11',
+            butterknife: '8.8.1',
+            okHttp     : '3.9.1',
+            retrofit   : '2.3.0',
+            rx         : '1.2.1',
+            glide      : '4.1.1'
     ]
 
     Libraries = [
@@ -108,8 +108,9 @@ ext {
             okHttp                        : "com.squareup.okhttp3:okhttp:${Versions.okHttp}",
             okHttp_loggingInterceptor     : "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}",
 
-            // AutValue
+            // AutoValue
             autoValue                     : "com.google.auto.value:auto-value:1.5",
+            autoValueParcel               : "com.ryanharter.auto.value:auto-value-parcel:0.2.6",
 
             // GreenDAO
             greenDAO                      : 'org.greenrobot:greendao:3.2.2',

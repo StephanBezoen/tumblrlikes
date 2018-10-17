@@ -114,13 +114,13 @@ public class PhotoActionDialog extends FrameLayout {
     }
 
     public void show(@Nonnull PhotoActionDialogViewModel viewModel) {
-        setViewModel(viewModel);
+        updateViewModel(viewModel);
 
         setVisibility(VISIBLE);
         setAlpha(1f);
     }
 
-    public void setViewModel(@NonNull PhotoActionDialogViewModel viewModel) {
+    public void updateViewModel(@NonNull PhotoActionDialogViewModel viewModel) {
         _viewModel = viewModel;
 
         updateUI();
