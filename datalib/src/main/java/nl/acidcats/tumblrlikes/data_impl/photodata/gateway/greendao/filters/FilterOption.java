@@ -11,7 +11,5 @@ import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.entities.Pho
 public interface FilterOption {
     PhotoEntity getPhoto(int index);
 
-    List<PhotoEntity> getAll();
-
-    long getCount();
+    int getCount();
 }

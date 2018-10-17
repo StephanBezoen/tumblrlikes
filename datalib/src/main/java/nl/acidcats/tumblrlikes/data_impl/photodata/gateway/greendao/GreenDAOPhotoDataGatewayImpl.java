@@ -24,6 +24,9 @@ import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.filters.Late
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.filters.LeastSeenFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.filters.PopularFilterOptionImpl;
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.filters.UnhiddenFilterOptionImpl;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.iterators.AbstractPhotoIterator;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.iterators.LinearPhotoIterator;
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.iterators.RandomPhotoIterator;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import nl.acidcats.tumblrlikes.db_impl_greendao.DaoMaster;
 import nl.acidcats.tumblrlikes.db_impl_greendao.PhotoEntityDao;
@@ -43,10 +46,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     private final PhotoEntityDao _photoEntityDao;
     private final boolean _debug = BuildConfig.DEBUG;
     private final Map<FilterType, FilterOption> _filters = new HashMap<>();
-    private FilterOption _currentFilter;
-    private FilterType _currentFilterType;
-    private int _runningIndex;
-    private List<PhotoEntity> _currentPhotoList;
+    private AbstractPhotoIterator _photoIterator;
 
     public GreenDAOPhotoDataGatewayImpl(Context context) {
         DaoMaster.OpenHelper helper = new DbOpenHelper(context, DATABASE_NAME, null);
@@ -63,9 +63,6 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
         _filters.put(FilterType.POPULAR, new PopularFilterOptionImpl(_photoEntityDao));
         _filters.put(FilterType.LATEST, new LatestFilterOptionImpl(_photoEntityDao));
         _filters.put(FilterType.LEAST_SEEN, new LeastSeenFilterOptionImpl(_photoEntityDao));
-
-        _currentFilterType = FilterType.UNHIDDEN;
-        _currentFilter = _filters.get(_currentFilterType);
     }
 
     private void initQueries() {
@@ -128,7 +125,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     public Photo getNextPhoto() {
         if (_debug) Log.d(TAG, "getNextPhoto: ");
 
-        PhotoEntity photoEntity = _currentFilterType.isRandom() ? getRandomPhoto() : getNextPhotoInLine();
+        PhotoEntity photoEntity = _photoIterator.next();
 
         if (photoEntity != null) {
             // increase view count
@@ -156,25 +153,6 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
                 photoEntity.getViewTime(),
                 photoEntity.getTimePerView()
         );
-    }
-
-    private PhotoEntity getNextPhotoInLine() {
-        PhotoEntity photo = _currentPhotoList.get(_runningIndex);
-
-        _runningIndex++;
-        if (_runningIndex >= _currentPhotoList.size()) {
-            _runningIndex = 0;
-        }
-
-        return photo;
-    }
-
-    @Nullable
-    private PhotoEntity getRandomPhoto() {
-        int index = (int) (_currentFilter.getCount() * Math.random());
-        if (_debug) Log.d(TAG, "getNextPhoto: index = " + index);
-
-        return _currentFilter.getPhoto(index);
     }
 
     @Override
@@ -300,21 +278,9 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     }
 
     @Override
-    public void setFilterType(FilterType filterType) {
-        _currentFilterType = filterType;
-
-        _currentFilter = _filters.get(filterType);
-
-        if (filterType.isLinear()) {
-            _currentPhotoList = _currentFilter.getAll();
-        }
-
-        _runningIndex = 0;
-    }
-
-    @Override
-    public FilterType getFilterType() {
-        return _currentFilterType;
+    public void initFilter(FilterType filterType) {
+        _photoIterator = filterType.isLinear() ? new LinearPhotoIterator() : new RandomPhotoIterator();
+        _photoIterator.setFilterOption(_filters.get(filterType));
     }
 
     @Override

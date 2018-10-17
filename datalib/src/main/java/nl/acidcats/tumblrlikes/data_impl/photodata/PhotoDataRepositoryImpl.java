@@ -1,6 +1,5 @@
 package nl.acidcats.tumblrlikes.data_impl.photodata;
 
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -28,10 +27,12 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     private long _startViewTime;
     private long _currentPhotoId;
     private final boolean _debug = BuildConfig.DEBUG;
+    private FilterType _currentFilterType;
 
     @Inject
     public PhotoDataRepositoryImpl(PhotoDataGateway photoDataGateway) {
         _photoDataGateway = photoDataGateway;
+        setFilterType(_currentFilterType);
     }
 
     @Override
@@ -151,12 +152,14 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
 
     @Override
     public void setFilterType(FilterType filterType) {
-        _photoDataGateway.setFilterType(filterType);
+        _currentFilterType = filterType;
+
+        _photoDataGateway.initFilter(filterType);
     }
 
     @Override
     public FilterType getFilterType() {
-        return _photoDataGateway.getFilterType();
+        return _currentFilterType;
     }
 
     @Override

@@ -28,13 +28,8 @@ abstract class AbstractFilterOptionImpl implements FilterOption {
     }
 
     @Override
-    public long getCount() {
-        return _countQuery.count();
-    }
-
-    @Override
-    public List<PhotoEntity> getAll() {
-        return getQueryBuilder().list();
+    public int getCount() {
+        return (int)_countQuery.count();
     }
 
     @Nullable

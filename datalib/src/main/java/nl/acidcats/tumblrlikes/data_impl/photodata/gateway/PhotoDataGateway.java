@@ -36,9 +36,7 @@ public interface PhotoDataGateway {
 
     void addPhotoViewTime(long id, long timeInMs);
 
-    void setFilterType(FilterType filterType);
-
-    FilterType getFilterType();
+    void initFilter(FilterType filterType);
 
     List<Photo> getCachedPhotos();
 
