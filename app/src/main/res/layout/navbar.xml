@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     >
 
-    <nl.acidcats.tumblrlikes.ui.widgets.filterdropdown.FilterDropdown
+    <nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown
         android:id="@+id/filter_dropdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.widgets;
+package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets;
 
 
 import android.animation.Animator;

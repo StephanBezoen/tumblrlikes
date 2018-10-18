@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.fragments;
+package nl.acidcats.tumblrlikes.ui.screens.login_screen;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +18,7 @@ import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
+import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper;
 

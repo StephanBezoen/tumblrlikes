@@ -6,19 +6,19 @@
               android:background="@color/photo_background"
     >
 
-    <nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView
+    <nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
         android:id="@+id/photo"
         android:contentDescription="@string/pretty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
 
-    <nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog
+    <nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog
         android:id="@+id/photo_action_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <nl.acidcats.tumblrlikes.ui.widgets.PhotoNavBar
+    <nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoNavBar
         android:paddingTop="20dp"
         android:id="@+id/photo_nav_bar"
         android:layout_width="match_parent"

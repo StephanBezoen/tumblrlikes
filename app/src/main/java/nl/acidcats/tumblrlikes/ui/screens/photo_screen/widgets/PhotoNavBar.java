@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.widgets;
+package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +18,8 @@ import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
-import nl.acidcats.tumblrlikes.ui.widgets.filterdropdown.FilterDropdown;
-import nl.acidcats.tumblrlikes.ui.widgets.filterdropdown.FilterOptionSelectionListener;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterOptionSelectionListener;
 
 /**
  * Created by stephan on 16/05/2017.

@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.fragments;
+package nl.acidcats.tumblrlikes.ui.screens.base;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +20,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created on 30/07/2018.
  */
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements BaseView{
 
     private Unbinder _unbinder;
     private CompositeSubscription _unsubscriber = new CompositeSubscription();
@@ -42,7 +42,8 @@ public abstract class BaseFragment extends Fragment {
         _unbinder = ButterKnife.bind(this, view);
     }
 
-    protected void sendBroadcast(String action) {
+    @Override
+    public void sendBroadcast(String action) {
         if (getContext() != null) {
             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(action));
         }

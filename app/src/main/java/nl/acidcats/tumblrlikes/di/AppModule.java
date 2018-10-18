@@ -9,6 +9,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import nl.acidcats.tumblrlikes.LikesApplication;
+import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenContract;
+import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenPresenter;
 
 /**
  * Created by stephan on 28/03/2017.
@@ -33,5 +35,10 @@ public class AppModule {
     @Provides
     FirebaseAnalytics provideAnalytics() {
         return _analytics;
+    }
+
+    @Provides
+    SetupScreenContract.Presenter provideSetupScreenPresenter(SetupScreenPresenter impl) {
+        return impl;
     }
 }

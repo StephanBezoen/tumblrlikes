@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.fragments;
+package nl.acidcats.tumblrlikes.ui.screens.photo_screen;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -29,9 +29,10 @@ import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
-import nl.acidcats.tumblrlikes.ui.widgets.InteractiveImageView;
-import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
-import nl.acidcats.tumblrlikes.ui.widgets.PhotoNavBar;
+import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoNavBar;
 import nl.acidcats.tumblrlikes.util.GlideApp;
 
 /**

@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.fragments;
+package nl.acidcats.tumblrlikes.ui.screens.load_likes_screen;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -28,6 +28,7 @@ import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
+import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
 
 /**
  * Created by stephan on 13/04/2017.

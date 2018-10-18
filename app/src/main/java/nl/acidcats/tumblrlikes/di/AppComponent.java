@@ -5,11 +5,10 @@ import javax.inject.Singleton;
 import dagger.Component;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.MainActivity;
-import nl.acidcats.tumblrlikes.ui.fragments.LoadLikesFragment;
-import nl.acidcats.tumblrlikes.ui.fragments.LoginFragment;
-import nl.acidcats.tumblrlikes.ui.fragments.PhotoFragment;
-import nl.acidcats.tumblrlikes.ui.widgets.PhotoActionDialog;
-import nl.acidcats.tumblrlikes.ui.fragments.SetupFragment;
+import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesFragment;
+import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginFragment;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoFragment;
+import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupFragment;
 
 /**
  * Created by stephan on 28/03/2017.
@@ -27,8 +26,6 @@ public interface AppComponent {
     void inject(PhotoFragment fragment);
 
     void inject(CacheService service);
-
-    void inject(PhotoActionDialog photoActionDialog);
 
     void inject(SetupFragment fragment);
 }

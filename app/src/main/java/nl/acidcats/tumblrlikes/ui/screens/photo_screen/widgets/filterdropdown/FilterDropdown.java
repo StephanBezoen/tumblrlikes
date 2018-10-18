@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.widgets.filterdropdown;
+package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
