@@ -27,7 +27,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     private long _startViewTime;
     private long _currentPhotoId;
     private final boolean _debug = BuildConfig.DEBUG;
-    private FilterType _currentFilterType;
+    private FilterType _currentFilterType = FilterType.UNHIDDEN;
 
     @Inject
     public PhotoDataRepositoryImpl(PhotoDataGateway photoDataGateway) {

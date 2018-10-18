@@ -68,7 +68,7 @@ ext {
             okHttp     : '3.9.1',
             retrofit   : '2.3.0',
             rx         : '1.2.1',
-            glide      : '4.1.1'
+            glide      : '4.8.0'
     ]
 
     Libraries = [
