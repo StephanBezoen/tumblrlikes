@@ -22,7 +22,7 @@ public class LikesDataRepositoryImpl implements LikesDataRepository {
     private final LikesDataGateway _likesDataGateway;
     private final boolean _debug = BuildConfig.DEBUG;
     private final TumblrLikeTransformer _transformer;
-    private boolean _hasMore;
+    private boolean _isLoadComplete;
     private long _timeOfLastLike;
 
     @Inject
@@ -36,28 +36,28 @@ public class LikesDataRepositoryImpl implements LikesDataRepository {
     public Observable<List<Photo>> getLikedPhotos(String blogName, int count, long beforeTime) {
         return _likesDataGateway
                 .getLikes(blogName, count, beforeTime)
-                .doOnNext(this::checkHasMore)
                 .doOnError(throwable -> new LoadLikesException(((HttpException) throwable).code()))
+                .map(this::checkHasMore)
                 .flatMapIterable(tumblrLikeVOs -> tumblrLikeVOs)
                 .filter(TumblrLikeVO::isPhoto)
                 .map(_transformer::transformToPhotos);
     }
 
-    private void checkHasMore(List<TumblrLikeVO> tumblrLikeVOs) {
+    private List<TumblrLikeVO> checkHasMore(List<TumblrLikeVO> tumblrLikeVOs) {
         if (tumblrLikeVOs.size() == 0) {
-            _hasMore = false;
+            _isLoadComplete = true;
         } else {
-            _hasMore = true;
+            _isLoadComplete = false;
 
             _timeOfLastLike = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).timestamp();
         }
+
+        return tumblrLikeVOs;
     }
 
     @Override
-    public boolean hasMoreLikes(long mostRecentCheckTime) {
-        // check if there's more to load, based on whether previous request returned empty, and whether last item loaded had timestamp after most recent
-        // check time
-        return _hasMore && (_timeOfLastLike > mostRecentCheckTime);
+    public boolean isLoadComplete() {
+        return _isLoadComplete;
     }
 
     @Override

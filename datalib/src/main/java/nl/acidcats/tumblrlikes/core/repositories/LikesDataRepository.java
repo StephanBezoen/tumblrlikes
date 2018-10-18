@@ -12,7 +12,7 @@ import rx.Observable;
 public interface LikesDataRepository {
     Observable<List<Photo>> getLikedPhotos(String blogName, int count, long beforeTime);
 
-    boolean hasMoreLikes(long mostRecentCheckTime);
+    boolean isLoadComplete();
 
     long getLastLikeTime();
 }

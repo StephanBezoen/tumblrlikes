@@ -1,12 +1,10 @@
 package nl.acidcats.tumblrlikes.core.usecases.likes;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode;
-import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
@@ -58,7 +56,7 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
 
     @Override
     public Observable<Boolean> checkLoadLikesComplete(long currentTimeInMs) {
-        boolean isComplete = !_likesDataRepository.hasMoreLikes(_appDataRepository.getLatestCheckTimestamp());
+        boolean isComplete = _likesDataRepository.isLoadComplete() || (_appDataRepository.getLatestCheckTimestamp() >= _likesDataRepository.getLastLikeTime());
 
         if (isComplete) {
             _appDataRepository.setLatestCheckTimestamp(currentTimeInMs);
