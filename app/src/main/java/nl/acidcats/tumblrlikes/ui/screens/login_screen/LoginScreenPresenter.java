@@ -70,7 +70,7 @@ public class LoginScreenPresenter extends BasePresenterImpl<LoginScreenContract.
 
     @Override
     public void skipLogin() {
-        getView().sendBroadcast(Broadcasts.PINCODE_OK);
+        notify(Broadcasts.PINCODE_OK);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class LoginScreenPresenter extends BasePresenterImpl<LoginScreenContract.
                 authentication.subscribe(
                         isAuthenticated -> {
                             if (isAuthenticated) {
-                                getView().sendBroadcast(Broadcasts.PINCODE_OK);
+                                notify(Broadcasts.PINCODE_OK);
                             }
                         })
         );

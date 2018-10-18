@@ -2,13 +2,10 @@ package nl.acidcats.tumblrlikes.ui.screens.load_likes_screen;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,31 +13,22 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.Date;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode;
-import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
-import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
 import nl.acidcats.tumblrlikes.di.AppComponent;
-import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
 
 /**
  * Created by stephan on 13/04/2017.
  */
 
-public class LoadLikesFragment extends BaseFragment {
+public class LoadLikesFragment extends BaseFragment implements LoadLikesScreenContract.View {
     private static final String TAG = LoadLikesFragment.class.getSimpleName();
 
     @Inject
-    GetLikesPageUseCase _likesPageUseCase;
-    @Inject
-    UpdatePhotoCacheUseCase _photoCacheUseCase;
+    LoadLikesScreenContract.Presenter _presenter;
 
     @BindView(R.id.tv_image_count)
     TextView _imageCountText;
@@ -50,9 +38,6 @@ public class LoadLikesFragment extends BaseFragment {
     ProgressBar _spinner;
     @BindView(R.id.btn_cancel)
     Button _cancelButton;
-
-    private int _pageCount;
-    private boolean _isLoadingCancelled;
 
     public static LoadLikesFragment newInstance() {
         return new LoadLikesFragment();
@@ -73,106 +58,52 @@ public class LoadLikesFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        _presenter.setView(this);
+        _presenter.onViewCreated();
+
         if (getContext() != null) {
             _spinner.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
         }
 
-        _cancelButton.setOnClickListener(v -> cancelLoading());
-
-        _photoCacheUseCase
-                .removeCachedHiddenPhotos()
-                .subscribe(
-                        uncachedCount -> startLoadingLikesPages(),
-                        throwable -> {
-                            Log.e(TAG, "onViewCreated: removeCachedHiddenPhotos: " + throwable.getMessage());
-
-                            startLoadingLikesPages();
-                        }
-                );
+        _cancelButton.setOnClickListener(v -> _presenter.cancelLoading());
     }
 
-    private void cancelLoading() {
-        _isLoadingCancelled = true;
-
+    @Override
+    public void showLoadingCancelled() {
         _imageCountText.setText(R.string.loading_cancelled);
 
         _cancelButton.setEnabled(false);
     }
 
-    private void startLoadingLikesPages() {
-        loadLikesPage(LoadLikesMode.FRESH);
+    @Override
+    public void showLoadProgress(int pageCount, long totalPhotoCount) {
+        _imageCountText.setText(getString(R.string.image_page_count, pageCount, totalPhotoCount));
     }
 
-    private void loadLikesPage(LoadLikesMode mode) {
-        _likesPageUseCase
-                .loadLikesPage(mode)
-                .subscribe(this::handleLikesPageLoaded, this::handleError);
+    @Override
+    public void showAllLikesLoaded(long count) {
+        _imageCountText.setText(getString(R.string.total_image_count, count));
+        _loadingText.setText(R.string.all_loaded);
     }
 
-    private void handleLikesPageLoaded(long totalPhotoCount) {
-        if (_isLoadingCancelled) {
-            notifyLoadingComplete();
-
-            return;
-        }
-
-        _pageCount++;
-
-        _likesPageUseCase
-                .checkLoadLikesComplete(new Date().getTime())
-                .subscribe(isComplete -> {
-                    if (isComplete) {
-                        onAllLikesLoaded(totalPhotoCount);
-                    } else {
-                        _imageCountText.setText(getString(R.string.image_page_count, _pageCount, totalPhotoCount));
-
-                        loadLikesPage(LoadLikesMode.CONTINUED);
-                    }
-                }, throwable -> Log.e(TAG, "handleLikesPageLoaded: " + throwable.getMessage()));
-    }
-
-    private void handleError(Throwable throwable) {
-        Log.e(TAG, "handleError: " + throwable.getMessage());
-
-        @StringRes int errorStringId = R.string.error_load;
-
-        if (throwable instanceof LoadLikesException) {
-            LoadLikesException exception = (LoadLikesException) throwable;
-            if (exception.getCode() == 403) {
-                errorStringId = R.string.error_403;
-            } else if (exception.getCode() == 404) {
-                errorStringId = R.string.error_404;
-            } else if (exception.getCode() >= 300 && exception.getCode() < 500) {
-                errorStringId = R.string.error_300_400;
-            } else if (exception.getCode() >= 500 && exception.getCode() < 600) {
-                errorStringId = R.string.error_500;
-            }
-        }
-
+    @Override
+    public void showErrorAlert(int errorStringId) {
         if (getContext() != null) {
             new AlertDialog.Builder(getContext())
                     .setTitle(R.string.error_title)
                     .setMessage(errorStringId)
-                    .setPositiveButton(R.string.btn_retry, (dialog, which) -> startLoadingLikesPages())
-                    .setNeutralButton(R.string.btn_settings, (dialog, which) -> onSettings())
-                    .setNegativeButton(R.string.btn_cancel, (dialog, which) -> notifyLoadingComplete())
+                    .setPositiveButton(R.string.btn_retry, (dialog, which) -> _presenter.retryLoading())
+                    .setNeutralButton(R.string.btn_settings, (dialog, which) -> _presenter.showSettings())
+                    .setNegativeButton(R.string.btn_cancel, (dialog, which) -> _presenter.skipLoading())
                     .create()
                     .show();
         }
     }
 
-    private void onSettings() {
-        sendBroadcast(Broadcasts.SETTINGS_REQUEST);
-    }
+    @Override
+    public void onDestroyView() {
+        _presenter.onDestroyView();
 
-    private void onAllLikesLoaded(long count) {
-        _imageCountText.setText(getString(R.string.total_image_count, count));
-        _loadingText.setText(R.string.all_loaded);
-
-        new Handler().postDelayed(this::notifyLoadingComplete, 500);
-    }
-
-    private void notifyLoadingComplete() {
-        sendBroadcast(Broadcasts.ALL_LIKES_LOADED);
+        super.onDestroyView();
     }
 }

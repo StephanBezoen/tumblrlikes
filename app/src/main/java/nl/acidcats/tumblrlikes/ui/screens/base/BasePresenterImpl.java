@@ -6,7 +6,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created on 18/10/2018.
  */
-public class BasePresenterImpl<V> implements BasePresenter<V>  {
+public class BasePresenterImpl<V extends BaseView> implements BasePresenter<V>  {
 
     private V _view;
     private CompositeSubscription _unsubscriber = new CompositeSubscription();
@@ -18,6 +18,11 @@ public class BasePresenterImpl<V> implements BasePresenter<V>  {
 
     public V getView() {
         return _view;
+    }
+
+    @Override
+    public void notify(String action) {
+        _view.sendBroadcast(action);
     }
 
     protected void registerSubscription(Subscription subscription) {

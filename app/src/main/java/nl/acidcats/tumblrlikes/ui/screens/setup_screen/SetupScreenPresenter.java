@@ -88,6 +88,6 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
         registerSubscription(
                 _tumblrBlogUseCase
                         .setTumblrBlog(blog)
-                        .subscribe(ignored -> getView().sendBroadcast(Broadcasts.SETUP_COMPLETE)));
+                        .subscribe(ignored -> notify(Broadcasts.SETUP_COMPLETE)));
     }
 }

@@ -6,5 +6,7 @@ package nl.acidcats.tumblrlikes.ui.screens.base;
 public interface BasePresenter<T> {
     void setView(T view);
 
+    void notify(String screen);
+
     void onDestroyView();
 }
