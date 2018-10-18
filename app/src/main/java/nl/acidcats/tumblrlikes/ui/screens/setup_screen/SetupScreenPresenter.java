@@ -25,7 +25,7 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
     TumblrBlogUseCase _tumblrBlogUseCase;
 
     @Inject
-    public SetupScreenPresenter() {
+    SetupScreenPresenter() {
     }
 
     @Override

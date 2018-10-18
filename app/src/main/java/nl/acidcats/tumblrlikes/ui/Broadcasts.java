@@ -7,7 +7,7 @@ package nl.acidcats.tumblrlikes.ui;
 public class Broadcasts {
     private static final String PREFIX = Broadcasts.class.getCanonicalName();
 
-    public static final String PASSWORD_OK = PREFIX + ".passwordOk";
+    public static final String PINCODE_OK = PREFIX + ".pincodeOk";
     public static final String ALL_LIKES_LOADED = PREFIX + ".allLikesLoaded";
     public static final String DATABASE_RESET = PREFIX + ".databaseReset";
     public static final String SETUP_COMPLETE = PREFIX + ".setupComplete";

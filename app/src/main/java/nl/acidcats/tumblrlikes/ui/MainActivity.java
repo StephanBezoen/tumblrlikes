@@ -22,6 +22,7 @@ import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase;
 import nl.acidcats.tumblrlikes.data.services.CacheService;
 import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesFragment;
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginFragment;
+import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoFragment;
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupFragment;
 import nl.acidcats.tumblrlikes.util.BroadcastReceiver;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         ((LikesApplication) getApplication()).getAppComponent().inject(this);
 
         _receiver = new BroadcastReceiver(this);
-        _receiver.addActionHandler(Broadcasts.PASSWORD_OK, this::onPasswordOk);
+        _receiver.addActionHandler(Broadcasts.PINCODE_OK, this::onPincodeOk);
         _receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED, this::onAllLikesLoaded);
         _receiver.addActionHandler(Broadcasts.DATABASE_RESET, this::onDatabaseReset);
         _receiver.addActionHandler(Broadcasts.SETUP_COMPLETE, this::onSetupComplete);
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         _pincodeUseCase.isAppPincodeProtected().subscribe(
                 isPincodeProtected -> {
                     if (isPincodeProtected) {
-                        showFragment(LoginFragment.newInstance(LoginFragment.Mode.LOGIN));
+                        showFragment(LoginFragment.newInstance(LoginScreenContract.Mode.LOGIN));
                     } else {
                         enterApp();
                     }
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     if (isPincodeProtected) {
                         enterApp();
                     } else {
-                        showFragment(LoginFragment.newInstance(LoginFragment.Mode.NEW_PINCODE));
+                        showFragment(LoginFragment.newInstance(LoginScreenContract.Mode.NEW_PINCODE));
                     }
                 }
         );
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         showFragment(PhotoFragment.newInstance());
     }
 
-    private void onPasswordOk(String action, Intent intent) {
+    private void onPincodeOk(String action, Intent intent) {
         enterApp();
     }
 

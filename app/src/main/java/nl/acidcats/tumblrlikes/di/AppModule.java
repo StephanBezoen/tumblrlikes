@@ -9,6 +9,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import nl.acidcats.tumblrlikes.LikesApplication;
+import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract;
+import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenPresenter;
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenContract;
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenPresenter;
 
@@ -39,6 +41,11 @@ public class AppModule {
 
     @Provides
     SetupScreenContract.Presenter provideSetupScreenPresenter(SetupScreenPresenter impl) {
+        return impl;
+    }
+
+    @Provides
+    LoginScreenContract.Presenter provideLoginScreenPresenter(LoginScreenPresenter impl) {
         return impl;
     }
 }
