@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.screens.base;
 
+import android.support.annotation.Nullable;
+
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -16,13 +18,16 @@ public class BasePresenterImpl<V extends BaseView> implements BasePresenter<V>  
         _view = view;
     }
 
+    @Nullable
     public V getView() {
         return _view;
     }
 
     @Override
     public void notify(String action) {
-        _view.sendBroadcast(action);
+        if (getView() != null) {
+            getView().sendBroadcast(action);
+        }
     }
 
     protected void registerSubscription(Subscription subscription) {
@@ -32,5 +37,7 @@ public class BasePresenterImpl<V extends BaseView> implements BasePresenter<V>  
     @Override
     public void onDestroyView() {
         _unsubscriber.unsubscribe();
+
+        _view = null;
     }
 }

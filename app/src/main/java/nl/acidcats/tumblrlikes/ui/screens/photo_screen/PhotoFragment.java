@@ -3,8 +3,6 @@ package nl.acidcats.tumblrlikes.ui.screens.photo_screen;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -17,19 +15,16 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.bumptech.glide.request.target.Target;
-import com.google.auto.value.AutoValue;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
-import nl.acidcats.tumblrlikes.core.models.Photo;
-import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoNavBar;
@@ -39,19 +34,15 @@ import nl.acidcats.tumblrlikes.util.GlideApp;
  * Created by stephan on 13/04/2017.
  */
 
-public class PhotoFragment extends BaseFragment {
+public class PhotoFragment extends BaseFragment implements PhotoScreenContract.View {
     private static final String TAG = PhotoFragment.class.getSimpleName();
-
-    private static final String KEY_VIEW_MODEL = "key_" + TAG + "_viewModel";
 
     private static final long HIDE_UI_DELAY_MS = 2000L;
 
     @Inject
-    PhotoDataRepository _photoRepo;
-    @Inject
-    UpdatePhotoPropertyUseCase _updatePhotoPropertyUseCase;
-    @Inject
     PhotoViewUseCase _photoViewUseCase;
+    @Inject
+    PhotoScreenPresenter _presenter;
 
     @BindView(R.id.photo)
     InteractiveImageView _photoView;
@@ -63,7 +54,6 @@ public class PhotoFragment extends BaseFragment {
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
     private boolean _isTest = true;
-    private PhotoFragmentViewModel _viewModel;
 
     public static PhotoFragment newInstance() {
         return new PhotoFragment();
@@ -78,9 +68,7 @@ public class PhotoFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            _viewModel = savedInstanceState.getParcelable(KEY_VIEW_MODEL);
-        }
+        _presenter.restoreState(savedInstanceState, getArguments());
     }
 
     @Nullable
@@ -93,91 +81,59 @@ public class PhotoFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        _presenter.setView(this);
+        _presenter.onViewCreated();
+
         _photoView.setGestureListener(this::onGesture);
+
+        _photoActionDialog.setPhotoActionListener(_presenter);
+
+        _photoNavBar.setFilterOptionSelectionListener(filterType -> _presenter.onFilterTypeSelected(filterType));
 
         if (_isTest) {
             _photoView.setAlpha(0.1f);
         }
-
-        _photoActionDialog.setPhotoActionListener(new PhotoActionDialog.PhotoActionListener() {
-            @Override
-            public void onHidePhoto(long id) {
-                registerSubscription(
-                        _updatePhotoPropertyUseCase
-                                .setHidden(id)
-                                .subscribe(photo -> {
-                                    _photoActionDialog.hide(PhotoActionDialog.HideFlow.INSTANT);
-
-                                    showNextPhoto();
-                                })
-                );
-            }
-
-            @Override
-            public void onUpdatePhotoLike(long id, boolean isLiked) {
-                registerSubscription(
-                        _updatePhotoPropertyUseCase
-                                .updateLike(id, isLiked)
-                                .subscribe(photo -> onPhotoPropertyUpdated(photo))
-                );
-            }
-
-            @Override
-            public void onUpdatePhotoFavorite(long id, boolean isFavorite) {
-                registerSubscription(
-                        _updatePhotoPropertyUseCase
-                                .updateFavorite(id, isFavorite)
-                                .subscribe(photo -> onPhotoPropertyUpdated(photo)));
-            }
-        });
-
-        _photoNavBar.setFilterType(_photoRepo.getFilterType());
-        _photoNavBar.setFilterOptionSelectionListener(this::setFilterType);
-
-        showPhoto();
-    }
-
-    private void onPhotoPropertyUpdated(Photo photo) {
-        createViewModel(photo);
-
-        _photoActionDialog.updateViewModel(createPhotoActionDialogViewModel());
-
-        _photoActionDialog.hide(PhotoActionDialog.HideFlow.ANIMATED);
-    }
-
-    private void setFilterType(FilterType filterType) {
-        _photoRepo.setFilterType(filterType);
-
-        showNextPhoto();
     }
 
     private void onGesture(InteractiveImageView.Gesture gesture) {
         switch (gesture) {
             case SIDE_SWIPE:
-                showNextPhoto();
+                _presenter.onSwipe();
                 break;
             case TAP:
-                showUI();
+                _presenter.onTap();
                 break;
             case LONG_PRESS:
-                _photoActionDialog.show(createPhotoActionDialogViewModel());
+                _presenter.onLongPress();
                 break;
             case DOUBLE_TAP:
-                _photoView.resetScale();
+                _presenter.onDoubleTap();
                 break;
         }
     }
 
-    @NonNull
-    private PhotoActionDialog.PhotoActionDialogViewModel createPhotoActionDialogViewModel() {
-        return PhotoActionDialog.PhotoActionDialogViewModel.create(
-                _viewModel.photoId(),
-                _viewModel.isFavorite(),
-                _viewModel.isLiked(),
-                _viewModel.viewCount());
+    @Override
+    public void showPhotoActionDialog(PhotoActionDialogViewModel viewModel) {
+        _photoActionDialog.show(viewModel);
     }
 
-    private void showUI() {
+    @Override
+    public void setActionDialogViewModel(PhotoActionDialogViewModel viewModel) {
+        _photoActionDialog.updateViewModel(viewModel);
+    }
+
+    @Override
+    public void hidePhotoActionDialog(PhotoScreenContract.HideFlow hideFlow) {
+        _photoActionDialog.hide(hideFlow);
+    }
+
+    @Override
+    public void setFilterType(FilterType filterType) {
+        _photoNavBar.setFilterType(filterType);
+    }
+
+    @Override
+    public void showUI() {
         _photoView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -189,7 +145,8 @@ public class PhotoFragment extends BaseFragment {
         _photoNavBar.show();
     }
 
-    private void hideUI() {
+    @Override
+    public void hideUI() {
         _photoView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -202,32 +159,36 @@ public class PhotoFragment extends BaseFragment {
         _photoNavBar.hide();
     }
 
-    private void showPhoto() {
-        if (_viewModel == null || _viewModel.url() == null) {
-            getNextPhoto();
-        }
-        if (_viewModel == null || _viewModel.url() == null) return;
-
+    @Override
+    public void resetPhotoScale() {
         _photoView.resetScale();
+    }
 
-        loadPhoto(_viewModel.url(), new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                loadPhoto(_viewModel.fallbackUrl(), null);
+    @Override
+    public void loadPhoto(String url, boolean notifyOnError) {
+        @Nullable RequestListener<Drawable> listener = null;
+        if (notifyOnError) {
+            listener = new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    _presenter.onImageLoadFailed();
 
-                return true;
-            }
+                    return true;
+                }
 
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                return false;
-            }
-        });
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    return false;
+                }
+            };
+        }
 
-        registerSubscription(_photoViewUseCase.startPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
+        loadPhoto(url, listener);
     }
 
     private void loadPhoto(String url, @Nullable RequestListener<Drawable> listener) {
+        if (getContext() == null) return;
+
         GlideApp.with(getContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -236,69 +197,32 @@ public class PhotoFragment extends BaseFragment {
                 .into(new DrawableImageViewTarget(_photoView));
     }
 
-    private void getNextPhoto() {
-        if (_viewModel != null && _viewModel.url() != null) {
-            endPhotoView();
-        }
-
-        Photo photo = _photoRepo.getNextPhoto();
-        if (photo == null) return;
-
-        createViewModel(photo);
-    }
-
-    private void createViewModel(Photo photo) {
-        String url = photo.isCached() ? photo.filePath() : photo.url();
-        if (url != null && !url.startsWith("http")) url = "file:" + url;
-
-        _viewModel = PhotoFragmentViewModel.create(
-                photo.id(),
-                url,
-                photo.url(),
-                photo.isFavorite(),
-                photo.likeCount() > 0,
-                photo.viewCount());
-    }
-
-    private void showNextPhoto() {
-        getNextPhoto();
-
-        showPhoto();
+    @Override
+    public void setPhotoVisible(boolean visible) {
+        _photoView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        _photoView.setVisibility(View.VISIBLE);
-
-        registerSubscription(_photoViewUseCase.startPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
-
-        hideUI();
+        _presenter.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        endPhotoView();
-
-        _photoView.setVisibility(View.INVISIBLE);
+        _presenter.onPause();
 
         _handler.removeCallbacks(_uiHider);
-    }
-
-    private void endPhotoView() {
-        registerSubscription(_photoViewUseCase.endPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (_viewModel != null) {
-            outState.putParcelable(KEY_VIEW_MODEL, _viewModel);
-        }
+        _presenter.saveState(outState);
     }
 
     @Override
@@ -306,25 +230,8 @@ public class PhotoFragment extends BaseFragment {
         _photoActionDialog.onDestroyView();
         _photoView.onDestroyView();
 
+        _presenter.onDestroyView();
+
         super.onDestroyView();
-    }
-
-    @AutoValue
-    static abstract class PhotoFragmentViewModel implements Parcelable {
-        abstract long photoId();
-
-        abstract String url();
-
-        abstract String fallbackUrl();
-
-        abstract boolean isFavorite();
-
-        abstract boolean isLiked();
-
-        abstract int viewCount();
-
-        static PhotoFragmentViewModel create(long photoId, String url, String fallbackUrl, boolean isFavorite, boolean isLiked, int viewCount) {
-            return new AutoValue_PhotoFragment_PhotoFragmentViewModel(photoId, url, fallbackUrl, isFavorite, isLiked, viewCount);
-        }
     }
 }

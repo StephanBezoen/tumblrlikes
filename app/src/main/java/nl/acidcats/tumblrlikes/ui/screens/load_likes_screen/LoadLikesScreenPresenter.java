@@ -76,7 +76,9 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
                             if (isComplete) {
                                 onLoadComplete(totalPhotoCount);
                             } else {
-                                getView().showLoadProgress(_pageCount, totalPhotoCount);
+                                if (getView() != null) {
+                                    getView().showLoadProgress(_pageCount, totalPhotoCount);
+                                }
 
                                 loadLikesPage(LoadLikesMode.CONTINUED);
                             }
@@ -85,7 +87,9 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
     }
 
     private void onLoadComplete(long totalPhotoCount) {
-        getView().showAllLikesLoaded(totalPhotoCount);
+        if (getView() != null) {
+            getView().showAllLikesLoaded(totalPhotoCount);
+        }
 
         new Handler().postDelayed(this::notifyLoadingComplete, 500);
     }
@@ -109,7 +113,9 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
             }
         }
 
-        getView().showErrorAlert(errorStringId);
+        if (getView() != null) {
+            getView().showErrorAlert(errorStringId);
+        }
     }
 
     private void notifyLoadingComplete() {
@@ -120,7 +126,9 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
     public void cancelLoading() {
         _isLoadingCancelled = true;
 
-        getView().showLoadingCancelled();
+        if (getView() != null) {
+            getView().showLoadingCancelled();
+        }
     }
 
     @Override

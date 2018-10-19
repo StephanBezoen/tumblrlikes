@@ -19,6 +19,10 @@ import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCaseImpl;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCaseImpl;
+import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCaseImpl;
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCaseImpl;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
@@ -119,6 +123,16 @@ public class DataModule {
 
     @Provides
     PhotoViewUseCase providePhotoViewUseCase(PhotoViewUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    PhotoFilterUseCase providePhotoFilterUseCase(PhotoFilterUseCaseImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    GetFilteredPhotoUseCase provideGetFilteredPhotoUseCase(GetFilteredPhotoUseCaseImpl impl) {
         return impl;
     }
 }

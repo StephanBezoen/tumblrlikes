@@ -14,14 +14,14 @@ import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.auto.value.AutoValue;
-
 import javax.annotation.Nonnull;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
 
 /**
  * Created by stephan on 28/04/2017.
@@ -29,10 +29,6 @@ import nl.acidcats.tumblrlikes.R;
 
 public class PhotoActionDialog extends FrameLayout {
     public static final String TAG = PhotoActionDialog.class.getSimpleName();
-
-    public enum HideFlow {
-        INSTANT, ANIMATED
-    }
 
     @BindView(R.id.btn_favorite)
     TextView _favoriteButton;
@@ -48,7 +44,7 @@ public class PhotoActionDialog extends FrameLayout {
     TextView _viewCountText;
 
     private Unbinder _unbinder;
-    private PhotoActionListener _photoActionListener;
+    private PhotoScreenContract.PhotoActionListener _photoActionListener;
     private PhotoActionDialogViewModel _viewModel;
     private ViewPropertyAnimator _hideAnimator;
     private int _hideDuration;
@@ -80,11 +76,11 @@ public class PhotoActionDialog extends FrameLayout {
         _unlikeButton.setOnClickListener(this::onUnlikeButtonClick);
         _hideButton.setOnClickListener(this::onHideButtonClick);
 
-        _background.setOnClickListener(v -> hide(HideFlow.ANIMATED));
+        _background.setOnClickListener(v -> hide(PhotoScreenContract.HideFlow.ANIMATED));
 
         _hideDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        hide(HideFlow.INSTANT);
+        hide(PhotoScreenContract.HideFlow.INSTANT);
     }
 
     private void onHideButtonClick(View view) {
@@ -92,7 +88,7 @@ public class PhotoActionDialog extends FrameLayout {
             _photoActionListener.onHidePhoto(_viewModel.photoId());
         }
 
-        hide(HideFlow.INSTANT);
+        hide(PhotoScreenContract.HideFlow.INSTANT);
     }
 
     private void onUnlikeButtonClick(View view) {
@@ -141,7 +137,7 @@ public class PhotoActionDialog extends FrameLayout {
         _viewCountText.setText(getContext().getString(R.string.view_count, _viewModel.viewCount()));
     }
 
-    public void hide(HideFlow hideFlow) {
+    public void hide(PhotoScreenContract.HideFlow hideFlow) {
         switch (hideFlow) {
             case INSTANT:
                 setVisibility(GONE);
@@ -168,31 +164,8 @@ public class PhotoActionDialog extends FrameLayout {
                 });
     }
 
-    public interface PhotoActionListener {
-        void onHidePhoto(long id);
-
-        void onUpdatePhotoLike(long id, boolean isLiked);
-
-        void onUpdatePhotoFavorite(long id, boolean isFavorite);
-    }
-
-    public void setPhotoActionListener(PhotoActionListener listener) {
+    public void setPhotoActionListener(PhotoScreenContract.PhotoActionListener listener) {
         _photoActionListener = listener;
-    }
-
-    @AutoValue
-    public static abstract class PhotoActionDialogViewModel {
-        public abstract long photoId();
-
-        public abstract boolean isPhotoFavorite();
-
-        public abstract boolean isPhotoLiked();
-
-        public abstract int viewCount();
-
-        public static PhotoActionDialogViewModel create(long id, boolean isFavorite, boolean isLiked, int viewCount) {
-            return new AutoValue_PhotoActionDialog_PhotoActionDialogViewModel(id, isFavorite, isLiked, viewCount);
-        }
     }
 
     public void onDestroyView() {

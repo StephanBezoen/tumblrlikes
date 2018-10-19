@@ -38,16 +38,18 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
                                 tumblrBlog = BuildConfig.BLOG;
                             }
 
-                            if (tumblrBlog != null) {
-                                if (tumblrBlog.endsWith(BLOG_EXT)) {
-                                    tumblrBlog = tumblrBlog.replace(BLOG_EXT, "");
-                                }
+                            if (getView() != null) {
+                                if (tumblrBlog != null) {
+                                    if (tumblrBlog.endsWith(BLOG_EXT)) {
+                                        tumblrBlog = tumblrBlog.replace(BLOG_EXT, "");
+                                    }
 
-                                getView().setTumblrBlogText(tumblrBlog);
-                                getView().enableOkButton(true);
-                            } else {
-                                getView().setTumblrBlogText("");
-                                getView().enableOkButton(false);
+                                    getView().setTumblrBlogText(tumblrBlog);
+                                    getView().enableOkButton(true);
+                                } else {
+                                    getView().setTumblrBlogText("");
+                                    getView().enableOkButton(false);
+                                }
                             }
                         })
         );
@@ -55,7 +57,9 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
 
     @Override
     public void checkCache() {
-        getView().enableCacheCheckButton(false);
+        if (getView() != null) {
+            getView().enableCacheCheckButton(false);
+        }
 
         registerSubscription(
                 _photoCacheUseCase
@@ -63,7 +67,9 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
                         .subscribe(
                                 this::onCacheChecked,
                                 throwable -> {
-                                    getView().enableCacheCheckButton(true);
+                                    if (getView() != null) {
+                                        getView().enableCacheCheckButton(true);
+                                    }
 
                                     Log.e(TAG, "onCheckCacheButtonClick: " + throwable.getMessage());
                                 })
@@ -71,6 +77,8 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
     }
 
     private void onCacheChecked(Integer cacheMissCount) {
+        if (getView() == null) return;
+
         getView().enableCacheCheckButton(true);
 
         getView().showCacheMissToast(cacheMissCount);
@@ -78,12 +86,16 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
 
     @Override
     public void onBlogTextChanged(String blog) {
-        getView().enableOkButton(!"".equals(blog));
+        if (getView() != null) {
+            getView().enableOkButton(!"".equals(blog));
+        }
     }
 
     @Override
     public void onSetupDone(String blog) {
-        getView().enableOkButton(false);
+        if (getView() != null) {
+            getView().enableOkButton(false);
+        }
 
         registerSubscription(
                 _tumblrBlogUseCase

@@ -13,6 +13,8 @@ import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesScreenContr
 import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesScreenPresenter;
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract;
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenPresenter;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenPresenter;
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenContract;
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenPresenter;
 
@@ -53,6 +55,11 @@ public class AppModule {
 
     @Provides
     LoadLikesScreenContract.Presenter provideLoadLikesScreenPresenter(LoadLikesScreenPresenter presenter) {
+        return presenter;
+    }
+
+    @Provides
+    PhotoScreenContract.Presenter providePhotoScreenPresenter(PhotoScreenPresenter presenter) {
         return presenter;
     }
 }

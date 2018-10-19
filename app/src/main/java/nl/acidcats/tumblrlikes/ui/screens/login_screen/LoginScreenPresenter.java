@@ -50,6 +50,8 @@ public class LoginScreenPresenter extends BasePresenterImpl<LoginScreenContract.
     }
 
     private void updateViewMode() {
+        if (getView() == null) return;
+
         getView().setPincodeDoesntMatchViewVisible(false);
 
         switch (_mode) {
@@ -75,6 +77,8 @@ public class LoginScreenPresenter extends BasePresenterImpl<LoginScreenContract.
 
     @Override
     public void onPincodeInputChanged(String pincode) {
+        if (getView() == null) return;
+
         getView().setPincodeDoesntMatchViewVisible(false);
 
         switch (_mode) {
