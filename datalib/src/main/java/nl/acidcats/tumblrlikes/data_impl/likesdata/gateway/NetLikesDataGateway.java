@@ -82,11 +82,24 @@ public class NetLikesDataGateway implements LikesDataGateway {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
         if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(message -> Log.d("OkHttp", message));
+            HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor(new ChunkedLogger());
             httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             clientBuilder.addInterceptor(httpLoggingInterceptor);
         }
 
         return clientBuilder.build();
+    }
+
+    private static class ChunkedLogger implements HttpLoggingInterceptor.Logger {
+
+        private static final int LOG_CHUNK_SIZE = 4000;
+
+        @Override
+        public void log(@NonNull String message) {
+            for (int i = 0, len = message.length(); i < len; i += LOG_CHUNK_SIZE) {
+                int end = Math.min(len, i + LOG_CHUNK_SIZE);
+                Log.d("Http", message.substring(i, end));
+            }
+        }
     }
 }

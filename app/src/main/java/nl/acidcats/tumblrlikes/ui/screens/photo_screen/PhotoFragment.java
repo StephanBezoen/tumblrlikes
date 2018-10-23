@@ -53,7 +53,7 @@ public class PhotoFragment extends BaseFragment implements PhotoScreenContract.V
 
     private Handler _handler = new Handler();
     private Runnable _uiHider = this::hideUI;
-    private boolean _isTest = true;
+    private boolean _isTest = false;
 
     public static PhotoFragment newInstance() {
         return new PhotoFragment();
