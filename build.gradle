@@ -58,7 +58,7 @@ ext {
             compileSdk : 28,
 
             // Support libraries
-            supportLibs: '27.1.1',
+            supportLibs: '28.0.0',
 
             // Library versions
             dagger     : '2.11',
@@ -76,6 +76,7 @@ ext {
             support_13                    : "com.android.support:support-v13:${Versions.supportLibs}",
             support_design                : "com.android.support:design:${Versions.supportLibs}",
             support_fragment              : "com.android.support:support-fragment:${Versions.supportLibs}",
+            support_annotations           : "com.android.support:support-annotations:${Versions.supportLibs}",
             support_constraintLayout      : 'com.android.support.constraint:constraint-layout:1.1.2',
 
             // testing
