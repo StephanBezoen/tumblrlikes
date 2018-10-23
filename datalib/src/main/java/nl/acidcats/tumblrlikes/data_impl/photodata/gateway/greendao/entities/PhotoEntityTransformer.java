@@ -14,7 +14,7 @@ import nl.acidcats.tumblrlikes.core.models.Photo;
 public class PhotoEntityTransformer {
 
     @NonNull
-    public List<PhotoEntity> transform(List<Photo> photos) {
+    public List<PhotoEntity> toPhotoEntity(List<Photo> photos) {
         List<PhotoEntity> photoEntities = new ArrayList<>();
 
         for (Photo photo : photos) {
@@ -25,7 +25,7 @@ public class PhotoEntityTransformer {
     }
 
     @Nullable
-    public Photo transform(@Nullable PhotoEntity photoEntity) {
+    public Photo toPhoto(@Nullable PhotoEntity photoEntity) {
         if (photoEntity == null) return null;
 
         return Photo.create(
@@ -41,5 +41,18 @@ public class PhotoEntityTransformer {
                 photoEntity.getViewTime(),
                 photoEntity.getTimePerView()
         );
+    }
+
+    @NonNull
+    public List<Photo> toPhotos(@Nullable List<PhotoEntity> photoEntities) {
+        List<Photo> photos = new ArrayList<>();
+
+        if (photoEntities != null) {
+            for (PhotoEntity photoEntity : photoEntities) {
+                photos.add(toPhoto(photoEntity));
+            }
+        }
+
+        return photos;
     }
 }

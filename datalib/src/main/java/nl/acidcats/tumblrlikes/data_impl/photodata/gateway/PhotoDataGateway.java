@@ -46,4 +46,6 @@ public interface PhotoDataGateway {
 
     @Nullable
     Photo getUncachedPhoto();
+
+    List<Photo> getAllPhotos();
 }

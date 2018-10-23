@@ -48,6 +48,11 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     }
 
     @Override
+    public List<Photo> getAllPhotos() {
+        return _photoDataGateway.getAllPhotos();
+    }
+
+    @Override
     public long getPhotoCount() {
         return _photoDataGateway.getPhotoCount();
     }

@@ -60,6 +60,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btn_ok"
         >
+
         <EditText
             android:hint="@string/tumblr_blog_hint"
             android:id="@+id/input_tumblr_blog"
@@ -108,6 +109,18 @@
         android:textSize="12sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/btn_ok"
+        />
+
+    <TextView
+        android:id="@+id/btn_export_photos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/export_photos"
+        android:textColor="@color/button_color"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_check_cache"
+        android:layout_marginBottom="8dp"
         />
 
     <TextView

@@ -19,6 +19,7 @@ import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
+import nl.acidcats.tumblrlikes.util.PermissionHelper;
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter;
 
 /**
@@ -43,6 +44,8 @@ public class SetupFragment extends BaseFragment implements SetupScreenContract.V
     TextView _checkCacheButton;
     @BindView(R.id.btn_privacy_policy)
     TextView _privacyPolicyButton;
+    @BindView(R.id.btn_export_photos)
+    TextView _exportButton;
 
     private TextWatcherAdapter _textWatcher;
 
@@ -82,9 +85,30 @@ public class SetupFragment extends BaseFragment implements SetupScreenContract.V
 
         _okButton.setOnClickListener(this::onOkButtonClick);
 
-        _checkCacheButton.setOnClickListener(this::onCheckCacheButtonClick);
+        _checkCacheButton.setOnClickListener(v -> _presenter.checkCache());
 
         _privacyPolicyButton.setOnClickListener(this::onPrivacyPolicyButtonClick);
+
+        _exportButton.setOnClickListener(this::onExportButtonClick);
+    }
+
+    private void onExportButtonClick(View v) {
+        checkExportPhotos();
+    }
+
+    private void checkExportPhotos() {
+        if (PermissionHelper.getInstance().hasPermission(getContext(), PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE)) {
+            _presenter.exportPhotos("tumblrlikes.txt");
+        } else {
+            PermissionHelper.getInstance().requestPermission(getActivity(), PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, "");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        PermissionHelper.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        checkExportPhotos();
     }
 
     @Override
@@ -107,17 +131,23 @@ public class SetupFragment extends BaseFragment implements SetupScreenContract.V
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.PRIVACY_URL)));
     }
 
-    private void onCheckCacheButtonClick(View view) {
-        _presenter.checkCache();
-    }
-
     private void onOkButtonClick(View view) {
         _presenter.onSetupDone(_tumblrBlogInput.getText().toString() + SetupScreenContract.BLOG_EXT);
     }
 
     @Override
-    public void showCacheMissToast(Integer cacheMissCount) {
-        Toast.makeText(getContext(), getString(R.string.cache_miss_count, cacheMissCount.toString()), Toast.LENGTH_SHORT).show();
+    public void showCacheMissToast(int cacheMissCount) {
+        Toast.makeText(getContext(), getString(R.string.cache_miss_count, Integer.toString(cacheMissCount)), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void enableExportButton(boolean enable) {
+        _exportButton.setEnabled(enable);
+    }
+
+    @Override
+    public void showExportCompleteToast(boolean success) {
+        Toast.makeText(getContext(), getString(success ? R.string.export_success : R.string.export_error), Toast.LENGTH_SHORT).show();
     }
 
     @Override

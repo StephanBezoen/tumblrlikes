@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.BuildConfig;
 import nl.acidcats.tumblrlikes.core.usecases.appsetup.TumblrBlogUseCase;
+import nl.acidcats.tumblrlikes.core.usecases.photos.ExportPhotosUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl;
@@ -23,6 +24,8 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
     UpdatePhotoCacheUseCase _photoCacheUseCase;
     @Inject
     TumblrBlogUseCase _tumblrBlogUseCase;
+    @Inject
+    ExportPhotosUseCase _exportPhotosUseCase;
 
     @Inject
     SetupScreenPresenter() {
@@ -101,5 +104,40 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
                 _tumblrBlogUseCase
                         .setTumblrBlog(blog)
                         .subscribe(ignored -> notify(Broadcasts.SETUP_COMPLETE)));
+    }
+
+    @Override
+    public void exportPhotos(String filename) {
+        Log.d(TAG, "exportPhotos: ");
+
+        if (getView() != null) {
+            getView().enableExportButton(false);
+        }
+
+        registerSubscription(
+                _exportPhotosUseCase
+                        .exportPhotos(filename)
+                        .subscribe(this::onExportComplete, this::onExportError)
+        );
+    }
+
+    private void onExportError(Throwable throwable) {
+        Log.e(TAG, "onExportError: " + throwable.getMessage());
+
+        if (getView() != null) {
+            getView().enableExportButton(true);
+
+            getView().showExportCompleteToast(false);
+        }
+    }
+
+    private void onExportComplete(boolean isExported) {
+        Log.d(TAG, "onExportComplete: ");
+
+        if (getView() != null) {
+            getView().enableExportButton(true);
+
+            getView().showExportCompleteToast(isExported);
+        }
     }
 }

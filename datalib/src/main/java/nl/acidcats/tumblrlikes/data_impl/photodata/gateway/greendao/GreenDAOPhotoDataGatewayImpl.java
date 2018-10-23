@@ -110,7 +110,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     public void storePhotos(List<Photo> photos) {
         if (_debug) Log.d(TAG, "storePhotos: " + photos.size());
 
-        _photoEntityDao.saveInTx(_photoEntityTransformer.transform(photos));
+        _photoEntityDao.saveInTx(_photoEntityTransformer.toPhotoEntity(photos));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
             if (_debug) Log.d(TAG, "getNextPhoto: view count now " + photoEntity.getViewCount());
             storePhoto(photoEntity);
 
-            return _photoEntityTransformer.transform(photoEntity);
+            return _photoEntityTransformer.toPhoto(photoEntity);
         }
 
         return null;
@@ -146,7 +146,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     @Nullable
     public Photo getUncachedPhoto() {
         PhotoEntity photoEntity = _uncachedQuery.forCurrentThread().unique();
-        return _photoEntityTransformer.transform(photoEntity);
+        return _photoEntityTransformer.toPhoto(photoEntity);
     }
 
     private void storePhoto(PhotoEntity photo) {
@@ -205,7 +205,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     @Override
     public Photo getPhotoById(long id) {
         PhotoEntity photoEntity = getPhotoEntityById(id);
-        return _photoEntityTransformer.transform(photoEntity);
+        return _photoEntityTransformer.toPhoto(photoEntity);
     }
 
     @Nullable
@@ -251,12 +251,7 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
         List<PhotoEntity> cachedHiddenPhotos = _hiddenCachedQuery.list();
         if (_debug) Log.d(TAG, "getCachedHiddenPhotos: " + cachedHiddenPhotos.size() + " cached hidden photos found");
 
-        List<Photo> photos = new ArrayList<>();
-        for (PhotoEntity photoEntity : cachedHiddenPhotos) {
-            photos.add(_photoEntityTransformer.transform(photoEntity));
-        }
-
-        return photos;
+        return _photoEntityTransformer.toPhotos(cachedHiddenPhotos);
     }
 
     @Override
@@ -273,13 +268,11 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
                 .where(builder.and(PhotoEntityDao.Properties.IsHidden.eq(false), PhotoEntityDao.Properties.IsCached.eq(true)))
                 .build();
 
-        List<PhotoEntity> cachedPhotos = cachedQuery.list();
+        return _photoEntityTransformer.toPhotos(cachedQuery.list());
+    }
 
-        List<Photo> photos = new ArrayList<>();
-        for (PhotoEntity photoEntity : cachedPhotos) {
-            photos.add(_photoEntityTransformer.transform(photoEntity));
-        }
-
-        return photos;
+    @Override
+    public List<Photo> getAllPhotos() {
+        return _photoEntityTransformer.toPhotos(createQueryBuilder().list());
     }
 }

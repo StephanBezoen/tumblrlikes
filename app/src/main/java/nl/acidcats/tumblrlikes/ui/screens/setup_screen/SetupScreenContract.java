@@ -17,6 +17,8 @@ public interface SetupScreenContract {
         void onBlogTextChanged(String blog);
 
         void onSetupDone(String blog);
+
+        void exportPhotos(String filename);
     }
 
     interface View extends BaseView {
@@ -26,6 +28,10 @@ public interface SetupScreenContract {
 
         void enableOkButton(boolean enable);
 
-        void showCacheMissToast(Integer cacheMissCount);
+        void showCacheMissToast(int cacheMissCount);
+
+        void enableExportButton(boolean enable);
+
+        void showExportCompleteToast(boolean success);
     }
 }

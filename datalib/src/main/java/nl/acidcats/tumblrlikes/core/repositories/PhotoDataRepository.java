@@ -17,6 +17,8 @@ public interface PhotoDataRepository {
 
     List<Photo> storePhotos(List<Photo> photos);
 
+    List<Photo> getAllPhotos();
+
     long getPhotoCount();
 
     Photo getNextPhoto();
