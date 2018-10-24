@@ -14,7 +14,8 @@ import javax.inject.Inject
  */
 class ExportPhotosUseCaseImpl @Inject constructor(private val photoDataRepository: PhotoDataRepository) : ExportPhotosUseCase {
 
-    private val jsonAdapter: PhotoForExportJsonAdapter = PhotoForExportJsonAdapter(Moshi.Builder().build())
+    private val jsonAdapter: ExportPhotosUseCaseImpl_PhotoForExportJsonAdapter =
+            ExportPhotosUseCaseImpl_PhotoForExportJsonAdapter(Moshi.Builder().build())
 
     override fun exportPhotos(path: String, filename: String): Observable<Boolean> {
 
@@ -34,16 +35,14 @@ class ExportPhotosUseCaseImpl @Inject constructor(private val photoDataRepositor
                     true
                 }
     }
+
+    @JsonClass(generateAdapter = true)
+    data class PhotoForExport(
+            val url: String?,
+            val isFavorite: Int,
+            val isLiked: Int,
+            val viewCount: Int,
+            val viewTime: Long
+    )
 }
 
-/**
- * Created on 24/10/2018.
- */
-@JsonClass(generateAdapter = true)
-data class PhotoForExport (
-        val url:String?,
-        val isFavorite:Int,
-        val isLiked:Int,
-        val viewCount:Int,
-        val viewTime:Long
-)
