@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.setup_screen;
 
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -116,7 +117,7 @@ public class SetupScreenPresenter extends BasePresenterImpl<SetupScreenContract.
 
         registerSubscription(
                 _exportPhotosUseCase
-                        .exportPhotos(filename)
+                        .exportPhotos(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), filename)
                         .subscribe(this::onExportComplete, this::onExportError)
         );
     }
