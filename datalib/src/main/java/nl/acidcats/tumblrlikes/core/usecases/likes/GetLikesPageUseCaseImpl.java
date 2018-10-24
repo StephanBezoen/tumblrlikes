@@ -48,7 +48,7 @@ public class GetLikesPageUseCaseImpl implements GetLikesPageUseCase {
         return _likesDataRepository.getLikedPhotos(_appDataRepository.getTumblrBlog(), 20, timestamp)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapIterable(photos -> photos)
-                .filter(photo -> !_photoDataRepository.hasPhoto(photo.tumblrId()))
+                .filter(photo -> !_photoDataRepository.hasPhoto(photo.getTumblrId()))
                 .toList()
                 .map(_photoDataRepository::storePhotos)
                 .map(photos -> _photoDataRepository.getPhotoCount());

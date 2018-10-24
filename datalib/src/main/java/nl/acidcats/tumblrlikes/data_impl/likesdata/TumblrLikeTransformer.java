@@ -13,8 +13,8 @@ import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrPhotoVO;
  * Created by stephan on 11/04/2017.
  */
 
-public class TumblrLikeTransformer {
-    public List<Photo> transformToPhotos(TumblrLikeVO likeVO) {
+class TumblrLikeTransformer {
+    List<Photo> transformToPhotos(TumblrLikeVO likeVO) {
         List<TumblrPhotoPostVO> postVOs = likeVO.photos();
         if (postVOs == null || postVOs.size() == 0) return null;
 
@@ -40,7 +40,7 @@ public class TumblrLikeTransformer {
             Collections.sort(tumblrPhotoVOs, new PhotoSizeComparator());
 
             // store biggest
-            photos.add(Photo.create(tumblrPhotoVOs.get(0).url(), likeVO.id()));
+            photos.add(new Photo(0, likeVO.id(), null, tumblrPhotoVOs.get(0).url(), false, false, false, 0, 0L, 0L));
         }
 
         return photos;

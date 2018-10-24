@@ -32,11 +32,5 @@ public class MigrationV6 implements Migration {
 
         // Added isLiked, updating all existing rows with isLiked = likeCount > 0 ? 1 : 0
         db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.IsLiked.columnName + " INTEGER");
-        db.execSQL("UPDATE " + PhotoEntityDao.TABLENAME +
-                " SET " + PhotoEntityDao.Properties.IsLiked.columnName + " = 1" +
-                " WHERE " + PhotoEntityDao.Properties.LikeCount.columnName + " > 0");
-        db.execSQL("UPDATE " + PhotoEntityDao.TABLENAME +
-                " SET " + PhotoEntityDao.Properties.IsLiked.columnName + " = 0" +
-                " WHERE " + PhotoEntityDao.Properties.LikeCount.columnName + " <= 0");
     }
 }

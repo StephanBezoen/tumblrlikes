@@ -197,16 +197,16 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
     @Nullable
     private PhotoFragmentViewModel createViewModel(@Nullable Photo photo) {
         if (photo == null) return null;
-        String url = photo.isCached() ? photo.filePath() : photo.url();
+        String url = photo.isCached() ? photo.getFilePath() : photo.getUrl();
         if (url != null && !url.startsWith("http")) url = "file:" + url;
 
         _viewModel = PhotoFragmentViewModel.create(
-                photo.id(),
+                photo.getId(),
                 url,
-                photo.url(),
+                photo.getUrl(),
                 photo.isFavorite(),
-                photo.likeCount() > 0,
-                photo.viewCount());
+                photo.isLiked(),
+                photo.getViewCount());
 
         return _viewModel;
     }

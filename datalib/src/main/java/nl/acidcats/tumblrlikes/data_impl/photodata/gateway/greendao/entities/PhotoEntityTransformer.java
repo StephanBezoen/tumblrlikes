@@ -18,7 +18,7 @@ public class PhotoEntityTransformer {
         List<PhotoEntity> photoEntities = new ArrayList<>();
 
         for (Photo photo : photos) {
-            photoEntities.add(new PhotoEntity(photo.url(), photo.tumblrId()));
+            photoEntities.add(new PhotoEntity(photo.getUrl(), photo.getTumblrId()));
         }
 
         return photoEntities;
@@ -28,14 +28,13 @@ public class PhotoEntityTransformer {
     public Photo toPhoto(@Nullable PhotoEntity photoEntity) {
         if (photoEntity == null) return null;
 
-        return Photo.create(
+        return new Photo(
                 photoEntity.getId(),
                 photoEntity.getPhotoId(),
                 photoEntity.getFilePath(),
                 photoEntity.getUrl(),
                 photoEntity.getIsFavorite(),
                 photoEntity.getIsLiked(),
-                photoEntity.getLikeCount(),
                 photoEntity.getIsCached(),
                 photoEntity.getViewCount(),
                 photoEntity.getViewTime(),

@@ -22,17 +22,10 @@ public class MigrationV5 implements Migration {
         *     private boolean isFavorite;
 
     private boolean isHidden;
-
-    private int likeCount;
-
-    private String hash;
-
         *
         * */
 
         db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.IsFavorite.columnName + " INTEGER");
         db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.IsHidden.columnName + " INTEGER");
-        db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.LikeCount.columnName + " INTEGER");
-        db.execSQL("ALTER TABLE " + PhotoEntityDao.TABLENAME + " ADD COLUMN " + PhotoEntityDao.Properties.Hash.columnName + " TEXT");
     }
 }

@@ -75,7 +75,7 @@ public class ExportPhotosUseCaseImpl implements ExportPhotosUseCase {
 
     private Observable<Photo> writeToStream(int index, Photo photo, OutputStream outputStream) {
         PhotoForExport photoForExport =
-                PhotoForExport.create(photo.url(), photo.isFavorite(), photo.isLiked(), photo.viewCount(), photo.viewTime());
+                PhotoForExport.create(photo.getUrl(), photo.isFavorite(), photo.isLiked(), photo.getViewCount(), photo.getViewTime());
 
         String json = _jsonAdapter.toJson(photoForExport);
 

@@ -37,7 +37,7 @@ public class UpdatePhotoCacheUseCaseImpl implements UpdatePhotoCacheUseCase {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMapIterable(photoEntities -> photoEntities)
                 .filter(photo -> _photoDataRepository.isPhotoCacheMissing(photo))
-                .map(Photo::id)
+                .map(Photo::getId)
                 .toList()
                 .map(ids -> _photoDataRepository.setPhotosUncached(ids))
                 .map(List::size);

@@ -78,19 +78,19 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     }
 
     private Void uncachePhoto(Photo photo) {
-        if (_debug) Log.d(TAG, "uncachePhoto: " + photo.filePath());
+        if (_debug) Log.d(TAG, "uncachePhoto: " + photo.getFilePath());
 
-        if (photo.filePath() == null) return null;
+        if (photo.getFilePath() == null) return null;
 
         //noinspection ConstantConditions
-        File file = new File(photo.filePath());
+        File file = new File(photo.getFilePath());
         if (file.exists()) {
             if (_debug) Log.d(TAG, "uncachePhoto: file exists");
 
             if (file.delete()) {
                 if (_debug) Log.d(TAG, "uncachePhoto: file deleted");
 
-                _photoDataGateway.setPhotoCached(photo.id(), false, null);
+                _photoDataGateway.setPhotoCached(photo.getId(), false, null);
             }
         }
 
@@ -169,7 +169,7 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
 
     @Override
     public boolean isPhotoCacheMissing(Photo photo) {
-        String filePath = photo.filePath();
+        String filePath = photo.getFilePath();
 
         if (filePath != null) {
             File file = new File(filePath);

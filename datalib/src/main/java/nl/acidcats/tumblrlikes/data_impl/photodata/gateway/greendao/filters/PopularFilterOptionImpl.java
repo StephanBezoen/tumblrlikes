@@ -22,7 +22,7 @@ public class PopularFilterOptionImpl extends AbstractFilterOptionImpl {
                         PhotoEntityDao.Properties.IsHidden.eq(false),
                         queryBuilder.or(
                                 PhotoEntityDao.Properties.IsFavorite.eq(true),
-                                PhotoEntityDao.Properties.LikeCount.gt(0)
+                                PhotoEntityDao.Properties.IsLiked.eq(true)
                         )
                 )
         );

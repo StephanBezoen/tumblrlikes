@@ -218,11 +218,10 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
         PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
 
-        int currentLikeCount = photo.getLikeCount();
-        int newLikeCount = isLiked ? 1 : 0;
-        if (currentLikeCount == newLikeCount) return;
+        if (photo.getIsLiked() == isLiked) return;
 
-        photo.setLikeCount(newLikeCount);
+        photo.setIsLiked(isLiked);
+
         storePhoto(photo);
     }
 
@@ -230,6 +229,8 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     public void setPhotoFavorite(long id, boolean isFavorite) {
         PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
+
+        if (photo.getIsFavorite() == isFavorite) return;
 
         photo.setIsFavorite(isFavorite);
 
@@ -240,6 +241,8 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
     public void setPhotoHidden(long id) {
         PhotoEntity photo = getPhotoEntityById(id);
         if (photo == null) return;
+
+        if (photo.getIsHidden()) return;
 
         photo.setIsHidden(true);
 

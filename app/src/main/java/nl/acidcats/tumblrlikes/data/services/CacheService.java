@@ -101,11 +101,11 @@ public class CacheService extends Service {
     private Void downloadPhoto(Photo photo) {
         if (_debug) Log.d(TAG, "downloadPhoto: " + photo);
 
-        if (photo.url() == null) return null;
+        if (photo.getUrl() == null) return null;
 
         //noinspection ConstantConditions
         Request request = new Request.Builder()
-                .url(photo.url())
+                .url(photo.getUrl())
                 .build();
 
         _client.newCall(request).enqueue(new Callback() {
@@ -124,7 +124,7 @@ public class CacheService extends Service {
                 String filepath = savePhoto(response.body().byteStream(), photo);
 
                 if (filepath != null) {
-                    _photoRepo.markAsCached(photo.id(), filepath);
+                    _photoRepo.markAsCached(photo.getId(), filepath);
 
                     _photoCount++;
                     if (_debug) Log.d(TAG, "onResponse: " + _photoCount);
@@ -146,7 +146,7 @@ public class CacheService extends Service {
     }
 
     private String savePhoto(InputStream inputStream, Photo photo) {
-        String url = photo.url();
+        String url = photo.getUrl();
         //noinspection ConstantConditions
         String extension = url.substring(url.lastIndexOf("."));
 
