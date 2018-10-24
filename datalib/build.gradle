@@ -18,6 +18,7 @@ def plugins = config.Plugins
 def libs = config.Libraries
 
 apply plugin: plugins.android_lib
+apply plugin: plugins.kotlin
 apply plugin: plugins.greenDAO
 
 apply from: "$rootDir/config/config.gradle", to: config
@@ -64,6 +65,8 @@ greendao {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation libs.kotlin
+
     implementation libs.support_annotations
 
     // GreenDAO
@@ -93,4 +96,7 @@ dependencies {
     implementation libs.moshi
     annotationProcessor libs.moshi_autovalue
     implementation libs.moshi_autovalue_annotations
+}
+repositories {
+    mavenCentral()
 }

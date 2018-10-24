@@ -79,6 +79,8 @@ ext {
             support_annotations           : "com.android.support:support-annotations:${Versions.supportLibs}",
             support_constraintLayout      : 'com.android.support.constraint:constraint-layout:1.1.2',
 
+            kotlin                        : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+
             // testing
             test_espresso                 : 'com.android.support.test.espresso:espresso-core:3.0.1',
             test_junit                    : 'junit:junit:4.12',

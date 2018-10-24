@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import nl.acidcats.tumblrlikes.core.constants.FilterType;
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenter;
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseView;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
 
 /**
@@ -22,7 +23,7 @@ public interface PhotoScreenContract {
 
         void onImageLoadFailed();
 
-        void onFilterTypeSelected(FilterType filterType);
+        void onFilterSelected(Filter filter);
 
         void saveState(@NonNull Bundle outState);
 
@@ -42,7 +43,7 @@ public interface PhotoScreenContract {
 
         void showPhotoActionDialog(PhotoActionDialogViewModel viewModel);
 
-        void setFilterType(FilterType filterType);
+        void setFilter(Filter filter);
 
         void setActionDialogViewModel(PhotoActionDialogViewModel viewModel);
 

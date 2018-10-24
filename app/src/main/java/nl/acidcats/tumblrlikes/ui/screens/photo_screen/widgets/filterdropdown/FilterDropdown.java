@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.acidcats.tumblrlikes.core.constants.FilterType;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
 
 /**
  * Created by stephan on 18/05/2017.
@@ -38,8 +38,8 @@ public class FilterDropdown extends LinearLayout {
     }
 
     public void init() {
-        for (FilterType filterType : FilterType.values()) {
-            _filterOptionViews.add(new FilterOptionView(this, filterType));
+        for (Filter filter : Filter.values()) {
+            _filterOptionViews.add(new FilterOptionView(this, filter));
         }
 
         if (!isInEditMode()) {
@@ -63,7 +63,7 @@ public class FilterDropdown extends LinearLayout {
 
     public void onDestroy() {
         for (FilterOptionView filterOptionView : _filterOptionViews) {
-            filterOptionView.onDestroy();
+            filterOptionView.onDestroyView();
         }
     }
 }

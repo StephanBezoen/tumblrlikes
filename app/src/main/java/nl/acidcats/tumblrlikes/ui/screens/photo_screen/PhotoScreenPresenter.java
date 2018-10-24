@@ -8,13 +8,13 @@ import android.util.Log;
 
 import javax.inject.Inject;
 
-import nl.acidcats.tumblrlikes.core.constants.FilterType;
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoFragmentViewModel;
 import rx.Observable;
@@ -64,7 +64,7 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
                         .getSelectedFilterType()
                         .subscribe(filterType -> {
                             if (getView() != null) {
-                                getView().setFilterType(filterType);
+                                getView().setFilter(Filter.getFilterByType(filterType));
                             }
                         })
         );
@@ -80,10 +80,10 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
     }
 
     @Override
-    public void onFilterTypeSelected(FilterType filterType) {
+    public void onFilterSelected(Filter filter) {
         registerSubscription(
                 _photoFilterUseCase
-                        .storeFilterSelection(filterType)
+                        .storeFilterSelection(filter.getFilterType())
                         .subscribe(isStored -> showNextPhoto())
         );
     }

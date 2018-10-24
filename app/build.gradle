@@ -18,6 +18,7 @@ def libs = config.Libraries
 def repos = config.Repos
 
 apply plugin: plugins.android_app
+apply plugin: plugins.kotlin
 apply plugin: plugins.fabric
 
 apply from: "$rootDir/config/config.gradle", to: config
@@ -81,7 +82,9 @@ repositories {
 }
 
 dependencies {
-    compile project(path: ':datalib')
+    implementation project(path: ':datalib')
+
+    implementation libs.kotlin
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -130,8 +133,6 @@ dependencies {
     }
 
     implementation libs.firebase
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation libs.sqlCipher
 }

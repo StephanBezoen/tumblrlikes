@@ -10,32 +10,32 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.core.constants.FilterType;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
 
 /**
  * Created by stephan on 18/05/2017.
  */
 
-public class FilterOptionView {
+class FilterOptionView {
     private static final String TAG = FilterOptionView.class.getSimpleName();
 
     @BindView(R.id.tv_filteroption)
     TextView _filterOptionText;
 
     private final Unbinder _unbinder;
-    private final FilterType _filterType;
+    private final Filter _filter;
     private FilterOptionSelectionListener _filterOptionSelectionListener;
     private final View _view;
 
-    public FilterOptionView(ViewGroup parent, FilterType filterType) {
-        _filterType = filterType;
+    FilterOptionView(ViewGroup parent, Filter filter) {
+        _filter = filter;
 
         Context context = parent.getContext();
 
         _view = LayoutInflater.from(context).inflate(R.layout.listitem_filteroption, parent, false);
         _unbinder = ButterKnife.bind(this, _view);
 
-        _filterOptionText.setText(context.getString(filterType.getResId()));
+        _filterOptionText.setText(context.getString(filter.getResId()));
 
         _view.setOnClickListener(this::onViewClick);
 
@@ -44,15 +44,15 @@ public class FilterOptionView {
 
     private void onViewClick(View v) {
         if (_filterOptionSelectionListener != null) {
-            _filterOptionSelectionListener.onOptionSelected(_filterType);
+            _filterOptionSelectionListener.onOptionSelected(_filter);
         }
     }
 
-    public void setFilterOptionSelectionListener (FilterOptionSelectionListener listener) {
+    void setFilterOptionSelectionListener(FilterOptionSelectionListener listener) {
         _filterOptionSelectionListener = listener;
     }
 
-    public void onDestroy() {
+    void onDestroyView() {
         _view.setOnClickListener(null);
 
         _unbinder.unbind();

@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.ui.Broadcasts;
-import nl.acidcats.tumblrlikes.core.constants.FilterType;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterOptionSelectionListener;
 
@@ -68,23 +68,23 @@ public class PhotoNavBar extends FrameLayout {
 
         _filterButton.setText(R.string.filter_all);
 
-        _filterDropdown.setFilterOptionSelectionListener(filterType -> setFilterType(filterType, true));
+        _filterDropdown.setFilterOptionSelectionListener(filter -> setFilter(filter, true));
 
         hide();
     }
 
-    public void setFilterType(FilterType filterType) {
-        setFilterType(filterType, false);
+    public void setFilter(Filter filter) {
+        setFilter(filter, false);
     }
 
-    private void setFilterType(FilterType filterType, boolean notifyListener) {
-        if (_filterOptionSelectionListener != null) {
-            _filterOptionSelectionListener.onOptionSelected(filterType);
+    private void setFilter(Filter filter, boolean notifyListener) {
+        if (notifyListener && _filterOptionSelectionListener != null) {
+            _filterOptionSelectionListener.onOptionSelected(filter);
         }
 
         _filterDropdown.hide();
 
-        _filterButton.setText(filterType.getResId());
+        _filterButton.setText(filter.getResId());
     }
 
     public void setFilterOptionSelectionListener(FilterOptionSelectionListener listener) {
@@ -117,7 +117,7 @@ public class PhotoNavBar extends FrameLayout {
         _filterDropdown.show();
     }
 
-    public void onDestroy() {
+    public void onDestroyView() {
         _filterButton.setOnClickListener(null);
         _settingsButton.setOnClickListener(null);
         _refreshButton.setOnClickListener(null);

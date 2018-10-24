@@ -20,10 +20,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import nl.acidcats.tumblrlikes.R;
-import nl.acidcats.tumblrlikes.core.constants.FilterType;
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog;
@@ -88,10 +88,10 @@ public class PhotoFragment extends BaseFragment implements PhotoScreenContract.V
 
         _photoActionDialog.setPhotoActionListener(_presenter);
 
-        _photoNavBar.setFilterOptionSelectionListener(filterType -> _presenter.onFilterTypeSelected(filterType));
+        _photoNavBar.setFilterOptionSelectionListener(filter -> _presenter.onFilterSelected(filter));
 
         if (_isTest) {
-            _photoView.setAlpha(0.1f);
+            _photoView.setAlpha(0.05f);
         }
     }
 
@@ -128,8 +128,8 @@ public class PhotoFragment extends BaseFragment implements PhotoScreenContract.V
     }
 
     @Override
-    public void setFilterType(FilterType filterType) {
-        _photoNavBar.setFilterType(filterType);
+    public void setFilter(Filter filter) {
+        _photoNavBar.setFilter(filter);
     }
 
     @Override
@@ -229,6 +229,7 @@ public class PhotoFragment extends BaseFragment implements PhotoScreenContract.V
     public void onDestroyView() {
         _photoActionDialog.onDestroyView();
         _photoView.onDestroyView();
+        _photoNavBar.onDestroyView();
 
         _presenter.onDestroyView();
 
