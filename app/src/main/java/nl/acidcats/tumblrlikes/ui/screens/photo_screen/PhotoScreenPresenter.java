@@ -141,7 +141,7 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
         );
     }
 
-    private void onPhotoPropertyUpdated(Photo photo) {
+    private void onPhotoPropertyUpdated(@Nullable Photo photo) {
         createViewModel(photo);
 
         if (getView() != null && PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
