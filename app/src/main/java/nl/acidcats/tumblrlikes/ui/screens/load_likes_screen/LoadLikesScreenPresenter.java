@@ -55,7 +55,7 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
     private void loadLikesPage(LoadLikesMode mode) {
         registerSubscription(
                 _likesPageUseCase
-                        .loadLikesPage(mode)
+                        .loadLikesPage(mode, new Date().getTime())
                         .subscribe(this::handleLikesPageLoaded, this::handleLoadPageError)
         );
     }
