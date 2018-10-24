@@ -49,7 +49,7 @@ public class LikesDataRepositoryImpl implements LikesDataRepository {
         } else {
             _isLoadComplete = false;
 
-            _timeOfLastLike = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).timestamp();
+            _timeOfLastLike = tumblrLikeVOs.get(tumblrLikeVOs.size() - 1).getTimestamp();
         }
 
         return tumblrLikeVOs;

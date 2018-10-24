@@ -18,8 +18,9 @@ def plugins = config.Plugins
 def libs = config.Libraries
 
 apply plugin: plugins.android_lib
-apply plugin: plugins.kotlin
 apply plugin: plugins.greenDAO
+apply plugin: plugins.kotlin
+apply plugin: plugins.kotlin_kapt
 
 apply from: "$rootDir/config/config.gradle", to: config
 
@@ -56,6 +57,26 @@ android {
 
 }
 
+afterEvaluate {
+    if (project.plugins.hasPlugin('org.greenrobot.greendao')) {
+        def taskGraph = project.getGradle().getTaskGraph()
+        taskGraph.whenReady {
+            Task greendaoPrepareTask = project.tasks.getByName("greendaoPrepare")
+            Task greendaoTask = project.tasks.getByName("greendao")
+
+            Task debugKotlin = project.tasks.getByName("kaptDebugKotlin")
+            Task releaseKotlin = project.tasks.getByName("kaptReleaseKotlin")
+            debugKotlin.doFirst {
+                greendaoPrepareTask.execute()
+                greendaoTask.execute()
+            }
+            releaseKotlin.doFirst {
+                greendaoPrepareTask.execute()
+                greendaoTask.execute()
+            }
+        }
+    }
+}
 
 greendao {
     schemaVersion 6
@@ -71,10 +92,6 @@ dependencies {
 
     // GreenDAO
     implementation libs.greenDAO
-
-    // AutoValue
-    implementation libs.autoValue
-    annotationProcessor libs.autoValue
 
     // Rx
     implementation libs.rxAndroid
@@ -92,11 +109,11 @@ dependencies {
     // Dagger
     implementation libs.dagger
     annotationProcessor libs.annotationProcessorDagger
+    kapt libs.annotationProcessorDagger
 
     // Moshi
-    implementation libs.moshi
-    annotationProcessor libs.moshi_autovalue
-    implementation libs.moshi_autovalue_annotations
+    implementation libs.moshi_kotlin
+    kapt libs.moshi_codegen
 }
 repositories {
     mavenCentral()

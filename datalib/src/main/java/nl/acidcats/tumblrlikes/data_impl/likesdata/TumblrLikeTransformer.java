@@ -15,7 +15,7 @@ import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrPhotoVO;
 
 class TumblrLikeTransformer {
     List<Photo> transformToPhotos(TumblrLikeVO likeVO) {
-        List<TumblrPhotoPostVO> postVOs = likeVO.photos();
+        List<TumblrPhotoPostVO> postVOs = likeVO.getPhotos();
         if (postVOs == null || postVOs.size() == 0) return null;
 
         List<Photo> photos = new ArrayList<>();
@@ -24,13 +24,13 @@ class TumblrLikeTransformer {
             List<TumblrPhotoVO> tumblrPhotoVOs = new ArrayList<>();
 
             // add original photo
-            if (postVO.originalPhoto() != null) {
-                tumblrPhotoVOs.add(postVO.originalPhoto());
+            if (postVO.getOriginalPhoto() != null) {
+                tumblrPhotoVOs.add(postVO.getOriginalPhoto());
             }
 
             // add alt photos
-            if (postVO.altPhotos() != null) {
-                tumblrPhotoVOs.addAll(postVO.altPhotos());
+            if (postVO.getAltPhotos() != null) {
+                tumblrPhotoVOs.addAll(postVO.getAltPhotos());
             }
 
             // skip if none were found
@@ -40,7 +40,7 @@ class TumblrLikeTransformer {
             Collections.sort(tumblrPhotoVOs, new PhotoSizeComparator());
 
             // store biggest
-            photos.add(new Photo(0, likeVO.id(), null, tumblrPhotoVOs.get(0).url(), false, false, false, 0, 0L, 0L));
+            photos.add(new Photo(0, likeVO.getId(), null, tumblrPhotoVOs.get(0).getUrl(), false, false, false, 0, 0L, 0L));
         }
 
         return photos;

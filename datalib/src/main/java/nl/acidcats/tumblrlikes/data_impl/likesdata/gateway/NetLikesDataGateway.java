@@ -4,13 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.squareup.moshi.Moshi;
-
 import java.util.List;
 
 import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikeVO;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikesResponse;
-import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrMoshiAdapterFactory;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrResultVO;
 import nl.acidcats.tumblrlikes.datalib.BuildConfig;
 import nl.acidcats.tumblrlikes.datalib.R;
@@ -46,7 +43,7 @@ public class NetLikesDataGateway implements LikesDataGateway {
         return _tumblrApi
                 .getLikes(blogName, _apiKey, count, beforeTime)
                 .subscribeOn(Schedulers.io())
-                .map(result -> result.response().likes());
+                .map(result -> result.getResponse().getLikes());
     }
 
     interface TumblrApi {
@@ -64,7 +61,7 @@ public class NetLikesDataGateway implements LikesDataGateway {
             Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
 
             // set json as in/out format
-            retrofitBuilder.addConverterFactory(MoshiConverterFactory.create(new Moshi.Builder().add(TumblrMoshiAdapterFactory.create()).build()));
+            retrofitBuilder.addConverterFactory(MoshiConverterFactory.create());
 
             // allow RxJava
             retrofitBuilder.addCallAdapterFactory(RxJavaCallAdapterFactory.create());

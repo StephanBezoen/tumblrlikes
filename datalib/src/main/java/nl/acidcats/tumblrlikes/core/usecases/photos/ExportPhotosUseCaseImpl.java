@@ -3,7 +3,6 @@ package nl.acidcats.tumblrlikes.core.usecases.photos;
 import android.os.Environment;
 import android.util.Log;
 
-import com.google.auto.value.AutoValue;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -17,6 +16,8 @@ import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.core.models.Photo;
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository;
+import nl.acidcats.tumblrlikes.core.usecases.photos.models.PhotoForExport;
+import nl.acidcats.tumblrlikes.core.usecases.photos.models.PhotoForExportJsonAdapter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -34,7 +35,7 @@ public class ExportPhotosUseCaseImpl implements ExportPhotosUseCase {
     public ExportPhotosUseCaseImpl(PhotoDataRepository photoDataRepository) {
         _photoDataRepository = photoDataRepository;
 
-        _jsonAdapter = PhotoForExport.jsonAdapter(new Moshi.Builder().build());
+        _jsonAdapter = new PhotoForExportJsonAdapter(new Moshi.Builder().build());
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ExportPhotosUseCaseImpl implements ExportPhotosUseCase {
 
     private Observable<Photo> writeToStream(int index, Photo photo, OutputStream outputStream) {
         PhotoForExport photoForExport =
-                PhotoForExport.create(photo.getUrl(), photo.isFavorite(), photo.isLiked(), photo.getViewCount(), photo.getViewTime());
+                new PhotoForExport(photo.getUrl(), photo.isFavorite() ? 1 : 0, photo.isLiked() ? 1 : 0, photo.getViewCount(), photo.getViewTime());
 
         String json = _jsonAdapter.toJson(photoForExport);
 
@@ -89,26 +90,5 @@ public class ExportPhotosUseCaseImpl implements ExportPhotosUseCase {
         }
 
         return Observable.just(photo);
-    }
-
-    @AutoValue
-    public static abstract class PhotoForExport {
-        public abstract String url();
-
-        public abstract int isFavorite();
-
-        public abstract int isLiked();
-
-        public abstract int viewCount();
-
-        public abstract long viewTime();
-
-        static PhotoForExport create(String url, boolean isFavorite, boolean isLiked, int viewCount, long viewTime) {
-            return new AutoValue_ExportPhotosUseCaseImpl_PhotoForExport(url, isFavorite ? 1 : 0, isLiked ? 1 : 0, viewCount, viewTime);
-        }
-
-        public static JsonAdapter<PhotoForExport> jsonAdapter(Moshi moshi) {
-            return new AutoValue_ExportPhotosUseCaseImpl_PhotoForExport.MoshiJsonAdapter(moshi);
-        }
     }
 }
