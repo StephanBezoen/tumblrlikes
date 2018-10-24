@@ -18,6 +18,7 @@ class UpdatePhotoCacheUseCaseImpl @Inject constructor(private val photoDataRepos
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    // TODO use filter & map from collections to do filtering & mapping
     override fun checkCachedPhotos(): Observable<Int> {
         return Observable
                 .fromCallable { photoDataRepository.getCachedPhotos() }
