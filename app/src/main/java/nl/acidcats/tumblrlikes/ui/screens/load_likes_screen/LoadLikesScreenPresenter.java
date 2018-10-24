@@ -39,7 +39,7 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
         _photoCacheUseCase
                 .removeCachedHiddenPhotos()
                 .subscribe(
-                        uncachedCount -> startLoadingLikes(),
+                        hasRemoved -> startLoadingLikes(),
                         throwable -> {
                             Log.e(TAG, "onViewCreated: removeCachedHiddenPhotos: " + throwable.getMessage());
 

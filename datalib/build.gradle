@@ -78,6 +78,7 @@ dependencies {
 
     // Rx
     implementation libs.rxAndroid
+    implementation libs.rxKotlin
 
     // Retrofit
     implementation libs.retrofit

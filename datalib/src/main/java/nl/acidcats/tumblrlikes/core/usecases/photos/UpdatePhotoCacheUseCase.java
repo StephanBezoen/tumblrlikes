@@ -6,7 +6,7 @@ import rx.Observable;
  * Created on 01/10/2018.
  */
 public interface UpdatePhotoCacheUseCase {
-    Observable<Void> removeCachedHiddenPhotos();
+    Observable<Boolean> removeCachedHiddenPhotos();
 
     Observable<Integer> checkCachedPhotos();
 }

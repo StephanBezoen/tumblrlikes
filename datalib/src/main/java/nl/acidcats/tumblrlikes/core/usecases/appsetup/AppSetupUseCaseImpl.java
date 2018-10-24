@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.core.usecases.appsetup;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import javax.inject.Inject;
@@ -15,10 +16,11 @@ public class AppSetupUseCaseImpl implements AppSetupUseCase {
     private AppDataRepository _appDataRepository;
 
     @Inject
-    public AppSetupUseCaseImpl(AppDataRepository appDataRepository) {
+    AppSetupUseCaseImpl(AppDataRepository appDataRepository) {
         _appDataRepository = appDataRepository;
     }
 
+    @NonNull
     @Override
     public Observable<Boolean> isSetupComplete() {
         String apiKey = _appDataRepository.getTumblrApiKey();

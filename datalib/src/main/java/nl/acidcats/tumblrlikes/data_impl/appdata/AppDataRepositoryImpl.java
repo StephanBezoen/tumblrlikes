@@ -23,7 +23,6 @@ public class AppDataRepositoryImpl implements AppDataRepository {
     private static final String KEY_LATEST_CHECK_TIMESTAMP = "key_latestCheckTimestamp";
 
     private final PrefsHelper _prefsHelper;
-    private final boolean _debug = BuildConfig.DEBUG;
 
     @Inject
     public AppDataRepositoryImpl(Context context) {

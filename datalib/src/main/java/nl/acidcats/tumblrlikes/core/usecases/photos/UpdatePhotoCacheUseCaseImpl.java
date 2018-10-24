@@ -23,7 +23,7 @@ public class UpdatePhotoCacheUseCaseImpl implements UpdatePhotoCacheUseCase {
     }
 
     @Override
-    public Observable<Void> removeCachedHiddenPhotos() {
+    public Observable<Boolean> removeCachedHiddenPhotos() {
         return _photoDataRepository
                 .removeCachedHiddenPhotos()
                 .observeOn(AndroidSchedulers.mainThread());

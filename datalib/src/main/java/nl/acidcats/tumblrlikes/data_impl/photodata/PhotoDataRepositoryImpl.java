@@ -98,14 +98,14 @@ public class PhotoDataRepositoryImpl implements PhotoDataRepository {
     }
 
     @Override
-    public Observable<Void> removeCachedHiddenPhotos() {
+    public Observable<Boolean> removeCachedHiddenPhotos() {
         return Observable
                 .just(_photoDataGateway.getCachedHiddenPhotos())
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable(photoEntities -> photoEntities)
                 .map(this::uncachePhoto)
                 .toList()
-                .flatMap(photoEntities -> Observable.just(null));
+                .flatMap(photoEntities -> Observable.just(true));
     }
 
     @Override
