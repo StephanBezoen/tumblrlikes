@@ -21,7 +21,7 @@ class AppDataRepositoryImpl @Inject constructor(context: Context) : AppDataRepos
         KEY_LATEST_CHECK_TIMESTAMP("key_latestCheckTimestamp")
     }
 
-    override fun getTumblrApiKey(): String = prefsHelper.getString(Keys.KEY_TUMBLR_API_KEY.value, BuildConfig.CONSUMER_KEY)
+    override fun getTumblrApiKey(): String = prefsHelper.getString(Keys.KEY_TUMBLR_API_KEY.value, BuildConfig.CONSUMER_KEY)!!
 
     override fun setTumblrBlog(tumblrBlog: String) = prefsHelper.putString(Keys.KEY_TUMBLR_BLOG.value, tumblrBlog)
 
