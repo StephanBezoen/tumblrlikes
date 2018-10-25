@@ -4,7 +4,7 @@ package nl.acidcats.tumblrlikes.core.models
  * Created on 24/10/2018.
  */
 data class Photo(
-        val id: Long,
+        val id: Long = 0,
         val tumblrId: Long,
         val filePath: String? = null,
         val url: String? = null,
