@@ -13,6 +13,6 @@ class AppSetupUseCaseImpl @Inject constructor(private val appDataRepository: App
         val apiKey = appDataRepository.getTumblrApiKey()
         val blog = appDataRepository.getTumblrBlog()
 
-        return Observable.just(!apiKey.isEmpty() && !blog.isEmpty());
+        return Observable.just(!apiKey.isEmpty() && blog != null && !blog.isEmpty());
     }
 }

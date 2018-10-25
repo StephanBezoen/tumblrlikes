@@ -8,7 +8,7 @@ interface AppDataRepository {
 
     fun setTumblrBlog(tumblrBlog: String)
 
-    fun getTumblrBlog(): String
+    fun getTumblrBlog(): String?
 
     fun setPincodeHash(pinCode: String)
 

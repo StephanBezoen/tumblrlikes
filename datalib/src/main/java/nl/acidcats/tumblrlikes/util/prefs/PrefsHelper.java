@@ -24,6 +24,7 @@ public class PrefsHelper {
         _prefs.edit().putLong(key, value).apply();
     }
 
+    @Nullable
     public String getString(String key) {
         return getString(key, null);
     }
