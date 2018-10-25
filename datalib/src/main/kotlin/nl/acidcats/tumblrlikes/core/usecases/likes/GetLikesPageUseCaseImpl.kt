@@ -5,8 +5,8 @@ import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository
 import rx.Observable
+import rx.Observable.error
 import rx.android.schedulers.AndroidSchedulers
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -18,10 +18,10 @@ class GetLikesPageUseCaseImpl @Inject constructor(private val appDataRepository:
     override fun loadLikesPage(mode: LoadLikesMode, currentTimeInMs: Long): Observable<Long> {
         val timestamp: Long = when (mode) {
             LoadLikesMode.FRESH -> currentTimeInMs
-            LoadLikesMode.CONTINUED -> likesDataRepository.getLastLikeTime()
+            LoadLikesMode.CONTINUED -> likesDataRepository.lastLikeTime
         }
 
-        val blog = appDataRepository.getTumblrBlog() ?: return Observable.error(Exception("Blog has not been set"))
+        val blog = appDataRepository.getTumblrBlog() ?: return error(Exception("Blog has not been set"))
 
         return likesDataRepository.getLikedPhotos(blog, 20, timestamp)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -33,7 +33,7 @@ class GetLikesPageUseCaseImpl @Inject constructor(private val appDataRepository:
     }
 
     override fun checkLoadLikesComplete(currentTimeInMs: Long): Observable<Boolean> {
-        val isComplete = likesDataRepository.isLoadComplete() || (appDataRepository.getLatestCheckTimestamp() >= likesDataRepository.getLastLikeTime())
+        val isComplete = likesDataRepository.isLoadComplete || (appDataRepository.getLatestCheckTimestamp() >= likesDataRepository.lastLikeTime)
 
         if (isComplete) {
             appDataRepository.setLatestCheckTimestamp(currentTimeInMs)

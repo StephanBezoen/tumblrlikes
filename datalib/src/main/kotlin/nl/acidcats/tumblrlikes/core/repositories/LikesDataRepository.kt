@@ -9,7 +9,7 @@ import rx.Observable
 interface LikesDataRepository {
     fun getLikedPhotos(blogName: String, count: Int, beforeTime: Long): Observable<List<Photo>>
 
-    fun isLoadComplete(): Boolean
+    val isLoadComplete: Boolean
 
-    fun getLastLikeTime(): Long
+    val lastLikeTime : Long
 }
