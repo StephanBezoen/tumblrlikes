@@ -11,15 +11,15 @@ interface PhotoDataGateway {
 
     val photoCount: Long
 
-    val nextPhoto: Photo?
+    fun getNextPhoto(): Photo?
 
-    val cachedPhotos: List<Photo>
+    fun getCachedPhotos(): List<Photo>
 
-    val cachedHiddenPhotos: List<Photo>
+    fun getCachedHiddenPhotos(): List<Photo>
 
-    val uncachedPhoto: Photo?
+    fun getUncachedPhoto(): Photo?
 
-    val allPhotos: List<Photo>
+    fun getAllPhotos(): List<Photo>
 
     fun hasPhoto(postId: Long): Boolean
 

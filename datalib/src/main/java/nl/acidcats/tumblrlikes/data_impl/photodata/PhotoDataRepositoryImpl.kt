@@ -31,11 +31,11 @@ class PhotoDataRepositoryImpl @Inject constructor(private val photoDataGateway: 
         return photos
     }
 
-    override fun getAllPhotos(): List<Photo> = photoDataGateway.allPhotos
+    override fun getAllPhotos(): List<Photo> = photoDataGateway.getAllPhotos()
 
     override fun getPhotoCount(): Long = photoDataGateway.photoCount
 
-    override fun getNextPhoto(): Photo? = photoDataGateway.nextPhoto
+    override fun getNextPhoto(): Photo? = photoDataGateway.getNextPhoto()
 
     override fun setPhotoViewStartTime(id: Long, currentTime: Long) {
 //        Log.d(TAG, "setPhotoViewStartTime: ")
@@ -87,12 +87,12 @@ class PhotoDataRepositoryImpl @Inject constructor(private val photoDataGateway: 
 
     override fun hasUncachedPhotos(): Boolean = photoDataGateway.hasUncachedPhotos()
 
-    override fun getNextUncachedPhoto(): Photo? = photoDataGateway.uncachedPhoto
+    override fun getNextUncachedPhoto(): Photo? = photoDataGateway.getUncachedPhoto()
 
     override fun markAsCached(id: Long, path: String) = photoDataGateway.setPhotoCached(id, true, path)
 
     override fun removeCachedHiddenPhotos(): Observable<Boolean> {
-        return Observable.fromCallable { photoDataGateway.cachedHiddenPhotos }
+        return Observable.fromCallable { photoDataGateway.getCachedHiddenPhotos() }
                 .subscribeOn(Schedulers.io())
                 .flatMapIterable { it }
                 .map { uncachePhoto(it) }
@@ -112,5 +112,5 @@ class PhotoDataRepositoryImpl @Inject constructor(private val photoDataGateway: 
         return idList
     }
 
-    override fun getCachedPhotos(): List<Photo> = photoDataGateway.cachedPhotos
+    override fun getCachedPhotos(): List<Photo> = photoDataGateway.getCachedPhotos()
 }
