@@ -11,7 +11,7 @@ import javax.inject.Inject
  * Created on 24/10/2018.
  */
 class GetFilteredPhotoUseCaseImpl @Inject constructor(private val photoDataRepository: PhotoDataRepository) : GetFilteredPhotoUseCase {
-    override fun getNextFilteredPhoto(): Observable<Photo> {
+    override fun getNextFilteredPhoto(): Observable<Photo?> {
         return Observable
                 .fromCallable { photoDataRepository.getNextPhoto() }
                 .subscribeOn(Schedulers.io())

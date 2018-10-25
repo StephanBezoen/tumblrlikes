@@ -16,7 +16,7 @@ interface PhotoDataRepository {
 
     fun getPhotoCount(): Long
 
-    fun getNextPhoto(): Photo
+    fun getNextPhoto(): Photo?
 
     fun setPhotoViewStartTime(id: Long, currentTime: Long)
 
@@ -36,7 +36,7 @@ interface PhotoDataRepository {
 
     fun hasUncachedPhotos(): Boolean
 
-    fun getNextUncachedPhoto(): Photo
+    fun getNextUncachedPhoto(): Photo?
 
     fun markAsCached(id: Long, path: String)
 
