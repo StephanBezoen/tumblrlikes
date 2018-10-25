@@ -259,9 +259,9 @@ public class GreenDAOPhotoDataGatewayImpl implements PhotoDataGateway {
 
     @Override
     public void initFilter(FilterType filterType) {
-        _photoIterator = filterType.isRandom() ? new RandomPhotoIterator() : new LinearPhotoIterator();
+        FilterOption filterOption = _filters.get(filterType);
 
-        ((AbstractPhotoIterator) _photoIterator).setFilterOption(_filters.get(filterType));
+        _photoIterator = filterType.isRandom() ? new RandomPhotoIterator(filterOption) : new LinearPhotoIterator(filterOption);
     }
 
     @Override
