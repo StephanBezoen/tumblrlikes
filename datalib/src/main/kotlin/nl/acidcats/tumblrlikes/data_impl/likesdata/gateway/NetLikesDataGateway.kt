@@ -38,7 +38,7 @@ class NetLikesDataGateway(context: Context) : LikesDataGateway {
                 .create(TumblrApi::class.java)
     }
 
-    fun getOkHttpClient(): OkHttpClient {
+    private fun getOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
 
         if (BuildConfig.DEBUG) {
@@ -53,6 +53,9 @@ class NetLikesDataGateway(context: Context) : LikesDataGateway {
     override fun getLikes(blogName: String, count: Int, beforeTime: Long): Observable<List<TumblrLikeVO>> {
         return tumblrApi
                 .getLikes(blogName, apiKey, count, beforeTime)
+                .doOnNext {
+                    Log.d("NetLikesGateway", "getLikes: links = ${it.response.pageLinks}")
+                }
                 .subscribeOn(Schedulers.io())
                 .map {
                     it.response.likes

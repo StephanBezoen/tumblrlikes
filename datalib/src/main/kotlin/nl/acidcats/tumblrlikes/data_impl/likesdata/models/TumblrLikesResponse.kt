@@ -9,5 +9,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class TumblrLikesResponse(
         @Json(name = "liked_posts")
-        val likes: List<TumblrLikeVO>
+        val likes: List<TumblrLikeVO>,
+
+        @Json(name = "_links")
+        val pageLinks: TumblrPageLinks?
 )
