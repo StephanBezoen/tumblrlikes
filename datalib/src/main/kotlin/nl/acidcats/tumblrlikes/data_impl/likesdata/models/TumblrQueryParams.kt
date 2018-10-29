@@ -10,14 +10,12 @@ data class TumblrQueryParams (
         val after:String?,
         val before:String?
 ) {
-    val afterInMs:Long
+    val afterSeconds:Long
         get() {
-            val ms = after?.toLong() ?: 0
-            return (1000L * ms)
+            return after?.toLong() ?: 0
         }
-    val beforeInMs:Long
+    val beforeSeconds:Long
         get() {
-            val ms = before?.toLong() ?: 0
-            return (1000L * ms)
+            return before?.toLong() ?: 0
         }
 }

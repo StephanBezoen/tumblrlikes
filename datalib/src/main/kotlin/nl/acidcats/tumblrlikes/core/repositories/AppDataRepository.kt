@@ -14,11 +14,15 @@ interface AppDataRepository {
 
     fun getPincodeHash(): String?
 
-    fun getLatestCheckTimestamp(): Long
+    fun getLastLikeTime(): Long
 
-    fun setLatestCheckTimestamp(time: Long)
+    fun setLastLikeTime(time: Long)
 
     fun getAppStopTime(): Long
 
     fun setAppStopTime(appStopTime: Long)
+
+    fun getLastCheckTime(): Long
+
+    fun setLastCheckTime(time:Long)
 }

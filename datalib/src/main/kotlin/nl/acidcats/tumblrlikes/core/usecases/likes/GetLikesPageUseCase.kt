@@ -7,7 +7,7 @@ import rx.Observable
  * Created on 24/10/2018.
  */
 interface GetLikesPageUseCase {
-    fun loadLikesPage(mode: LoadLikesMode, currentTimeInMs: Long): Observable<Long>
+    fun loadLikesPage(mode: LoadLikesMode): Observable<Long>
 
-    fun checkLoadLikesComplete(currentTimeInMs: Long): Observable<Boolean>
+    fun checkLoadLikesComplete(): Observable<Boolean>
 }

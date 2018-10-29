@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikeVO
 import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikesResponse
+import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrPageLinks
 import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrResultVO
 import nl.acidcats.tumblrlikes.datalib.BuildConfig
 import nl.acidcats.tumblrlikes.datalib.R
@@ -22,6 +23,11 @@ import rx.schedulers.Schedulers
  * Created on 25/10/2018.
  */
 class NetLikesDataGateway(context: Context) : LikesDataGateway {
+    override var isLoadComplete: Boolean = false
+        private set
+
+    override var lastLikeTimeSec: Long = 0
+        private set
 
     private val tumblrApi: TumblrApi
     private val apiKey = BuildConfig.CONSUMER_KEY
@@ -51,15 +57,24 @@ class NetLikesDataGateway(context: Context) : LikesDataGateway {
     }
 
     override fun getLikes(blogName: String, count: Int, beforeTime: Long): Observable<List<TumblrLikeVO>> {
+        isLoadComplete = false
+
         return tumblrApi
                 .getLikes(blogName, apiKey, count, beforeTime)
-                .doOnNext {
-                    Log.d("NetLikesGateway", "getLikes: links = ${it.response.pageLinks}")
-                }
                 .subscribeOn(Schedulers.io())
                 .map {
+                    updateLoadStatus(it.response.pageLinks)
+
                     it.response.likes
                 }
+    }
+
+    private fun updateLoadStatus(pageLinks: TumblrPageLinks?) {
+        isLoadComplete = (pageLinks == null)
+
+        if (pageLinks?.prevPage != null) {
+            lastLikeTimeSec = pageLinks.prevPage.params.afterSeconds
+        }
     }
 
     interface TumblrApi {
@@ -67,7 +82,7 @@ class NetLikesDataGateway(context: Context) : LikesDataGateway {
         fun getLikes(@Path("blogName") blogName: String,
                      @Query("api_key") apiKey: String,
                      @Query("limit") count: Int,
-                     @Query("before") beforeTimestamp: Long)
+                     @Query("after") after: Long)
                 : Observable<TumblrResultVO<TumblrLikesResponse>>
     }
 

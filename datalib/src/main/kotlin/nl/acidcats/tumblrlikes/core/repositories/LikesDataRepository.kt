@@ -11,5 +11,5 @@ interface LikesDataRepository {
 
     val isLoadComplete: Boolean
 
-    val lastLikeTime : Long
+    val lastLikeTime: Long
 }

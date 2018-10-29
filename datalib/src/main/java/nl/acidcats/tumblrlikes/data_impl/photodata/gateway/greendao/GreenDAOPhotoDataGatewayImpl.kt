@@ -75,7 +75,7 @@ class GreenDAOPhotoDataGatewayImpl constructor(context: Context) : PhotoDataGate
         return photoEntityTransformer.toPhotos(query.list())
     }
 
-    override fun getCachedHiddenPhotos(): List<Photo> = photoEntityTransformer.toPhotos(hiddenCachedQuery.list())
+    override fun getCachedHiddenPhotos(): List<Photo> = photoEntityTransformer.toPhotos(hiddenCachedQuery.forCurrentThread().list())
 
     override fun getUncachedPhoto(): Photo? = photoEntityTransformer.toPhoto(uncachedQuery.forCurrentThread().unique())
 

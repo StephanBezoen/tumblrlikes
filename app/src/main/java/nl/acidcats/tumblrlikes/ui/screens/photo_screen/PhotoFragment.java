@@ -171,7 +171,9 @@ public class PhotoFragment extends BaseFragment implements PhotoScreenContract.V
             listener = new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    _presenter.onImageLoadFailed();
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> _presenter.onImageLoadFailed());
+                    }
 
                     return true;
                 }

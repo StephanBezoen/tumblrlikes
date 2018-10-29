@@ -15,10 +15,11 @@ import javax.inject.Inject
 class GetLikesPageUseCaseImpl @Inject constructor(private val appDataRepository: AppDataRepository,
                                                   private val photoDataRepository: PhotoDataRepository,
                                                   private val likesDataRepository: LikesDataRepository) : GetLikesPageUseCase {
-    override fun loadLikesPage(mode: LoadLikesMode, currentTimeInMs: Long): Observable<Long> {
+    override fun loadLikesPage(mode: LoadLikesMode): Observable<Long> {
         val timestamp: Long = when (mode) {
-            LoadLikesMode.FRESH -> currentTimeInMs
-            LoadLikesMode.CONTINUED -> likesDataRepository.lastLikeTime
+            LoadLikesMode.RELOAD_ALL -> 1
+            LoadLikesMode.SINCE_LAST -> Math.max(1L, appDataRepository.getLastLikeTime())
+            LoadLikesMode.NEXT_PAGE -> likesDataRepository.lastLikeTime
         }
 
         val blog = appDataRepository.getTumblrBlog() ?: return error(Exception("Blog has not been set"))
@@ -29,16 +30,14 @@ class GetLikesPageUseCaseImpl @Inject constructor(private val appDataRepository:
                 .filter { !photoDataRepository.hasPhoto(it.tumblrId) }
                 .toList()
                 .map(photoDataRepository::storePhotos)
-                .map { photoDataRepository.getPhotoCount() }
+                .map {
+                    if (likesDataRepository.lastLikeTime != 0L) {
+                        appDataRepository.setLastLikeTime(likesDataRepository.lastLikeTime)
+                    }
+
+                    photoDataRepository.getPhotoCount()
+                }
     }
 
-    override fun checkLoadLikesComplete(currentTimeInMs: Long): Observable<Boolean> {
-        val isComplete = likesDataRepository.isLoadComplete || (appDataRepository.getLatestCheckTimestamp() >= likesDataRepository.lastLikeTime)
-
-        if (isComplete) {
-            appDataRepository.setLatestCheckTimestamp(currentTimeInMs)
-        }
-
-        return Observable.just(isComplete)
-    }
+    override fun checkLoadLikesComplete(): Observable<Boolean> = Observable.just(likesDataRepository.isLoadComplete)
 }

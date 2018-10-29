@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode;
+import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase;
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException;
@@ -26,6 +27,8 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
     GetLikesPageUseCase _likesPageUseCase;
     @Inject
     UpdatePhotoCacheUseCase _photoCacheUseCase;
+    @Inject
+    CheckTimeUseCase _checkTimeUseCase;
 
     private int _pageCount;
     private boolean _isLoadingCancelled;
@@ -49,13 +52,13 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
     }
 
     private void startLoadingLikes() {
-        loadLikesPage(LoadLikesMode.FRESH);
+        loadLikesPage(LoadLikesMode.SINCE_LAST);
     }
 
     private void loadLikesPage(LoadLikesMode mode) {
         registerSubscription(
                 _likesPageUseCase
-                        .loadLikesPage(mode, new Date().getTime())
+                        .loadLikesPage(mode)
                         .subscribe(this::handleLikesPageLoaded, this::handleLoadPageError)
         );
     }
@@ -71,7 +74,7 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
 
         registerSubscription(
                 _likesPageUseCase
-                        .checkLoadLikesComplete(new Date().getTime())
+                        .checkLoadLikesComplete()
                         .subscribe(isComplete -> {
                             if (isComplete) {
                                 onLoadComplete(totalPhotoCount);
@@ -80,7 +83,7 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
                                     getView().showLoadProgress(_pageCount, totalPhotoCount);
                                 }
 
-                                loadLikesPage(LoadLikesMode.CONTINUED);
+                                loadLikesPage(LoadLikesMode.NEXT_PAGE);
                             }
                         }, throwable -> Log.e(TAG, "handleLikesPageLoaded: " + throwable.getMessage()))
         );
@@ -91,7 +94,11 @@ public class LoadLikesScreenPresenter extends BasePresenterImpl<LoadLikesScreenC
             getView().showAllLikesLoaded(totalPhotoCount);
         }
 
-        new Handler().postDelayed(this::notifyLoadingComplete, 500);
+        registerSubscription(
+                _checkTimeUseCase
+                        .setLastCheckTime(new Date().getTime())
+                        .subscribe(currentTime -> new Handler().postDelayed(this::notifyLoadingComplete, 500))
+        );
     }
 
 

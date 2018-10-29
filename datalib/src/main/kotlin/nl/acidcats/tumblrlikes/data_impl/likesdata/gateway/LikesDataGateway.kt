@@ -9,4 +9,8 @@ import rx.Observable
 
 interface LikesDataGateway {
     fun getLikes(blogName: String, count: Int, beforeTime: Long): Observable<List<TumblrLikeVO>>
+
+    val isLoadComplete: Boolean
+
+    val lastLikeTimeSec : Long
 }

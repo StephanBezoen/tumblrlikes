@@ -8,5 +8,7 @@ import rx.Observable
 interface CheckTimeUseCase {
     fun isTimeToCheck(currentTimeInMs: Long): Observable<Boolean>
 
+    fun setLastCheckTime(currentTimeInMs: Long): Observable<Long>
+
     fun resetCheckTime(): Observable<Long>
 }
