@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.migration.Migration
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.migration.MigrationV5
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.migration.MigrationV6
+import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.database.migration.MigrationV8
 import nl.acidcats.tumblrlikes.db_impl_greendao.DaoMaster
 import org.greenrobot.greendao.database.Database
 
@@ -26,6 +27,7 @@ class DbOpenHelper constructor(context: Context, name: String, factory: SQLiteDa
         val migrations = ArrayList<Migration>()
         migrations += MigrationV5()
         migrations += MigrationV6()
+        migrations += MigrationV8()
 
         migrations.sortBy { it.version }
 

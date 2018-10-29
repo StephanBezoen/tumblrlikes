@@ -83,7 +83,7 @@ afterEvaluate {
 }
 
 greendao {
-    schemaVersion 6
+    schemaVersion 8
     daoPackage 'nl.acidcats.tumblrlikes.db_impl_greendao'
 }
 
