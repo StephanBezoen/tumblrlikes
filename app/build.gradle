@@ -18,8 +18,9 @@ def libs = config.Libraries
 def repos = config.Repos
 
 apply plugin: plugins.android_app
-apply plugin: plugins.kotlin
 apply plugin: plugins.fabric
+apply plugin: plugins.kotlin
+apply plugin: plugins.kotlin_kapt
 
 apply from: "$rootDir/config/config.gradle", to: config
 
@@ -106,6 +107,7 @@ dependencies {
     // Butterknife
     implementation libs.butterknife
     annotationProcessor libs.annotationProcessorButterknife
+    kapt libs.annotationProcessorButterknife
 
     // Retrofit
     implementation libs.okHttp
@@ -113,10 +115,12 @@ dependencies {
     //Glide
     implementation libs.glide
     annotationProcessor libs.annotationProcessorGlide
+    kapt libs.annotationProcessorGlide
 
     // Dagger
     implementation libs.dagger
     annotationProcessor libs.annotationProcessorDagger
+    kapt libs.annotationProcessorDagger
 
     // AutoValue
     implementation libs.autoValue
