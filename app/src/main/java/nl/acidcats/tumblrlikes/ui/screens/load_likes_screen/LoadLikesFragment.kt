@@ -83,4 +83,10 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
 
         cancelButton.isEnabled = false
     }
+
+    override fun onDestroyView() {
+        presenter.onDestroyView()
+
+        super.onDestroyView()
+    }
 }

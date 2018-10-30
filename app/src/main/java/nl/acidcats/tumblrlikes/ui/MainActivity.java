@@ -71,13 +71,13 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         _isShowingSetup = true;
 
-                        showFragment(SetupFragment.newInstance());
+                        showFragment(SetupFragment.Companion.newInstance());
                     }
                 });
     }
 
     private void onSettingsRequest(String action, Intent intent) {
-        showFragment(SetupFragment.newInstance());
+        showFragment(SetupFragment.Companion.newInstance());
     }
 
     private void onRefreshRequest(String action, Intent intent) {

@@ -5,6 +5,7 @@ import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import butterknife.BindView
@@ -70,10 +71,7 @@ class LoginFragment : BaseFragment(), LoginScreenContract.View {
         passwordInput.filters = arrayOf(InputFilter.LengthFilter(LoginScreenContract.PINCODE_LENGTH))
 
         textWatcher = object : TextWatcherAdapter() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val pincode = s?.toString() ?: ""
-                presenter.onPincodeInputChanged(pincode)
-            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = presenter.onPincodeInputChanged(s.toString())
         }
         passwordInput.addTextChangedListener(textWatcher)
 
@@ -83,7 +81,9 @@ class LoginFragment : BaseFragment(), LoginScreenContract.View {
     override fun onResume() {
         super.onResume()
 
-
+        if (activity != null) {
+            activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        }
     }
 
     override fun setPincodeDoesntMatchViewVisible(isVisible: Boolean) {
@@ -100,5 +100,14 @@ class LoginFragment : BaseFragment(), LoginScreenContract.View {
 
     override fun clearPasswordInput() {
         passwordInput.setText("")
+    }
+
+    override fun onDestroyView() {
+        passwordInput.removeTextChangedListener(textWatcher)
+        skipButton.setOnClickListener(null)
+
+        presenter.onDestroyView()
+
+        super.onDestroyView()
     }
 }
