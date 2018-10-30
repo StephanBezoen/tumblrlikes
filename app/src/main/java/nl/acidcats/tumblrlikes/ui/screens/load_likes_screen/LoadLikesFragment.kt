@@ -4,7 +4,9 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -37,6 +39,10 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
     }
 
     override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_loadlikes, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
