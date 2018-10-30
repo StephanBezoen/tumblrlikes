@@ -12,7 +12,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import butterknife.BindView
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.R.*
+import nl.acidcats.tumblrlikes.R.color
+import nl.acidcats.tumblrlikes.R.string
 import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import javax.inject.Inject
@@ -40,9 +41,7 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
 
     override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_loadlikes, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_loadlikes, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

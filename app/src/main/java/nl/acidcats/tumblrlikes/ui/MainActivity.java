@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         _pincodeUseCase.isAppPincodeProtected().subscribe(
                 isPincodeProtected -> {
                     if (isPincodeProtected) {
-                        showFragment(LoginFragment.newInstance(LoginScreenContract.Mode.LOGIN));
+                        showFragment(LoginFragment.Companion.newInstance(LoginScreenContract.Mode.LOGIN));
                     } else {
                         enterApp();
                     }
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     if (isPincodeProtected) {
                         enterApp();
                     } else {
-                        showFragment(LoginFragment.newInstance(LoginScreenContract.Mode.NEW_PINCODE));
+                        showFragment(LoginFragment.Companion.newInstance(LoginScreenContract.Mode.NEW_PINCODE));
                     }
                 }
         );
