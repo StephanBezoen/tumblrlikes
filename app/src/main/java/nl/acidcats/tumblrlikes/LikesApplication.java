@@ -11,6 +11,7 @@ import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.di.AppModule;
 import nl.acidcats.tumblrlikes.di.DaggerAppComponent;
 import nl.acidcats.tumblrlikes.di.DataModule;
+import timber.log.Timber;
 
 /**
  * Created by stephan on 28/03/2017.
@@ -37,6 +38,8 @@ public class LikesApplication extends Application {
                 .appModule(new AppModule(this, analytics))
                 .dataModule(new DataModule(this))
                 .build();
+
+        Timber.plant(new Timber.DebugTree());
 
     }
 

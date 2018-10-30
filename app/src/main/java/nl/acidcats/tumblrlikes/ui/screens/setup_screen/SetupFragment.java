@@ -79,7 +79,7 @@ public class SetupFragment extends BaseFragment implements SetupScreenContract.V
         };
         _tumblrBlogInput.addTextChangedListener(_textWatcher);
 
-        _blogExtensionText.setText(SetupScreenContract.BLOG_EXT);
+        _blogExtensionText.setText(SetupScreenContract.Companion.BLOG_EXT);
 
         _versionText.setText(getString(R.string.version, BuildConfig.VERSION_NAME));
 
@@ -132,7 +132,7 @@ public class SetupFragment extends BaseFragment implements SetupScreenContract.V
     }
 
     private void onOkButtonClick(View view) {
-        _presenter.onSetupDone(_tumblrBlogInput.getText().toString() + SetupScreenContract.BLOG_EXT);
+        _presenter.onSetupDone(_tumblrBlogInput.getText().toString() + SetupScreenContract.Companion.BLOG_EXT);
     }
 
     @Override

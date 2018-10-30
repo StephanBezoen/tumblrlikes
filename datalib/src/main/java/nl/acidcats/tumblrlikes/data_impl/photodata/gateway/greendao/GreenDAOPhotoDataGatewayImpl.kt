@@ -133,7 +133,7 @@ class GreenDAOPhotoDataGatewayImpl constructor(context: Context) : PhotoDataGate
         val pageCount = Math.ceil(totalCount.toDouble() / maxPerPage.toDouble()).toInt()
         val idsPage = ArrayList<Long>()
 
-        for (pageIndex in 0..pageCount) {
+        for (pageIndex in 0 until pageCount) {
             idsPage.clear()
 
             val baseIndex = pageIndex * maxPerPage
