@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onRefreshRequest(String action, Intent intent) {
-        showFragment(LoadLikesFragment.newInstance());
+        showFragment(LoadLikesFragment.Companion.newInstance());
     }
 
     private void checkLogin() {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void enterApp() {
         _checkTimeUseCase.isTimeToCheck(new Date().getTime()).subscribe(
-                isTimeToCheck -> showFragment(isTimeToCheck ? LoadLikesFragment.newInstance() : PhotoFragment.newInstance())
+                isTimeToCheck -> showFragment(isTimeToCheck ? LoadLikesFragment.Companion.newInstance() : PhotoFragment.newInstance())
         );
     }
 
