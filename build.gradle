@@ -131,7 +131,9 @@ ext {
             moshi_autovalue               : 'com.ryanharter.auto.value:auto-value-moshi:0.4.5',
             moshi_autovalue_annotations   : 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.5',
             moshi_kotlin                  : "com.squareup.moshi:moshi-kotlin:1.7.0",
-            moshi_codegen                 : "com.squareup.moshi:moshi-kotlin-codegen:1.7.0"
+            moshi_codegen                 : "com.squareup.moshi:moshi-kotlin-codegen:1.7.0",
+
+            timber                        : "com.github.ajalt:timberkt:1.5.1"
 
     ]
 }

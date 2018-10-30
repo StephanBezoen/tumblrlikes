@@ -139,6 +139,8 @@ dependencies {
     implementation libs.firebase
 
     implementation libs.sqlCipher
+
+    implementation libs.timber
 }
 
 apply plugin: 'com.google.gms.google-services'
