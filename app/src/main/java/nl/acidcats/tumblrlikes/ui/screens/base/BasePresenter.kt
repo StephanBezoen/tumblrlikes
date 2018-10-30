@@ -6,7 +6,7 @@ package nl.acidcats.tumblrlikes.ui.screens.base
 interface BasePresenter<T> {
     fun setView(view: T)
 
-    fun notify(screen: String)
+    fun notify(action: String)
 
     fun onDestroyView()
 }
