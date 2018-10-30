@@ -43,7 +43,7 @@ public class LoginFragment extends BaseFragment implements LoginScreenContract.V
 
     public static LoginFragment newInstance(LoginScreenContract.Mode mode) {
         Bundle args = new Bundle();
-        args.putInt(LoginScreenContract.KEY_MODE, mode.ordinal());
+        args.putString(LoginScreenContract.Companion.KEY_MODE, mode.name());
 
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(args);
@@ -83,7 +83,7 @@ public class LoginFragment extends BaseFragment implements LoginScreenContract.V
         _presenter.setView(this);
         _presenter.onViewCreated();
 
-        _passwordInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(LoginScreenContract.PINCODE_LENGTH)});
+        _passwordInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(LoginScreenContract.Companion.PINCODE_LENGTH)});
 
         _textWatcher = new TextWatcherAdapter() {
             @Override
