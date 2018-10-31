@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import nl.acidcats.tumblrlikes.R;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract;
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel;
 
 /**
  * Created by stephan on 28/04/2017.
@@ -45,7 +45,7 @@ public class PhotoActionDialog extends FrameLayout {
 
     private Unbinder _unbinder;
     private PhotoScreenContract.PhotoActionListener _photoActionListener;
-    private PhotoActionDialogViewModel _viewModel;
+    private PhotoOptionsViewModel _viewModel;
     private ViewPropertyAnimator _hideAnimator;
     private int _hideDuration;
 
@@ -85,7 +85,7 @@ public class PhotoActionDialog extends FrameLayout {
 
     private void onHideButtonClick(View view) {
         if (_photoActionListener != null) {
-            _photoActionListener.onHidePhoto(_viewModel.photoId());
+            _photoActionListener.onHidePhoto(_viewModel.getPhotoId());
         }
 
         hide(PhotoScreenContract.HideFlow.INSTANT);
@@ -93,30 +93,30 @@ public class PhotoActionDialog extends FrameLayout {
 
     private void onUnlikeButtonClick(View view) {
         if (_photoActionListener != null) {
-            _photoActionListener.onUpdatePhotoLike(_viewModel.photoId(), false);
+            _photoActionListener.onUpdatePhotoLike(_viewModel.getPhotoId(), false);
         }
     }
 
     private void onLikeButtonClick(View view) {
         if (_photoActionListener != null) {
-            _photoActionListener.onUpdatePhotoLike(_viewModel.photoId(), true);
+            _photoActionListener.onUpdatePhotoLike(_viewModel.getPhotoId(), true);
         }
     }
 
     private void onFavoriteButtonClick(View view) {
         if (_photoActionListener != null) {
-            _photoActionListener.onUpdatePhotoFavorite(_viewModel.photoId(), !_viewModel.isPhotoFavorite());
+            _photoActionListener.onUpdatePhotoFavorite(_viewModel.getPhotoId(), !_viewModel.isPhotoFavorite());
         }
     }
 
-    public void show(@Nonnull PhotoActionDialogViewModel viewModel) {
+    public void show(@Nonnull PhotoOptionsViewModel viewModel) {
         updateViewModel(viewModel);
 
         setVisibility(VISIBLE);
         setAlpha(1f);
     }
 
-    public void updateViewModel(@NonNull PhotoActionDialogViewModel viewModel) {
+    public void updateViewModel(@NonNull PhotoOptionsViewModel viewModel) {
         _viewModel = viewModel;
 
         updateUI();
@@ -134,7 +134,7 @@ public class PhotoActionDialog extends FrameLayout {
             _unlikeButton.setText(getContext().getString(R.string.photo_action_unlike));
         }
 
-        _viewCountText.setText(getContext().getString(R.string.view_count, _viewModel.viewCount()));
+        _viewCountText.setText(getContext().getString(R.string.view_count, _viewModel.getViewCount()));
     }
 
     public void hide(PhotoScreenContract.HideFlow hideFlow) {

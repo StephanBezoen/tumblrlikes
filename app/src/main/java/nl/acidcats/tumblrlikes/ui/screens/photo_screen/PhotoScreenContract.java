@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import nl.acidcats.tumblrlikes.core.constants.FilterType;
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenter;
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseView;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel;
 
 /**
  * Created on 19/10/2018.
@@ -41,11 +40,11 @@ public interface PhotoScreenContract {
 
         void hidePhotoActionDialog(PhotoScreenContract.HideFlow hideFlow);
 
-        void showPhotoActionDialog(PhotoActionDialogViewModel viewModel);
+        void showPhotoActionDialog(PhotoOptionsViewModel viewModel);
 
         void setFilter(Filter filter);
 
-        void setActionDialogViewModel(PhotoActionDialogViewModel viewModel);
+        void setPhotoOptionsViewModel(PhotoOptionsViewModel viewModel);
 
         void showUI();
 

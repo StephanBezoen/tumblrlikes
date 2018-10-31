@@ -15,8 +15,8 @@ import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase;
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoFragmentViewModel;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoViewViewModel;
 import rx.Observable;
 
 /**
@@ -37,7 +37,7 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
     GetFilteredPhotoUseCase _getFilteredPhotoUseCase;
 
     @Nullable
-    private PhotoFragmentViewModel _viewModel;
+    private PhotoViewViewModel _viewModel;
 
     @Inject
     PhotoScreenPresenter() {
@@ -45,7 +45,7 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
 
     @Override
     public void saveState(@NonNull Bundle outState) {
-        if (PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
+        if (PhotoViewViewModel.Companion.isValid(_viewModel)) {
             outState.putParcelable(KEY_VIEW_MODEL, _viewModel);
         }
     }
@@ -74,8 +74,8 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
 
     @Override
     public void onImageLoadFailed() {
-        if (getView() != null && PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
-            getView().loadPhoto(_viewModel.fallbackUrl(), false);
+        if (getView() != null && PhotoViewViewModel.Companion.isValid(_viewModel)) {
+            getView().loadPhoto(_viewModel.getFallbackUrl(), false);
         }
     }
 
@@ -144,8 +144,8 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
     private void onPhotoPropertyUpdated(@Nullable Photo photo) {
         createViewModel(photo);
 
-        if (getView() != null && PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
-            getView().setActionDialogViewModel(createPhotoActionDialogViewModel(_viewModel));
+        if (getView() != null && PhotoViewViewModel.Companion.isValid(_viewModel)) {
+            getView().setPhotoOptionsViewModel(createPhotoOptionsViewModel(_viewModel));
         }
 
         if (getView() != null) {
@@ -159,7 +159,7 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
             getView().resetPhotoScale();
         }
 
-        if (PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
+        if (PhotoViewViewModel.Companion.isValid(_viewModel)) {
             endPhotoView();
         }
 
@@ -167,15 +167,15 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
                 _getFilteredPhotoUseCase
                         .getNextFilteredPhoto()
                         .map(this::createViewModel)
-                        .filter(PhotoFragmentViewModel::isValidViewModel)
+                        .filter(PhotoViewViewModel.Companion::isValid)
                         .flatMap(viewModel -> {
                             if (getView() != null) {
-                                getView().loadPhoto(viewModel.url(), true);
+                                getView().loadPhoto(viewModel.getUrl(), true);
                             }
 
                             return Observable.just(viewModel);
                         })
-                        .flatMap(viewModel -> _photoViewUseCase.startPhotoView(viewModel.photoId(), SystemClock.elapsedRealtime()))
+                        .flatMap(viewModel -> _photoViewUseCase.startPhotoView(viewModel.getPhotoId(), SystemClock.elapsedRealtime()))
                         .subscribe(
                                 isViewStarted -> Log.d(TAG, "showPhoto: "),
                                 throwable -> Log.e(TAG, "showPhoto: " + throwable.getMessage()))
@@ -183,24 +183,24 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
     }
 
     private void startPhotoView() {
-        if (PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
-            registerSubscription(_photoViewUseCase.startPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
+        if (PhotoViewViewModel.Companion.isValid(_viewModel)) {
+            registerSubscription(_photoViewUseCase.startPhotoView(_viewModel.getPhotoId(), SystemClock.elapsedRealtime()).subscribe());
         }
     }
 
     private void endPhotoView() {
-        if (PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
-            registerSubscription(_photoViewUseCase.endPhotoView(_viewModel.photoId(), SystemClock.elapsedRealtime()).subscribe());
+        if (PhotoViewViewModel.Companion.isValid(_viewModel)) {
+            registerSubscription(_photoViewUseCase.endPhotoView(_viewModel.getPhotoId(), SystemClock.elapsedRealtime()).subscribe());
         }
     }
 
     @Nullable
-    private PhotoFragmentViewModel createViewModel(@Nullable Photo photo) {
+    private PhotoViewViewModel createViewModel(@Nullable Photo photo) {
         if (photo == null) return null;
         String url = photo.isCached() ? photo.getFilePath() : photo.getUrl();
         if (url != null && !url.startsWith("http")) url = "file:" + url;
 
-        _viewModel = PhotoFragmentViewModel.create(
+        _viewModel = new PhotoViewViewModel(
                 photo.getId(),
                 url,
                 photo.getUrl(),
@@ -212,12 +212,12 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
     }
 
     @NonNull
-    private PhotoActionDialogViewModel createPhotoActionDialogViewModel(@NonNull PhotoFragmentViewModel photoFragmentViewModel) {
-        return PhotoActionDialogViewModel.create(
-                photoFragmentViewModel.photoId(),
+    private PhotoOptionsViewModel createPhotoOptionsViewModel(@NonNull PhotoViewViewModel photoFragmentViewModel) {
+        return new PhotoOptionsViewModel(
+                photoFragmentViewModel.getPhotoId(),
                 photoFragmentViewModel.isFavorite(),
                 photoFragmentViewModel.isLiked(),
-                photoFragmentViewModel.viewCount());
+                photoFragmentViewModel.getViewCount());
     }
 
     @Override
@@ -234,8 +234,8 @@ public class PhotoScreenPresenter extends BasePresenterImpl<PhotoScreenContract.
 
     @Override
     public void onLongPress() {
-        if (getView() != null && PhotoFragmentViewModel.isValidViewModel(_viewModel)) {
-            getView().showPhotoActionDialog(createPhotoActionDialogViewModel(_viewModel));
+        if (getView() != null && PhotoViewViewModel.Companion.isValid(_viewModel)) {
+            getView().showPhotoActionDialog(createPhotoOptionsViewModel(_viewModel));
         }
     }
 

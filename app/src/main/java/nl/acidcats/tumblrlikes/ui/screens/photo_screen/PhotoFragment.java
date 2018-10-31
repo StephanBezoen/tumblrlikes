@@ -24,7 +24,7 @@ import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase;
 import nl.acidcats.tumblrlikes.di.AppComponent;
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter;
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoActionDialogViewModel;
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog;
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoNavBar;
@@ -113,12 +113,12 @@ public class PhotoFragment extends BaseFragment implements PhotoScreenContract.V
     }
 
     @Override
-    public void showPhotoActionDialog(PhotoActionDialogViewModel viewModel) {
+    public void showPhotoActionDialog(PhotoOptionsViewModel viewModel) {
         _photoActionDialog.show(viewModel);
     }
 
     @Override
-    public void setActionDialogViewModel(PhotoActionDialogViewModel viewModel) {
+    public void setPhotoOptionsViewModel(PhotoOptionsViewModel viewModel) {
         _photoActionDialog.updateViewModel(viewModel);
     }
 

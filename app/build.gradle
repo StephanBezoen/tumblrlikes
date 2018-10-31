@@ -21,6 +21,7 @@ apply plugin: plugins.android_app
 apply plugin: plugins.fabric
 apply plugin: plugins.kotlin
 apply plugin: plugins.kotlin_kapt
+apply plugin: plugins.kotlin_ext
 
 apply from: "$rootDir/config/config.gradle", to: config
 
@@ -75,6 +76,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+
+androidExtensions {
+    experimental = true
 }
 
 repositories {
