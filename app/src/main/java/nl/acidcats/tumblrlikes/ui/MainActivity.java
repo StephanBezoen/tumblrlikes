@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     private void onAllLikesLoaded(String action, Intent intent) {
         startService(new Intent(this, CacheService.class));
 
-        showFragment(PhotoFragment.newInstance());
+        showFragment(PhotoFragment.Companion.newInstance());
     }
 
     private void onPincodeOk(String action, Intent intent) {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void enterApp() {
         _checkTimeUseCase.isTimeToCheck(new Date().getTime()).subscribe(
-                isTimeToCheck -> showFragment(isTimeToCheck ? LoadLikesFragment.Companion.newInstance() : PhotoFragment.newInstance())
+                isTimeToCheck -> showFragment(isTimeToCheck ? LoadLikesFragment.Companion.newInstance() : PhotoFragment.Companion.newInstance())
         );
     }
 
