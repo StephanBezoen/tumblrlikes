@@ -7,6 +7,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import nl.acidcats.tumblrlikes.R
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.FilterOptionSelectionListener
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 
 /**

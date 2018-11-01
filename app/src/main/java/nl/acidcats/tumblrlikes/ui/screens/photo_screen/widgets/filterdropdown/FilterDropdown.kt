@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.FilterOptionSelectionListener
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 
 /**

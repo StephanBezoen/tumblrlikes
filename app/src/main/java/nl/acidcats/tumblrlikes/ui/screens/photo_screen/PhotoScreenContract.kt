@@ -69,3 +69,5 @@ interface PhotoScreenContract {
         fun onDoubleTap()
     }
 }
+
+typealias FilterOptionSelectionListener = (Filter) -> Unit
