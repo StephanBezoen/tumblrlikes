@@ -22,7 +22,6 @@ import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageV
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoNavBar
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterOptionSelectionListener
 import nl.acidcats.tumblrlikes.util.GlideApp
 import javax.inject.Inject
 
@@ -71,11 +70,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
         photoActionDialog.setPhotoActionListener(presenter)
 
-        photoNavBar.filterOptionSelectionListener = object : FilterOptionSelectionListener {
-            override fun onOptionSelected(filterType: Filter) {
-                setFilter(filterType)
-            }
-        }
+        photoNavBar.filterOptionSelectionListener = { presenter.onFilterSelected(it) }
 
         if (isTest) photoView.alpha = .05f
     }

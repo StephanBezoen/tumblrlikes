@@ -65,7 +65,7 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     private fun setFilter(filter: Filter, notifyListener: Boolean) {
         if (notifyListener) {
-            filterOptionSelectionListener?.onOptionSelected(filter)
+            filterOptionSelectionListener?.invoke(filter)
         }
 
         filterDropdown.hide()
