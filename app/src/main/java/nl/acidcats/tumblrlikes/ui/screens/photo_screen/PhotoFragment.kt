@@ -71,7 +71,11 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
         photoActionDialog.setPhotoActionListener(presenter)
 
-        photoNavBar.filterOptionSelectionListener = FilterOptionSelectionListener { setFilter(it) }
+        photoNavBar.filterOptionSelectionListener = object : FilterOptionSelectionListener {
+            override fun onOptionSelected(filterType: Filter) {
+                setFilter(filterType)
+            }
+        }
 
         if (isTest) photoView.alpha = .05f
     }
