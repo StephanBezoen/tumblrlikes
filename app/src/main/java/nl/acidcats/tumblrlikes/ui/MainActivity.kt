@@ -46,12 +46,12 @@ class MainActivity : AppCompatActivity() {
         (application as LikesApplication).appComponent.inject(this)
 
         receiver = BroadcastReceiver(applicationContext)
-        receiver.addActionHandler(Broadcasts.PINCODE_OK) { _, _ -> enterApp() }
-        receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { _, _ -> onAllLikesLoaded() }
-        receiver.addActionHandler(Broadcasts.DATABASE_RESET) { _, _ -> onDatabaseReset() }
-        receiver.addActionHandler(Broadcasts.SETUP_COMPLETE) { _, _ -> onSetupComplete() }
-        receiver.addActionHandler(Broadcasts.REFRESH_REQUEST) { _, _ -> onRefreshRequested() }
-        receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST) { _, _ -> onSettingsRequested() }
+        receiver.addActionHandler(Broadcasts.PINCODE_OK) { enterApp() }
+        receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { onAllLikesLoaded() }
+        receiver.addActionHandler(Broadcasts.DATABASE_RESET) { onDatabaseReset() }
+        receiver.addActionHandler(Broadcasts.SETUP_COMPLETE) { onSetupComplete() }
+        receiver.addActionHandler(Broadcasts.REFRESH_REQUEST) { onRefreshRequested() }
+        receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST) { onSettingsRequested() }
 
         appSetupUseCase
                 .isSetupComplete()
