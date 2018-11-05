@@ -44,7 +44,7 @@ class AppModule constructor(private val application: LikesApplication, private v
 
     @Provides
     @Singleton
-    fun providePermissionHelper():PermissionHelper {
+    fun providePermissionHelper(): PermissionHelper {
         return PermissionHelperImpl()
     }
 }

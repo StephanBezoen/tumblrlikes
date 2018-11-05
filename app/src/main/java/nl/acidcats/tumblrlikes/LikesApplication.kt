@@ -29,7 +29,7 @@ class LikesApplication : Application() {
 
         Fabric.with(this, Crashlytics())
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && BuildConfig.USE_STETHO) {
             Stetho.initializeWithDefaults(this)
         }
 

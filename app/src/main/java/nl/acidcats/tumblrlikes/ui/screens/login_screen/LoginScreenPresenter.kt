@@ -9,6 +9,7 @@ import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract.Mode.
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper
 import rx.Observable
 import javax.inject.Inject
+import dagger.Lazy
 
 /**
  * Created on 30/10/2018.
@@ -16,9 +17,9 @@ import javax.inject.Inject
 class LoginScreenPresenter @Inject constructor() : BasePresenterImpl<LoginScreenContract.View>(), LoginScreenContract.Presenter {
 
     @Inject
-    lateinit var securityHelper: SecurityHelper
+    lateinit var securityHelper: Lazy<SecurityHelper>
     @Inject
-    lateinit var pincodeUseCase: PincodeUseCase
+    lateinit var pincodeUseCase: Lazy<PincodeUseCase>
 
     private lateinit var tempPincodeHash: String
     private var mode = LOGIN
@@ -52,7 +53,7 @@ class LoginScreenPresenter @Inject constructor() : BasePresenterImpl<LoginScreen
         getView()?.setPincodeDoesntMatchViewVisible(false)
 
         when (mode) {
-            LOGIN -> checkAuthenticated(pincodeUseCase.checkPincode(pincode))
+            LOGIN -> checkAuthenticated(pincodeUseCase.get().checkPincode(pincode))
             NEW_PINCODE -> checkNewPincode(pincode)
             REPEAT_PINCODE -> checkRepeatPincode(pincode)
         }
@@ -60,9 +61,9 @@ class LoginScreenPresenter @Inject constructor() : BasePresenterImpl<LoginScreen
 
     private fun checkRepeatPincode(pincode: String) {
         if (pincode.length == LoginScreenContract.PINCODE_LENGTH) {
-            val newPincodeHash = securityHelper.getHash(pincode)
+            val newPincodeHash = securityHelper.get().getHash(pincode)
             if (newPincodeHash == tempPincodeHash) {
-                checkAuthenticated(pincodeUseCase.storePincode(pincode))
+                checkAuthenticated(pincodeUseCase.get().storePincode(pincode))
             } else {
                 getView()?.clearPasswordInput()
                 getView()?.setPincodeDoesntMatchViewVisible(true)
@@ -72,7 +73,7 @@ class LoginScreenPresenter @Inject constructor() : BasePresenterImpl<LoginScreen
 
     private fun checkNewPincode(pincode: String) {
         if (pincode.length == LoginScreenContract.PINCODE_LENGTH) {
-            tempPincodeHash = securityHelper.getHash(pincode)
+            tempPincodeHash = securityHelper.get().getHash(pincode)
 
             getView()?.clearPasswordInput()
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
+import dagger.Lazy
 import nl.acidcats.tumblrlikes.LikesApplication
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.usecases.appsetup.AppSetupUseCase
@@ -28,15 +29,15 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var pincodeUseCase: PincodeUseCase
+    lateinit var pincodeUseCase: Lazy<PincodeUseCase>
     @Inject
-    lateinit var checkTimeUseCase: CheckTimeUseCase
+    lateinit var checkTimeUseCase: Lazy<CheckTimeUseCase>
     @Inject
-    lateinit var appLifecycleUseCase: AppLifecycleUseCase
+    lateinit var appLifecycleUseCase: Lazy<AppLifecycleUseCase>
     @Inject
-    lateinit var appSetupUseCase: AppSetupUseCase
+    lateinit var appSetupUseCase: Lazy<AppSetupUseCase>
     @Inject
-    lateinit var permissionHelper: PermissionHelper
+    lateinit var permissionHelper: Lazy<PermissionHelper>
 
     private lateinit var receiver: BroadcastReceiver
     private var isRestarted: Boolean = false
@@ -50,13 +51,13 @@ class MainActivity : AppCompatActivity() {
 
         receiver = BroadcastReceiver(applicationContext)
         receiver.addActionHandler(Broadcasts.PINCODE_OK) { enterApp() }
-        receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { onAllLikesLoaded() }
+        receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { showPhotoScreen() }
         receiver.addActionHandler(Broadcasts.DATABASE_RESET) { onDatabaseReset() }
         receiver.addActionHandler(Broadcasts.SETUP_COMPLETE) { onSetupComplete() }
         receiver.addActionHandler(Broadcasts.REFRESH_REQUEST) { onRefreshRequested() }
         receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST) { onSettingsRequested() }
 
-        appSetupUseCase
+        appSetupUseCase.get()
                 .isSetupComplete()
                 .subscribe { isSetupComplete ->
                     if (isSetupComplete) {
@@ -95,15 +96,13 @@ class MainActivity : AppCompatActivity() {
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-        appLifecycleUseCase
+        appLifecycleUseCase.get()
                 .isAppStoppedTooLong(System.currentTimeMillis())
                 .subscribe { isStoppedTooLong = it }
     }
 
     override fun onResume() {
         super.onResume()
-
-        startService(Intent(applicationContext, CacheService::class.java))
 
         receiver.onResume()
     }
@@ -117,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        appLifecycleUseCase.setAppStopped(System.currentTimeMillis()).subscribe()
+        appLifecycleUseCase.get().setAppStopped(System.currentTimeMillis()).subscribe()
     }
 
     private fun showFragment(fragment: Fragment) {
@@ -125,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkLogin() {
-        pincodeUseCase
+        pincodeUseCase.get()
                 .isAppPincodeProtected()
                 .subscribe { isProtected ->
                     if (isProtected) {
@@ -137,10 +136,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun enterApp() {
-        checkTimeUseCase
+        checkTimeUseCase.get()
                 .isTimeToCheck(Date().time)
                 .subscribe { isTimeToCheck ->
-                    showFragment(if (isTimeToCheck) LoadLikesFragment.newInstance() else PhotoFragment.newInstance())
+                    if (isTimeToCheck) {
+                        showFragment(LoadLikesFragment.newInstance())
+                    } else {
+                        showPhotoScreen()
+                    }
                 }
     }
 
@@ -155,7 +158,7 @@ class MainActivity : AppCompatActivity() {
     private fun onSetupComplete() {
         isShowingSetup = false
 
-        pincodeUseCase
+        pincodeUseCase.get()
                 .isAppPincodeProtected()
                 .subscribe { isProtected ->
                     if (isProtected) {
@@ -166,16 +169,16 @@ class MainActivity : AppCompatActivity() {
                 }
     }
 
-    private fun onDatabaseReset() = checkTimeUseCase.resetCheckTime().subscribe()
+    private fun onDatabaseReset() = checkTimeUseCase.get().resetCheckTime().subscribe()
 
-    private fun onAllLikesLoaded() {
+    private fun showPhotoScreen() {
         startService(Intent(applicationContext, CacheService::class.java))
 
         showFragment(PhotoFragment.newInstance())
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionHelper.get().onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onDestroy() {

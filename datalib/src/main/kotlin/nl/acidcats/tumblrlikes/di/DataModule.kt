@@ -1,9 +1,6 @@
 package nl.acidcats.tumblrlikes.di
 
 import android.content.Context
-
-import javax.inject.Singleton
-
 import dagger.Module
 import dagger.Provides
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository
@@ -19,18 +16,7 @@ import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCase
 import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCaseImpl
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCaseImpl
-import nl.acidcats.tumblrlikes.core.usecases.photos.ExportPhotosUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.ExportPhotosUseCaseImpl
-import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCaseImpl
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCaseImpl
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCaseImpl
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCaseImpl
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCaseImpl
+import nl.acidcats.tumblrlikes.core.usecases.photos.*
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCaseImpl
 import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataRepositoryImpl
@@ -41,6 +27,7 @@ import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.GreenDAOPhotoDataGatewayImpl
 import nl.acidcats.tumblrlikes.util.security.SecurityHelper
 import nl.acidcats.tumblrlikes.util.security.SecurityHelperImpl
+import javax.inject.Singleton
 
 /**
  * Created on 30/07/2018.
