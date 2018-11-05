@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         receiver.onDestroy()
 
-        (application as LikesApplication).isFreshRun = false
+        (application as LikesApplication).clearFreshRun()
 
         super.onDestroy()
     }
