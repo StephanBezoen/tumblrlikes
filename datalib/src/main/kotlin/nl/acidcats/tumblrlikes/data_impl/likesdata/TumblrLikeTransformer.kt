@@ -17,9 +17,9 @@ class TumblrLikeTransformer {
         for (postVO in postVOs) {
             val tumblrPhotoVOs = ArrayList<TumblrPhotoVO>()
 
-            if (postVO.originalPhoto != null) tumblrPhotoVOs.add(postVO.originalPhoto)
+            postVO.originalPhoto?.let { tumblrPhotoVOs.add(it) }
 
-            if (postVO.altPhotos != null) tumblrPhotoVOs.addAll(postVO.altPhotos)
+            postVO.altPhotos?.let { tumblrPhotoVOs.addAll(it) }
 
             if (!tumblrPhotoVOs.isEmpty()) {
                 tumblrPhotoVOs.sortByDescending { it.size }

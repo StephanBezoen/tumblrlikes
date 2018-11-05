@@ -81,9 +81,7 @@ class LoginFragment : BaseFragment(), LoginScreenContract.View {
     override fun onResume() {
         super.onResume()
 
-        if (activity != null) {
-            activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-        }
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
     }
 
     override fun setPincodeDoesntMatchViewVisible(isVisible: Boolean) {

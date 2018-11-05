@@ -49,8 +49,8 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
         presenter.setView(this)
         presenter.onViewCreated()
 
-        if (context != null) {
-            spinner.indeterminateDrawable.setColorFilter(ContextCompat.getColor(context!!, color.colorPrimaryDark), PorterDuff.Mode.SRC_IN)
+        context?.let {
+            spinner.indeterminateDrawable.setColorFilter(ContextCompat.getColor(it, color.colorPrimaryDark), PorterDuff.Mode.SRC_IN)
         }
 
         cancelButton.setOnClickListener { presenter.cancelLoading() }
@@ -61,8 +61,8 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
     }
 
     override fun showErrorAlert(errorStringId: Int) {
-        if (context != null) {
-            AlertDialog.Builder(context!!)
+        context?.let {
+            AlertDialog.Builder(it)
                     .setTitle(string.error_title)
                     .setMessage(errorStringId)
                     .setPositiveButton(string.btn_retry) { _, _ -> presenter.retryLoading() }

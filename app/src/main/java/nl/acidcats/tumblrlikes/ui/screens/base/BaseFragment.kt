@@ -33,8 +33,8 @@ abstract class BaseFragment : Fragment(), BaseView {
     }
 
     override fun sendBroadcast(action: String) {
-        if (context != null) {
-            LocalBroadcastManager.getInstance(context!!).sendBroadcast(Intent(action))
+        context?.let {
+            LocalBroadcastManager.getInstance(it).sendBroadcast(Intent(action))
         }
     }
 
