@@ -16,7 +16,6 @@ import nl.acidcats.tumblrlikes.R.layout
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterOptionSelectionListener
 
 /**
  * Created on 31/10/2018.
@@ -32,7 +31,7 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
     @BindView(R.id.filter_dropdown)
     lateinit var filterDropdown: FilterDropdown
 
-    var filterOptionSelectionListener: FilterOptionSelectionListener? = null
+    var filterTypeSelectedListener: FilterTypeSelectedListener? = null
 
     private var unbinder: Unbinder
 
@@ -44,7 +43,7 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         settingsButton.setOnClickListener { sendBroadcast(Broadcasts.SETTINGS_REQUEST) }
         refreshButton.setOnClickListener { sendBroadcast(Broadcasts.REFRESH_REQUEST) }
 
-        filterDropdown.setFilterOptionSelectionListener { setFilter(it, true) }
+        filterDropdown.filterTypeSelectedListener = { setFilter(it, true) }
 
         hide()
     }
@@ -62,13 +61,13 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
     fun setFilter(filterType: FilterType) = setFilter(filterType, false)
 
     private fun setFilter(filterType: FilterType, notifyListener: Boolean) {
-        if (notifyListener) {
-            filterOptionSelectionListener?.invoke(filterType)
-        }
+        filterButton.text = filterDropdown.getFilterLabel(filterType)
 
         filterDropdown.hide()
 
-        filterButton.text = filterDropdown.getFilterLabel(filterType)
+        if (notifyListener) {
+            filterTypeSelectedListener?.invoke(filterType)
+        }
     }
 
     private fun sendBroadcast(action: String) = LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(action))

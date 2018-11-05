@@ -70,7 +70,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
         photoActionDialog.setPhotoActionListener(presenter)
 
-        photoNavBar.filterOptionSelectionListener = { presenter.onFilterSelected(it) }
+        photoNavBar.filterTypeSelectedListener = { presenter.onFilterSelected(it) }
 
         if (isTest) photoView.alpha = .05f
     }

@@ -5,17 +5,22 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import nl.acidcats.tumblrlikes.core.constants.FilterType
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.FilterTypeSelectedListener
 
 /**
  * Created on 01/11/2018.
  */
 class FilterDropdown @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val filterOptionViews: MutableList<FilterOptionView> = ArrayList()
+    var filterTypeSelectedListener: FilterTypeSelectedListener? = null
+
+    private val filterOptionViews: MutableList<DropdownMenuOptionView> = ArrayList()
 
     init {
         for (filter in Filter.values()) {
-            filterOptionViews += (FilterOptionView(this, filter))
+            filterOptionViews += (DropdownMenuOptionView(this, context.getString(filter.resId)) {
+                filterTypeSelectedListener?.invoke(filter.filterType)
+            })
         }
 
         if (!isInEditMode) hide()
@@ -27,12 +32,6 @@ class FilterDropdown @JvmOverloads constructor(context: Context, attrs: Attribut
 
     fun hide() {
         visibility = View.GONE
-    }
-
-    fun setFilterOptionSelectionListener(listener: FilterOptionSelectionListener) {
-        for (optionView in filterOptionViews) {
-            optionView.setFilterOptionSelectionListener(listener)
-        }
     }
 
     fun getFilterLabel(filterType: FilterType): String = context.getString(Filter.getFilterByType(filterType).resId)
