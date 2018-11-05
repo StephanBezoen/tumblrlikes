@@ -17,7 +17,7 @@ import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginFragment
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoFragment
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupFragment
-import nl.acidcats.tumblrlikes.util.BroadcastReceiver
+import nl.acidcats.tumblrlikes.util.broadcast.BroadcastReceiver
 import java.util.*
 import javax.inject.Inject
 

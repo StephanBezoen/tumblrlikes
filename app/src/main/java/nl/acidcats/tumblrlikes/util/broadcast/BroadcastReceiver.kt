@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.util
+package nl.acidcats.tumblrlikes.util.broadcast
 
 import android.content.Context
 import android.content.Intent
@@ -8,8 +8,6 @@ import android.support.v4.content.LocalBroadcastManager
 /**
  * Created on 02/11/2018.
  */
-
-typealias ActionHandler = (Intent) -> Unit
 
 class BroadcastReceiver constructor(context: Context) : android.content.BroadcastReceiver() {
 
@@ -68,3 +66,4 @@ class BroadcastReceiver constructor(context: Context) : android.content.Broadcas
         isDestroyed = true
     }
 }
+
