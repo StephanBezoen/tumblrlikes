@@ -14,7 +14,7 @@ abstract class AbstractFilterOptionImpl : FilterOption {
     override val count
         get() = countQuery.count().toInt()
 
-    override fun getPhoto(index: Int): PhotoEntity = queryBuilder.limit(1).offset(index).unique()
+    override fun getPhoto(index: Int): PhotoEntity = queryBuilder.limit(1).offset(index).build().forCurrentThread().unique()
 
     protected abstract val queryBuilder: QueryBuilder<PhotoEntity>
 }
