@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
+import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.di.AppComponent
@@ -44,7 +45,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     private val handler: Handler = Handler()
     private val uiHider: Runnable = Runnable { hideUI() }
-    private val isTest: Boolean = false
+    private val isTest: Boolean = BuildConfig.DEMO
 
     companion object {
         fun newInstance(): PhotoFragment = PhotoFragment()
