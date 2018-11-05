@@ -1,6 +1,5 @@
 package nl.acidcats.tumblrlikes.data_impl.photodata
 
-import android.util.Log
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.core.models.Photo
 import nl.acidcats.tumblrlikes.core.repositories.PhotoDataRepository
@@ -38,8 +37,6 @@ class PhotoDataRepositoryImpl @Inject constructor(private val photoDataGateway: 
     override fun getNextPhoto(): Photo? = photoDataGateway.getNextPhoto()
 
     override fun setPhotoViewStartTime(id: Long, currentTime: Long) {
-//        Log.d(TAG, "setPhotoViewStartTime: ")
-
         currentPhotoId = id;
 
         startViewTime = currentTime;
@@ -57,11 +54,7 @@ class PhotoDataRepositoryImpl @Inject constructor(private val photoDataGateway: 
 
     override fun hidePhoto(id: Long) {
         photoDataGateway.setPhotoHidden(id)
-
-        val photo = photoDataGateway.getPhotoById(id)
-        if (photo != null) {
-            uncachePhoto(photo)
-        }
+        photoDataGateway.getPhotoById(id)?.let { uncachePhoto(it) }
     }
 
     private fun uncachePhoto(photo: Photo): Boolean {

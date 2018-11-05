@@ -18,6 +18,7 @@ import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoFragment
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupFragment
 import nl.acidcats.tumblrlikes.util.broadcast.BroadcastReceiver
+import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
 import java.util.*
 import javax.inject.Inject
 
@@ -34,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var appLifecycleUseCase: AppLifecycleUseCase
     @Inject
     lateinit var appSetupUseCase: AppSetupUseCase
+    @Inject
+    lateinit var permissionHelper: PermissionHelper
 
     private lateinit var receiver: BroadcastReceiver
     private var isRestarted: Boolean = false
@@ -169,6 +172,10 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(applicationContext, CacheService::class.java))
 
         showFragment(PhotoFragment.newInstance())
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onDestroy() {

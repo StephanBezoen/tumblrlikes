@@ -11,11 +11,12 @@ abstract class AbstractMigration : Migration {
         var cursor: Cursor? = null
         try {
             cursor = db.rawQuery("PRAGMA table_info($table)", null)
-            if (cursor != null) {
-                val nameColIndex: Int = cursor.getColumnIndexOrThrow("name")
 
-                while (cursor.moveToNext()) {
-                    val name = cursor.getString(nameColIndex)
+            cursor?.let {
+                val nameColIndex: Int = it.getColumnIndexOrThrow("name")
+
+                while (it.moveToNext()) {
+                    val name = it.getString(nameColIndex)
                     if (name == colName) {
                         return true
                     }

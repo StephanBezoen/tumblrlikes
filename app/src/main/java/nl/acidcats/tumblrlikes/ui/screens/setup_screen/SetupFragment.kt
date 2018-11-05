@@ -14,8 +14,9 @@ import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
-import nl.acidcats.tumblrlikes.util.PermissionHelper
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter
+import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
+import nl.acidcats.tumblrlikes.util.permissions.PermissionListener
 import javax.inject.Inject
 
 /**
@@ -25,6 +26,8 @@ class SetupFragment : BaseFragment(), SetupScreenContract.View {
 
     @Inject
     lateinit var presenter: SetupScreenContract.Presenter
+    @Inject
+    lateinit var permissionHelper: PermissionHelper
 
     @BindView(R.id.input_tumblr_blog)
     lateinit var tumblrBlogInput: EditText
@@ -42,8 +45,15 @@ class SetupFragment : BaseFragment(), SetupScreenContract.View {
     lateinit var exportButton: TextView
 
     private lateinit var textWatcher: TextWatcherAdapter
+    private val storagePermissionListener: PermissionListener = { permission, isGranted ->
+        if (permission == PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE && isGranted) {
+            exportPhotos()
+        }
+    }
 
     companion object {
+        const val EXPORT_PATH = "tumblrlikes.txt"
+
         fun newInstance(): SetupFragment = SetupFragment()
     }
 
@@ -77,20 +87,26 @@ class SetupFragment : BaseFragment(), SetupScreenContract.View {
         }
 
         exportButton.setOnClickListener { checkExportPhotos() }
+
+        permissionHelper.addPermissionListener(storagePermissionListener)
     }
 
     private fun checkExportPhotos() {
-        if (PermissionHelper.getInstance().hasPermission(context, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE)) {
-            presenter.exportPhotos("tumblrlikes.txt")
+        if (context == null || activity == null) return
+
+        if (permissionHelper.hasPermission(context!!, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE)) {
+            exportPhotos()
         } else {
-            PermissionHelper.getInstance().requestPermission(activity, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, "")
+            permissionHelper.requestPermission(activity!!, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, "")
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        PermissionHelper.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults)
+    private fun exportPhotos() {
+        presenter.exportPhotos(EXPORT_PATH)
+    }
 
-        checkExportPhotos()
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun setTumblrBlogText(tumblrBlog: String) {
@@ -119,6 +135,8 @@ class SetupFragment : BaseFragment(), SetupScreenContract.View {
     }
 
     override fun onDestroyView() {
+        permissionHelper.removePermissionListener(storagePermissionListener)
+
         tumblrBlogInput.removeTextChangedListener(textWatcher)
 
         presenter.onDestroyView()

@@ -72,9 +72,7 @@ class NetLikesDataGateway(context: Context) : LikesDataGateway {
     private fun updateLoadStatus(pageLinks: TumblrPageLinks?) {
         isLoadComplete = (pageLinks == null)
 
-        if (pageLinks?.prevPage != null) {
-            lastLikeTimeSec = pageLinks.prevPage.params.afterSeconds
-        }
+        pageLinks?.prevPage?.let { lastLikeTimeSec = it.params.afterSeconds }
     }
 
     interface TumblrApi {
