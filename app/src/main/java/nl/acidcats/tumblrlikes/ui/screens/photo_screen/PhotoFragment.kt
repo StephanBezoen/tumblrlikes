@@ -44,7 +44,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     private val handler: Handler = Handler()
     private val uiHider: Runnable = Runnable { hideUI() }
-    private val isTest: Boolean = true
+    private val isTest: Boolean = false
 
     companion object {
         fun newInstance(): PhotoFragment = PhotoFragment()
