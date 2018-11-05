@@ -13,9 +13,8 @@ import butterknife.ButterKnife
 import butterknife.Unbinder
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.R.layout
-import nl.acidcats.tumblrlikes.R.string
+import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.ui.Broadcasts
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterOptionSelectionListener
 
@@ -45,8 +44,6 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         settingsButton.setOnClickListener { sendBroadcast(Broadcasts.SETTINGS_REQUEST) }
         refreshButton.setOnClickListener { sendBroadcast(Broadcasts.REFRESH_REQUEST) }
 
-        filterButton.setText(string.filter_all)
-
         filterDropdown.setFilterOptionSelectionListener { setFilter(it, true) }
 
         hide()
@@ -62,16 +59,16 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         filterDropdown.hide()
     }
 
-    fun setFilter(filter: Filter) = setFilter(filter, false)
+    fun setFilter(filterType: FilterType) = setFilter(filterType, false)
 
-    private fun setFilter(filter: Filter, notifyListener: Boolean) {
+    private fun setFilter(filterType: FilterType, notifyListener: Boolean) {
         if (notifyListener) {
-            filterOptionSelectionListener?.invoke(filter)
+            filterOptionSelectionListener?.invoke(filterType)
         }
 
         filterDropdown.hide()
 
-        filterButton.setText(filter.resId)
+        filterButton.text = filterDropdown.getFilterLabel(filterType)
     }
 
     private fun sendBroadcast(action: String) = LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(action))

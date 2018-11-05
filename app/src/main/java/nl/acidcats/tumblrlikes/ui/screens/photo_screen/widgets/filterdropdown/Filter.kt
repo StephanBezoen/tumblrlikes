@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants
+package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown
 
 import android.support.annotation.StringRes
 import nl.acidcats.tumblrlikes.core.constants.FilterType
@@ -15,16 +15,8 @@ enum class Filter(@param:StringRes @get:StringRes val resId: Int, val filterType
     LEAST_SEEN(R.string.filter_least_seen, FilterType.LEAST_SEEN);
 
     companion object {
-        @JvmStatic
         fun getFilterByType(filterType: FilterType): Filter {
-            for (filter in Filter.values()) {
-                if (filter.filterType == filterType) {
-                    return filter;
-                }
-            }
-
-            return UNHIDDEN;
+            return Filter.values().find { it.filterType == filterType } ?: UNHIDDEN
         }
     }
-
 }

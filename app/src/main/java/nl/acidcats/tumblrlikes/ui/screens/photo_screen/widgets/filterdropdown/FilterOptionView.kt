@@ -7,12 +7,11 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 
 /**
  * Created on 01/11/2018.
  */
-class FilterOptionView constructor(parent: ViewGroup, val filter: Filter) {
+class FilterOptionView constructor(parent: ViewGroup, private val filter: Filter) {
 
     @BindView(R.id.tv_filteroption)
     lateinit var filterOptionText: TextView
@@ -26,7 +25,7 @@ class FilterOptionView constructor(parent: ViewGroup, val filter: Filter) {
 
         filterOptionText.text = parent.context.getString(filter.resId)
 
-        view.setOnClickListener { filterOptionSelectionListener?.invoke(filter) }
+        view.setOnClickListener { filterOptionSelectionListener?.invoke(filter.filterType) }
 
         parent.addView(view)
     }

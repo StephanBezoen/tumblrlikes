@@ -1,10 +1,9 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
 import android.os.Bundle
-
+import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenter
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseView
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 
 /**
@@ -20,7 +19,7 @@ interface PhotoScreenContract {
 
         fun onImageLoadFailed()
 
-        fun onFilterSelected(filter: Filter)
+        fun onFilterSelected(filter: FilterType)
 
         fun saveState(outState: Bundle)
 
@@ -40,7 +39,7 @@ interface PhotoScreenContract {
 
         fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel)
 
-        fun setFilter(filter: Filter)
+        fun setFilter(filter: FilterType)
 
         fun setPhotoOptionsViewModel(viewModel: PhotoOptionsViewModel)
 

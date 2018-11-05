@@ -14,9 +14,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
 import nl.acidcats.tumblrlikes.R
+import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
@@ -129,7 +129,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     override fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel) = photoActionDialog.show(viewModel)
 
-    override fun setFilter(filter: Filter) = photoNavBar.setFilter(filter)
+    override fun setFilter(filter: FilterType) = photoNavBar.setFilter(filter)
 
     override fun setPhotoOptionsViewModel(viewModel: PhotoOptionsViewModel) = photoActionDialog.updateViewModel(viewModel)
 

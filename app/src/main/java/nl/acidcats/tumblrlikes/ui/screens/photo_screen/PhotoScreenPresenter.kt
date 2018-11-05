@@ -3,13 +3,13 @@ package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 import android.os.Bundle
 import android.os.SystemClock
 import com.github.ajalt.timberkt.Timber
+import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.core.models.Photo
 import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoViewViewModel
 import rx.Observable
@@ -37,7 +37,7 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
         registerSubscription(
                 photoFilterUseCase
                         .getSelectedFilterType()
-                        .subscribe { filterType -> getView()?.setFilter(Filter.getFilterByType(filterType)) }
+                        .subscribe { filterType -> getView()?.setFilter(filterType) }
         )
 
         showNextPhoto()
@@ -95,10 +95,10 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
         }
     }
 
-    override fun onFilterSelected(filter: Filter) {
+    override fun onFilterSelected(filter: FilterType) {
         registerSubscription(
                 photoFilterUseCase
-                        .storeFilterSelection(filter.filterType)
+                        .storeFilterSelection(filter)
                         .subscribe { showNextPhoto() }
 
         )
