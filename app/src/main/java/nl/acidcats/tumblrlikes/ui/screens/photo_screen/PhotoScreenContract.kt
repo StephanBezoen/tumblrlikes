@@ -70,4 +70,3 @@ interface PhotoScreenContract {
     }
 }
 
-typealias FilterOptionSelectionListener = (Filter) -> Unit

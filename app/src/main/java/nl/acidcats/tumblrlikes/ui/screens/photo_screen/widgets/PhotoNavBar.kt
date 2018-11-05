@@ -15,9 +15,9 @@ import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.R.layout
 import nl.acidcats.tumblrlikes.R.string
 import nl.acidcats.tumblrlikes.ui.Broadcasts
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.FilterOptionSelectionListener
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.constants.Filter
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterOptionSelectionListener
 
 /**
  * Created on 31/10/2018.
