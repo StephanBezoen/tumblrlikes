@@ -227,5 +227,9 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
         getView()?.enableRefreshButton(true)
 
         getView()?.showRefreshCompleteToast(true, photoCount.toInt())
+
+        if (photoCount > 0) {
+            getView()?.sendBroadcast(Broadcasts.CACHE_SERVICE_REQUEST)
+        }
     }
 }

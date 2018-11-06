@@ -13,4 +13,5 @@ object Broadcasts {
     val SETUP_COMPLETE = "$PREFIX.setupComplete"
     val REFRESH_REQUEST = "$PREFIX.refreshRequest"
     val SETTINGS_REQUEST = "$PREFIX.settingsRequest"
+    val CACHE_SERVICE_REQUEST = "$PREFIX.cacheServiceRequest"
 }

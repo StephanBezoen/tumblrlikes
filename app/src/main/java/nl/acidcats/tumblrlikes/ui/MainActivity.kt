@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         receiver.addActionHandler(Broadcasts.SETUP_COMPLETE) { onSetupComplete() }
         receiver.addActionHandler(Broadcasts.REFRESH_REQUEST) { onRefreshRequested() }
         receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST) { onSettingsRequested() }
+        receiver.addActionHandler(Broadcasts.CACHE_SERVICE_REQUEST) { startCacheService() }
 
         appSetupUseCase.get()
                 .isSetupComplete()
@@ -168,9 +169,13 @@ class MainActivity : AppCompatActivity() {
     private fun onDatabaseReset() = checkTimeUseCase.get().resetCheckTime().subscribe()
 
     private fun showPhotoScreen(refreshLikes: Boolean) {
-        startService(Intent(applicationContext, CacheService::class.java))
+        startCacheService()
 
         showFragment(PhotoFragment.newInstance(refreshLikes))
+    }
+
+    private fun startCacheService() {
+        startService(Intent(applicationContext, CacheService::class.java))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
