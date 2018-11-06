@@ -14,7 +14,11 @@ interface PhotoScreenContract {
         INSTANT, ANIMATED
     }
 
-    interface Presenter : BasePresenter<View>, PhotoActionListener, GestureListener {
+    object Keys {
+        const val REFRESH = "Refresh"
+    }
+
+    interface Presenter : BasePresenter<View>, PhotoActionListener, GestureListener, NavBarListener {
         fun onViewCreated()
 
         fun onImageLoadFailed()
@@ -48,6 +52,10 @@ interface PhotoScreenContract {
         fun hideUI()
 
         fun setPhotoVisible(visible: Boolean)
+
+        fun enableRefreshButton(enabled: Boolean)
+
+        fun showRefreshCompleteToast(success:Boolean, photoCount:Int = 0)
     }
 
     interface PhotoActionListener {
@@ -56,6 +64,12 @@ interface PhotoScreenContract {
         fun onUpdatePhotoLike(id: Long, isLiked: Boolean)
 
         fun onUpdatePhotoFavorite(id: Long, isFavorite: Boolean)
+    }
+
+    interface NavBarListener {
+        fun onSettingsRequested()
+
+        fun onRefreshRequested()
     }
 
     interface GestureListener {

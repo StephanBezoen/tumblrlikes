@@ -1,7 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.screens.login_screen
 
 import android.os.Bundle
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenter
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseView

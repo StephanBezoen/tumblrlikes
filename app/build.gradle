@@ -73,10 +73,9 @@ android {
             applicationIdSuffix appConfig.debugSuffix
         }
     }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
@@ -93,20 +92,18 @@ dependencies {
     implementation project(path: ':datalib')
 
     implementation libs.kotlin
+    implementation libs.android_ktx
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // testing
-    androidTestImplementation(libs.test_espresso, {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    androidTestImplementation libs.test_espresso
     testImplementation libs.test_junit
 
-    // Android Support
-    implementation libs.support_appCompat
-    implementation libs.support_design
-    implementation libs.support_constraintLayout
-    implementation libs.support_fragment
+    // AndroidX
+    implementation libs.androidx_appCompat
+    implementation libs.androidx_constraintLayout
+    implementation libs.androidx_annotations
 
     // Rx
     api libs.rxAndroid
@@ -119,7 +116,7 @@ dependencies {
     // Retrofit
     implementation libs.okHttp
 
-    //Glide
+    // Glide
     implementation libs.glide
     annotationProcessor libs.annotationProcessorGlide
     kapt libs.annotationProcessorGlide
@@ -128,12 +125,6 @@ dependencies {
     implementation libs.dagger
     annotationProcessor libs.annotationProcessorDagger
     kapt libs.annotationProcessorDagger
-
-    // AutoValue
-    implementation libs.autoValue
-    annotationProcessor libs.autoValue
-    implementation libs.autoValueParcel
-    annotationProcessor libs.autoValueParcel
 
     // Stetho
     implementation libs.stetho

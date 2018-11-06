@@ -1,8 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets
 
 import android.content.Context
-import android.content.Intent
-import android.support.v4.content.LocalBroadcastManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +9,12 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.Unbinder
+import com.github.ajalt.timberkt.Timber
+import kotlinx.android.synthetic.main.navbar.view.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.R.layout
 import nl.acidcats.tumblrlikes.core.constants.FilterType
-import nl.acidcats.tumblrlikes.ui.Broadcasts
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown
 
 /**
@@ -32,6 +32,7 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
     lateinit var filterDropdown: FilterDropdown
 
     var filterTypeSelectedListener: FilterTypeSelectedListener? = null
+    var navBarListener: PhotoScreenContract.NavBarListener? = null
 
     private var unbinder: Unbinder
 
@@ -40,12 +41,14 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         unbinder = ButterKnife.bind(this, view)
 
         filterButton.setOnClickListener { filterDropdown.show() }
-        settingsButton.setOnClickListener { sendBroadcast(Broadcasts.SETTINGS_REQUEST) }
-        refreshButton.setOnClickListener { sendBroadcast(Broadcasts.REFRESH_REQUEST) }
+        settingsButton.setOnClickListener { navBarListener?.onSettingsRequested() }
+        refreshButton.setOnClickListener { navBarListener?.onRefreshRequested() }
 
         filterDropdown.filterTypeSelectedListener = { setFilter(it, true) }
 
         hide()
+
+        Timber.d { ": filter button: $btn_filter, from ButterKnife: $filterButton" }
     }
 
     fun show() {
@@ -70,7 +73,12 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         }
     }
 
-    private fun sendBroadcast(action: String) = LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(action))
+    fun enableRefreshButton(enabled: Boolean) {
+        Timber.d { "enableRefreshButton: $enabled" }
+
+        refreshButton.isEnabled = enabled
+        refreshButton.alpha = if (enabled) 1f else .2f
+    }
 
     fun onDestroyView() {
         filterButton.setOnClickListener(null)

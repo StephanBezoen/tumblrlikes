@@ -5,4 +5,6 @@ package nl.acidcats.tumblrlikes.ui.screens.base
  */
 interface BaseView {
     fun sendBroadcast(action: String)
+
+    fun clearArgument(key:String)
 }

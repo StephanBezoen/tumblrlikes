@@ -1,7 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.screens.load_likes_screen
 
 import android.os.Handler
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import com.github.ajalt.timberkt.Timber
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode

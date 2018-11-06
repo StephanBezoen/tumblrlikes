@@ -2,9 +2,9 @@ package nl.acidcats.tumblrlikes.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import dagger.Lazy
 import nl.acidcats.tumblrlikes.LikesApplication
 import nl.acidcats.tumblrlikes.R
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         receiver = BroadcastReceiver(applicationContext)
         receiver.addActionHandler(Broadcasts.PINCODE_OK) { enterApp() }
-        receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { showPhotoScreen() }
+        receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { showPhotoScreen(false) }
         receiver.addActionHandler(Broadcasts.DATABASE_RESET) { onDatabaseReset() }
         receiver.addActionHandler(Broadcasts.SETUP_COMPLETE) { onSetupComplete() }
         receiver.addActionHandler(Broadcasts.REFRESH_REQUEST) { onRefreshRequested() }
@@ -139,11 +139,7 @@ class MainActivity : AppCompatActivity() {
         checkTimeUseCase.get()
                 .isTimeToCheck(Date().time)
                 .subscribe { isTimeToCheck ->
-                    if (isTimeToCheck) {
-                        showFragment(LoadLikesFragment.newInstance())
-                    } else {
-                        showPhotoScreen()
-                    }
+                    showPhotoScreen(isTimeToCheck)
                 }
     }
 
@@ -171,10 +167,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun onDatabaseReset() = checkTimeUseCase.get().resetCheckTime().subscribe()
 
-    private fun showPhotoScreen() {
+    private fun showPhotoScreen(refreshLikes: Boolean) {
         startService(Intent(applicationContext, CacheService::class.java))
 
-        showFragment(PhotoFragment.newInstance())
+        showFragment(PhotoFragment.newInstance(refreshLikes))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

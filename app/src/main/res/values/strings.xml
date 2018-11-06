@@ -53,4 +53,6 @@
     <string name="export_photos">Export</string>
     <string name="export_success">Export complete!</string>
     <string name="export_error">Export failed</string>
+    <string name="refresh_success">Latest likes loaded, %s photos stored</string>
+    <string name="refresh_error">Refresh failed</string>
 </resources>

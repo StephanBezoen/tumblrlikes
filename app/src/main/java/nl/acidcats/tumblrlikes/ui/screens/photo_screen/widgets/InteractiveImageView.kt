@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.PointF
-import android.support.v4.view.GestureDetectorCompat
-import android.support.v7.widget.AppCompatImageView
+import androidx.core.view.GestureDetectorCompat
+import androidx.appcompat.widget.AppCompatImageView
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent

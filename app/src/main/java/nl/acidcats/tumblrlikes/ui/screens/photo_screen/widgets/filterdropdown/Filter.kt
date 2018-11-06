@@ -1,6 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.datalib.R
 

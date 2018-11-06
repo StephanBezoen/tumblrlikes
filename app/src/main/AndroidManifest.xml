@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="nl.acidcats.tumblrlikes"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+          xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".LikesApplication"
@@ -12,7 +13,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        >
 
         <activity android:name=".ui.MainActivity">
             <intent-filter>
@@ -29,7 +31,7 @@
             />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="4430c468ff3d07fde7e41a441b9fe9c167ecb54b" />
+            android:value="4430c468ff3d07fde7e41a441b9fe9c167ecb54b"/>
     </application>
 
 </manifest>

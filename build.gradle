@@ -19,6 +19,7 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
 
@@ -58,33 +59,31 @@ ext {
             targetSdk  : 28,
             compileSdk : 28,
 
-            // Support libraries
-            supportLibs: '28.0.0',
+            // AndroidX
+            androidx   : '1.0.0',
 
             // Library versions
             dagger     : '2.11',
-            butterknife: '8.8.1',
+            butterknife: '9.0.0-SNAPSHOT',
             okHttp     : '3.9.1',
             retrofit   : '2.3.0',
             glide      : '4.8.0'
     ]
 
     Libraries = [
-            // support
-            support_appCompat             : "com.android.support:appcompat-v7:${Versions.supportLibs}",
-            support_4                     : "com.android.support:support-v4:${Versions.supportLibs}",
-            support_13                    : "com.android.support:support-v13:${Versions.supportLibs}",
-            support_design                : "com.android.support:design:${Versions.supportLibs}",
-            support_fragment              : "com.android.support:support-fragment:${Versions.supportLibs}",
-            support_annotations           : "com.android.support:support-annotations:${Versions.supportLibs}",
-            support_constraintLayout      : 'com.android.support.constraint:constraint-layout:1.1.2',
-
+            // Kotlin
             kotlin                        : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
+            android_ktx                 : "androidx.core:core-ktx:1.0.1",
+
+            // AndroidX
+            androidx_appCompat             : "androidx.appcompat:appcompat:${Versions.androidx}",
+            androidx_annotations           : "androidx.annotation:annotation:${Versions.androidx}",
+            androidx_constraintLayout      : 'androidx.constraintlayout:constraintlayout:1.1.2',
 
             // testing
-            test_espresso                 : 'com.android.support.test.espresso:espresso-core:3.0.1',
+            test_espresso                 : 'androidx.test.espresso:espresso-core:3.1.0',
             test_junit                    : 'junit:junit:4.12',
-            test_runner                   : 'android.support.test.runner.AndroidJUnitRunner',
+            test_runner                   : 'androidx.test.runner.AndroidJUnitRunner',
 
             // Dagger
             dagger                        : "com.google.dagger:dagger:${Versions.dagger}",
@@ -110,30 +109,26 @@ ext {
             okHttp                        : "com.squareup.okhttp3:okhttp:${Versions.okHttp}",
             okHttp_loggingInterceptor     : "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}",
 
-            // AutoValue
-            autoValue                     : "com.google.auto.value:auto-value:1.5",
-            autoValueParcel               : "com.ryanharter.auto.value:auto-value-parcel:0.2.6",
-
             // GreenDAO
             greenDAO                      : 'org.greenrobot:greendao:3.2.2',
-
             sqlCipher                     : 'net.zetetic:android-database-sqlcipher:3.5.6@aar',
 
             //Image loading
             glide                         : "com.github.bumptech.glide:glide:${Versions.glide}",
             annotationProcessorGlide      : "com.github.bumptech.glide:compiler:${Versions.glide}",
 
+            // Fabric
             fabric                        : 'com.crashlytics.sdk.android:crashlytics:2.9.5@aar',
 
+            // Firebase
             firebase                      : 'com.google.firebase:firebase-core:16.0.3',
 
+            // Moshi
             moshi                         : 'com.squareup.moshi:moshi:1.6.0',
-            moshi_autovalue               : 'com.ryanharter.auto.value:auto-value-moshi:0.4.5',
-            moshi_autovalue_annotations   : 'com.ryanharter.auto.value:auto-value-moshi-annotations:0.4.5',
             moshi_kotlin                  : "com.squareup.moshi:moshi-kotlin:1.7.0",
             moshi_codegen                 : "com.squareup.moshi:moshi-kotlin-codegen:1.7.0",
 
+            // Timber
             timber                        : "com.github.ajalt:timberkt:1.5.1"
-
     ]
 }

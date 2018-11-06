@@ -26,7 +26,6 @@ apply from: "$rootDir/config/config.gradle", to: config
 
 android {
     def versions = config.Versions
-    def appConfig = config.AppConfig
 
     compileSdkVersion versions.compileSdk
 
@@ -37,10 +36,9 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner libs.test_runner
 
         buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
-
     }
 
     buildTypes {
@@ -50,15 +48,9 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-
 }
 
 afterEvaluate {
@@ -92,8 +84,6 @@ dependencies {
 
     implementation libs.kotlin
 
-    implementation libs.support_annotations
-
     // GreenDAO
     implementation libs.greenDAO
 
@@ -112,16 +102,16 @@ dependencies {
 
     // Dagger
     implementation libs.dagger
-    annotationProcessor libs.annotationProcessorDagger
     kapt libs.annotationProcessorDagger
 
     // Moshi
     implementation libs.moshi_kotlin
     kapt libs.moshi_codegen
 
+    // Timber
     implementation libs.timber
-
 }
+
 repositories {
     mavenCentral()
 }

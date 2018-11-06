@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.os.SystemClock
 import com.github.ajalt.timberkt.Timber
 import nl.acidcats.tumblrlikes.core.constants.FilterType
+import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
 import nl.acidcats.tumblrlikes.core.models.Photo
+import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase
+import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoViewViewModel
@@ -30,8 +33,12 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
     lateinit var photoFilterUseCase: PhotoFilterUseCase
     @Inject
     lateinit var getFilteredPhotoUseCase: GetFilteredPhotoUseCase
+    @Inject
+    lateinit var getLikesUseCase: GetLikesUseCase
 
     private var viewModel: PhotoViewViewModel? = null
+    private val loadingInterruptor: MutableList<Boolean> = ArrayList()
+    private var shouldRefresh = false
 
     override fun onViewCreated() {
         registerSubscription(
@@ -39,6 +46,14 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
                         .getSelectedFilterType()
                         .subscribe { filterType -> getView()?.setFilter(filterType) }
         )
+
+        if (shouldRefresh) {
+            shouldRefresh = false
+
+            getView()?.clearArgument(PhotoScreenContract.Keys.REFRESH)
+
+            onRefreshRequested()
+        }
 
         showNextPhoto()
     }
@@ -112,6 +127,8 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
 
     override fun restoreState(savedInstanceState: Bundle?, args: Bundle?) {
         viewModel = savedInstanceState?.getParcelable(KEY_VIEW_MODEL)
+
+        shouldRefresh = args?.getBoolean(PhotoScreenContract.Keys.REFRESH) ?: false
     }
 
     override fun onPause() {
@@ -184,5 +201,31 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
 
     override fun onDoubleTap() {
         getView()?.resetPhotoScale()
+    }
+
+    override fun onSettingsRequested() {
+        getView()?.sendBroadcast(Broadcasts.SETTINGS_REQUEST)
+    }
+
+    override fun onRefreshRequested() {
+        getView()?.enableRefreshButton(false)
+
+        registerSubscription(
+                getLikesUseCase
+                        .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor)
+                        .subscribe({ handleLikesLoaded(it) }, { handleLoadPageError(it) })
+        )
+    }
+
+    private fun handleLoadPageError(throwable: Throwable) {
+        getView()?.enableRefreshButton(true)
+
+        getView()?.showRefreshCompleteToast(false)
+    }
+
+    private fun handleLikesLoaded(photoCount: Long) {
+        getView()?.enableRefreshButton(true)
+
+        getView()?.showRefreshCompleteToast(true, photoCount.toInt())
     }
 }

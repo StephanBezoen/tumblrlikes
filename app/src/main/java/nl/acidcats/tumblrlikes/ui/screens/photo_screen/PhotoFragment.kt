@@ -6,6 +6,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.os.bundleOf
 import butterknife.BindView
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -13,11 +15,13 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
+import kotlinx.android.synthetic.main.fragment_photo.*
 import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.Keys.REFRESH
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
@@ -30,8 +34,6 @@ import javax.inject.Inject
  * Created on 31/10/2018.
  */
 class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
-
-    private val HIDE_UI_DELAY_MS = 2000L
 
     @Inject
     lateinit var presenter: PhotoScreenContract.Presenter
@@ -48,7 +50,15 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     private val isTest: Boolean = BuildConfig.DEMO
 
     companion object {
-        fun newInstance(): PhotoFragment = PhotoFragment()
+        private const val HIDE_UI_DELAY_MS = 2000L
+
+        fun newInstance(refreshLikes:Boolean): PhotoFragment {
+            val fragment = PhotoFragment()
+
+            fragment.arguments = bundleOf(REFRESH to refreshLikes)
+
+            return fragment
+        }
     }
 
     override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
@@ -72,6 +82,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         photoActionDialog.setPhotoActionListener(presenter)
 
         photoNavBar.filterTypeSelectedListener = { presenter.onFilterSelected(it) }
+        photoNavBar.navBarListener = presenter
 
         if (isTest) photoView.alpha = .05f
     }
@@ -162,6 +173,14 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     override fun setPhotoVisible(visible: Boolean) {
         photoView.visibility = if (visible) View.VISIBLE else View.INVISIBLE
+    }
+
+    override fun enableRefreshButton(enabled: Boolean) {
+        photoNavBar.enableRefreshButton(enabled)
+    }
+
+    override fun showRefreshCompleteToast(success: Boolean, photoCount: Int) {
+        Toast.makeText(context, if (success) getString(R.string.refresh_success, photoCount.toString()) else getString(R.string.refresh_error), Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
