@@ -174,6 +174,8 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         scale = 1f
         translateX = 0f
         translateY = 0f
+
+        invalidate()
     }
 
     private fun setScale(scale: Float) {

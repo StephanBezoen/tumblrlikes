@@ -22,9 +22,9 @@ import kotlin.collections.ArrayList
 class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLikesScreenContract.View>(), LoadLikesScreenContract.Presenter {
 
     @Inject
-    lateinit var likesPageUseCase: GetLikesUseCase
+    lateinit var getLikesUseCase: GetLikesUseCase
     @Inject
-    lateinit var photoCacheUseCase: UpdatePhotoCacheUseCase
+    lateinit var updatePhotoCacheUseCase: UpdatePhotoCacheUseCase
     @Inject
     lateinit var checkTimeUseCase: CheckTimeUseCase
 
@@ -35,7 +35,7 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
 
     override fun onViewCreated() {
         registerSubscription(
-                photoCacheUseCase
+                updatePhotoCacheUseCase
                         .removeCachedHiddenPhotos()
                         .subscribe({
                             startLoadingLikes()
@@ -59,15 +59,13 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
         pageCount = 0
 
         registerSubscription(
-                likesPageUseCase
+                getLikesUseCase
                         .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor, pageProgress)
                         .subscribe({ handleLikesLoaded(it) }, { handleLoadPageError(it) })
         )
     }
 
     private fun handleLikesLoaded(totalPhotoCount: Long) {
-        Timber.d { "handleLikesLoaded: " }
-
         if (isLoadingCancelled) {
             notifyLoadingComplete()
         } else {
@@ -82,8 +80,6 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
     }
 
     private fun handleLoadPageError(throwable: Throwable) {
-        Timber.e { "handleLoadPageError: ${throwable.message}" }
-
         @StringRes var errorStringId: Int = R.string.error_load
 
         if (throwable is LoadLikesException) {
