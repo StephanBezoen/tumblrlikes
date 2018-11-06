@@ -56,7 +56,7 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
         cancelButton.setOnClickListener { presenter.cancelLoading() }
     }
 
-    override fun showLoadProgress(pageCount: Int, totalPhotoCount: Long) {
+    override fun showLoadProgress(pageCount: Int, totalPhotoCount: Int) {
         imageCountText.text = getString(string.image_page_count, pageCount, totalPhotoCount)
     }
 

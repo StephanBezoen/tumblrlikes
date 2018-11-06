@@ -14,8 +14,8 @@ import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase
 import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCaseImpl
 import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCase
 import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCaseImpl
-import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase
-import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCaseImpl
+import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesUseCase
+import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesUseCaseImpl
 import nl.acidcats.tumblrlikes.core.usecases.photos.*
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCaseImpl
@@ -66,7 +66,7 @@ class DataModule(private val context: Context) {
     }
 
     @Provides
-    internal fun provideLikesPageUseCase(impl: GetLikesPageUseCaseImpl): GetLikesPageUseCase {
+    internal fun provideLikesPageUseCase(impl: GetLikesUseCaseImpl): GetLikesUseCase {
         return impl
     }
 

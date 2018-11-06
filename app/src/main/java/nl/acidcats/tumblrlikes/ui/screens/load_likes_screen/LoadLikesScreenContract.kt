@@ -21,7 +21,7 @@ interface LoadLikesScreenContract {
     }
 
     interface View : BaseView {
-        fun showLoadProgress(pageCount: Int, totalPhotoCount: Long)
+        fun showLoadProgress(pageCount: Int, totalPhotoCount: Int)
 
         fun showErrorAlert(errorStringId: Int)
 

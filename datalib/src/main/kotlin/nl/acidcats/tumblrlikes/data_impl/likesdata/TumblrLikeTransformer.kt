@@ -8,11 +8,12 @@ import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrPhotoVO
  * Created on 25/10/2018.
  */
 class TumblrLikeTransformer {
-    fun transformToPhotos(likeVO: TumblrLikeVO): List<Photo>? {
-        val postVOs = likeVO.photos ?: return null
-        if (postVOs.isEmpty()) return null
-
+    fun transformToPhotos(likeVO: TumblrLikeVO): List<Photo> {
         val photos = ArrayList<Photo>()
+
+        val postVOs = likeVO.photos ?: return photos
+        if (postVOs.isEmpty()) return photos
+
 
         for (postVO in postVOs) {
             val tumblrPhotoVOs = ArrayList<TumblrPhotoVO>()

@@ -6,13 +6,15 @@ import com.github.ajalt.timberkt.Timber
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
 import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase
-import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesPageUseCase
+import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException
 import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
+import rx.subjects.BehaviorSubject
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created on 30/10/2018.
@@ -20,7 +22,7 @@ import javax.inject.Inject
 class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLikesScreenContract.View>(), LoadLikesScreenContract.Presenter {
 
     @Inject
-    lateinit var likesPageUseCase: GetLikesPageUseCase
+    lateinit var likesPageUseCase: GetLikesUseCase
     @Inject
     lateinit var photoCacheUseCase: UpdatePhotoCacheUseCase
     @Inject
@@ -28,7 +30,8 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
 
     private var pageCount: Int = 0
     private var isLoadingCancelled = false
-
+    private val loadingInterruptor: MutableList<Boolean> = ArrayList()
+    private val pageProgress: BehaviorSubject<Int> = BehaviorSubject.create()
 
     override fun onViewCreated() {
         registerSubscription(
@@ -42,54 +45,40 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
                             startLoadingLikes()
                         })
         )
+
+        pageProgress.subscribe { photoCount ->
+            pageCount++
+
+            getView()?.showLoadProgress(pageCount, photoCount!!)
+        }
     }
 
     private fun startLoadingLikes() {
-        loadLikesPage(LoadLikesMode.SINCE_LAST)
-    }
+        loadingInterruptor.clear()
 
-    private fun loadLikesPage(mode: LoadLikesMode) {
+        pageCount = 0
+
         registerSubscription(
                 likesPageUseCase
-                        .loadLikesPage(mode)
+                        .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor, pageProgress)
                         .subscribe({ handleLikesLoaded(it) }, { handleLoadPageError(it) })
         )
     }
 
     private fun handleLikesLoaded(totalPhotoCount: Long) {
+        Timber.d { "handleLikesLoaded: " }
+
         if (isLoadingCancelled) {
             notifyLoadingComplete()
+        } else {
+            getView()?.showAllLikesLoaded(totalPhotoCount)
 
-            return
+            registerSubscription(
+                    checkTimeUseCase
+                            .setLastCheckTime(Date().time)
+                            .subscribe { Handler().postDelayed({ notifyLoadingComplete() }, 500) }
+            )
         }
-
-        pageCount++
-
-        registerSubscription(
-                likesPageUseCase
-                        .checkLoadLikesComplete()
-                        .subscribe({
-                            if (it) {
-                                onLoadComplete(totalPhotoCount)
-                            } else {
-                                getView()?.showLoadProgress(pageCount, totalPhotoCount)
-
-                                loadLikesPage(LoadLikesMode.NEXT_PAGE)
-                            }
-                        }, {
-                            Timber.e { "checkLoadLikesComplete: ${it.message}" }
-                        })
-        )
-    }
-
-    private fun onLoadComplete(totalPhotoCount: Long) {
-        getView()?.showAllLikesLoaded(totalPhotoCount)
-
-        registerSubscription(
-                checkTimeUseCase
-                        .setLastCheckTime(Date().time)
-                        .subscribe { Handler().postDelayed({ notifyLoadingComplete() }, 500) }
-        )
     }
 
     private fun handleLoadPageError(throwable: Throwable) {
@@ -110,7 +99,11 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
     }
 
     override fun cancelLoading() {
+        Timber.d { "cancelLoading: " }
+
         isLoadingCancelled = true
+
+        loadingInterruptor += true
 
         getView()?.showLoadingCancelled()
     }

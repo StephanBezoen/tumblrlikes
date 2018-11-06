@@ -17,7 +17,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import rx.Observable
-import rx.schedulers.Schedulers
 
 /**
  * Created on 25/10/2018.
@@ -56,12 +55,11 @@ class NetLikesDataGateway(context: Context) : LikesDataGateway {
         return builder.build()
     }
 
-    override fun getLikes(blogName: String, count: Int, beforeTime: Long): Observable<List<TumblrLikeVO>> {
+    override fun getLikesPage(blogName: String, count: Int, afterTime: Long): Observable<List<TumblrLikeVO>> {
         isLoadComplete = false
 
         return tumblrApi
-                .getLikes(blogName, apiKey, count, beforeTime)
-                .subscribeOn(Schedulers.io())
+                .getLikes(blogName, apiKey, count, afterTime)
                 .map {
                     updateLoadStatus(it.response.pageLinks)
 

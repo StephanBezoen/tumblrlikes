@@ -118,6 +118,9 @@ dependencies {
     // Moshi
     implementation libs.moshi_kotlin
     kapt libs.moshi_codegen
+
+    implementation libs.timber
+
 }
 repositories {
     mavenCentral()
