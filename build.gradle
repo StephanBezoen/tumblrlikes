@@ -19,7 +19,6 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 }
 
@@ -64,7 +63,6 @@ ext {
 
             // Library versions
             dagger     : '2.11',
-            butterknife: '9.0.0-SNAPSHOT',
             okHttp     : '3.9.1',
             retrofit   : '2.3.0',
             glide      : '4.8.0'
@@ -88,10 +86,6 @@ ext {
             // Dagger
             dagger                        : "com.google.dagger:dagger:${Versions.dagger}",
             annotationProcessorDagger     : "com.google.dagger:dagger-compiler:${Versions.dagger}",
-
-            // Butterknife
-            butterknife                   : "com.jakewharton:butterknife:${Versions.butterknife}",
-            annotationProcessorButterknife: "com.jakewharton:butterknife-compiler:${Versions.butterknife}",
 
             // RetroFit
             retrofit                      : "com.squareup.retrofit2:retrofit:${Versions.retrofit}",

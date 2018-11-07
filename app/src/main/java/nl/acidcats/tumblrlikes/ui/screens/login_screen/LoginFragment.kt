@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.TextView
-import butterknife.BindView
+import kotlinx.android.synthetic.main.fragment_login.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
@@ -22,15 +20,6 @@ class LoginFragment : BaseFragment(), LoginScreenContract.View {
 
     @Inject
     lateinit var presenter: LoginScreenContract.Presenter
-
-    @BindView(R.id.input_password)
-    lateinit var passwordInput: EditText
-    @BindView(R.id.tv_pincode_header)
-    lateinit var header: TextView
-    @BindView(R.id.btn_skip)
-    lateinit var skipButton: View
-    @BindView(R.id.tv_pincode_no_match)
-    lateinit var pincodeNoMatchText: TextView
 
     private lateinit var textWatcher: TextWatcherAdapter
 

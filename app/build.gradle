@@ -108,11 +108,6 @@ dependencies {
     // Rx
     api libs.rxAndroid
 
-    // Butterknife
-    implementation libs.butterknife
-    annotationProcessor libs.annotationProcessorButterknife
-    kapt libs.annotationProcessorButterknife
-
     // Retrofit
     implementation libs.okHttp
 

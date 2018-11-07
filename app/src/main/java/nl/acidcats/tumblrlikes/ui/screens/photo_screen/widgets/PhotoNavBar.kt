@@ -5,40 +5,22 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.navbar.view.*
-import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.R.layout
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown
 
 /**
  * Created on 31/10/2018.
  */
 class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
 
-    @BindView(R.id.btn_filter)
-    lateinit var filterButton: TextView
-    @BindView(R.id.btn_settings)
-    lateinit var settingsButton: View
-    @BindView(R.id.btn_refresh)
-    lateinit var refreshButton: View
-    @BindView(R.id.filter_dropdown)
-    lateinit var filterDropdown: FilterDropdown
-
     var filterTypeSelectedListener: FilterTypeSelectedListener? = null
     var navBarListener: PhotoScreenContract.NavBarListener? = null
 
-    private var unbinder: Unbinder
-
     init {
-        val view = LayoutInflater.from(context).inflate(layout.navbar, this, true)
-        unbinder = ButterKnife.bind(this, view)
+        LayoutInflater.from(context).inflate(layout.navbar, this, true)
 
         filterButton.setOnClickListener { filterDropdown.show() }
         settingsButton.setOnClickListener { navBarListener?.onSettingsRequested() }
@@ -47,8 +29,6 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         filterDropdown.filterTypeSelectedListener = { setFilter(it, true) }
 
         hide()
-
-        Timber.d { ": filter button: $btn_filter, from ButterKnife: $filterButton" }
     }
 
     fun show() {
@@ -84,7 +64,5 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
         filterButton.setOnClickListener(null)
         settingsButton.setOnClickListener(null)
         refreshButton.setOnClickListener(null)
-
-        unbinder.unbind()
     }
 }

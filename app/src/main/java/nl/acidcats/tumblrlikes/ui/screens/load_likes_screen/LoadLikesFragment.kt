@@ -2,15 +2,12 @@ package nl.acidcats.tumblrlikes.ui.screens.load_likes_screen
 
 import android.graphics.PorterDuff
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
-import butterknife.BindView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.fragment_loadlikes.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.R.color
 import nl.acidcats.tumblrlikes.R.string
@@ -25,15 +22,6 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
 
     @Inject
     lateinit var presenter: LoadLikesScreenContract.Presenter
-
-    @BindView(R.id.tv_image_count)
-    lateinit var imageCountText: TextView
-    @BindView(R.id.tv_loading)
-    lateinit var loadingText: TextView
-    @BindView(R.id.spinner)
-    lateinit var spinner: ProgressBar
-    @BindView(R.id.btn_cancel)
-    lateinit var cancelButton: Button
 
     companion object {
         fun newInstance() = LoadLikesFragment()

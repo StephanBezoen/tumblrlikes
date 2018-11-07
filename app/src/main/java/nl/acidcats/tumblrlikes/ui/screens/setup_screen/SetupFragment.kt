@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import butterknife.BindView
+import kotlinx.android.synthetic.main.fragment_setup.*
 import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.di.AppComponent
@@ -28,21 +26,6 @@ class SetupFragment : BaseFragment(), SetupScreenContract.View {
     lateinit var presenter: SetupScreenContract.Presenter
     @Inject
     lateinit var permissionHelper: PermissionHelper
-
-    @BindView(R.id.input_tumblr_blog)
-    lateinit var tumblrBlogInput: EditText
-    @BindView(R.id.btn_ok)
-    lateinit var okButton: TextView
-    @BindView(R.id.blog_ext_txt)
-    lateinit var blogExtensionText: TextView
-    @BindView(R.id.txt_version)
-    lateinit var versionText: TextView
-    @BindView(R.id.btn_check_cache)
-    lateinit var checkCacheButton: TextView
-    @BindView(R.id.btn_privacy_policy)
-    lateinit var privacyPolicyButton: TextView
-    @BindView(R.id.btn_export_photos)
-    lateinit var exportButton: TextView
 
     private lateinit var textWatcher: TextWatcherAdapter
     private val storagePermissionListener: PermissionListener = { permission, isGranted ->

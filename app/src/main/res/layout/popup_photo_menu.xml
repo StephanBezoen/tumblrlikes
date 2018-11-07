@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/popup_overlay_background"
-    android:id="@+id/background"
+    android:id="@+id/container"
     >
 
     <LinearLayout
@@ -20,7 +20,7 @@
         android:elevation="10dp"
         >
         <TextView
-            android:id="@+id/btn_favorite"
+            android:id="@+id/favoriteButton"
             android:text="@string/photo_action_favourite"
             style="@style/PopupListItem"
             android:drawableStart="@drawable/ic_star_border_black_24dp"
@@ -29,7 +29,7 @@
             />
 
         <TextView
-            android:id="@+id/btn_like"
+            android:id="@+id/likeButton"
             android:text="@string/photo_action_like"
             style="@style/PopupListItem"
             android:drawableStart="@drawable/ic_plus_one_black_24dp"
@@ -37,7 +37,7 @@
             android:layout_height="@dimen/popup_list_item_height"/>
 
         <TextView
-            android:id="@+id/btn_unlike"
+            android:id="@+id/unlikeButton"
             android:text="@string/photo_action_unlike"
             style="@style/PopupListItem"
             android:drawableStart="@drawable/ic_exposure_neg_1_black_24dp"
@@ -45,7 +45,7 @@
             android:layout_height="@dimen/popup_list_item_height"/>
 
         <TextView
-            android:id="@+id/btn_hide"
+            android:id="@+id/hideButton"
             android:text="@string/photo_action_hide"
             style="@style/PopupListItem"
             android:drawableStart="@drawable/ic_block_black_24dp"
@@ -60,7 +60,7 @@
             android:gravity="end"
             >
             <TextView
-                android:id="@+id/txt_view_count"
+                android:id="@+id/viewCountText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"

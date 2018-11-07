@@ -31,7 +31,7 @@
         />
 
     <TextView
-        android:id="@+id/btn_privacy_policy"
+        android:id="@+id/privacyPolicyButton"
         android:text="@string/privacy_policy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,12 +58,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/btn_ok"
+        app:layout_constraintBottom_toTopOf="@+id/okButton"
         >
 
         <EditText
             android:hint="@string/tumblr_blog_hint"
-            android:id="@+id/input_tumblr_blog"
+            android:id="@+id/tumblrBlogInput"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -74,7 +74,7 @@
             />
 
         <TextView
-            android:id="@+id/blog_ext_txt"
+            android:id="@+id/blogExtensionText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/blog_extension"
@@ -85,7 +85,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/btn_ok"
+        android:id="@+id/okButton"
         android:text="@string/ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,36 +102,36 @@
         />
 
     <TextView
-        android:id="@+id/txt_version"
+        android:id="@+id/versionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="V1.0.2"
         android:textSize="12sp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_ok"
+        app:layout_constraintBottom_toBottomOf="@+id/okButton"
         />
 
     <TextView
-        android:id="@+id/btn_export_photos"
+        android:id="@+id/exportButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/export_photos"
         android:textColor="@color/button_color"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/btn_check_cache"
+        app:layout_constraintBottom_toTopOf="@+id/checkCacheButton"
         android:layout_marginBottom="8dp"
         />
 
     <TextView
-        android:id="@+id/btn_check_cache"
+        android:id="@+id/checkCacheButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/check_cache"
         android:textColor="@color/button_color"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_ok"
+        app:layout_constraintBottom_toBottomOf="@+id/okButton"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

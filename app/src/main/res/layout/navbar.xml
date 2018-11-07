@@ -7,7 +7,7 @@
     >
 
     <nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.filterdropdown.FilterDropdown
-        android:id="@+id/filter_dropdown"
+        android:id="@+id/filterDropdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -23,7 +23,7 @@
 
         <TextView
             tools:text="Favourite"
-            android:id="@+id/btn_filter"
+            android:id="@+id/filterButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -41,7 +41,7 @@
             android:layout_weight="1"/>
 
         <ImageButton
-            android:id="@+id/btn_refresh"
+            android:id="@+id/refreshButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/ic_autorenew_black_24dp"
@@ -53,7 +53,7 @@
             />
 
         <ImageButton
-            android:id="@+id/btn_settings"
+            android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/ic_settings_black_24dp"

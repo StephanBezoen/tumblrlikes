@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import butterknife.BindView
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
@@ -25,8 +24,6 @@ import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.Keys.
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoNavBar
 import nl.acidcats.tumblrlikes.util.GlideApp
 import javax.inject.Inject
 
@@ -38,13 +35,6 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     @Inject
     lateinit var presenter: PhotoScreenContract.Presenter
 
-    @BindView(R.id.photo)
-    lateinit var photoView: InteractiveImageView
-    @BindView(R.id.photo_action_dialog)
-    lateinit var photoActionDialog: PhotoActionDialog;
-    @BindView(R.id.photo_nav_bar)
-    lateinit var photoNavBar: PhotoNavBar
-
     private val handler: Handler = Handler()
     private val uiHider: Runnable = Runnable { hideUI() }
     private val isTest: Boolean = BuildConfig.DEMO
@@ -52,7 +42,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     companion object {
         private const val HIDE_UI_DELAY_MS = 2000L
 
-        fun newInstance(refreshLikes:Boolean): PhotoFragment {
+        fun newInstance(refreshLikes: Boolean): PhotoFragment {
             val fragment = PhotoFragment()
 
             fragment.arguments = bundleOf(REFRESH to refreshLikes)
