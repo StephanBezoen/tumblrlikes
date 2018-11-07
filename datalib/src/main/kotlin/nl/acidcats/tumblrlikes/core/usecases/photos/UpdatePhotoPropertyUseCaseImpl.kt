@@ -14,6 +14,10 @@ class UpdatePhotoPropertyUseCaseImpl @Inject constructor(private val photoDataRe
     override fun updateLike(id: Long, isLiked: Boolean): Observable<Photo?> {
         return applyUpdate(id) {
             photoDataRepository.setPhotoLiked(id, isLiked)
+
+            if (!isLiked) {
+                photoDataRepository.setPhotoFavorite(id, false)
+            }
         }
     }
 
