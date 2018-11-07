@@ -22,8 +22,8 @@ class GetLikesUseCaseImpl @Inject constructor(private val appDataRepository: App
 
     override fun loadAllLikes(mode: LoadLikesMode,
                               loadingInterruptor: List<Boolean>,
-                              currentTimeInMs:Long,
-                              pageProgress: BehaviorSubject<Int>?): Observable<Long> {
+                              currentTimeInMs: Long,
+                              pageProgress: BehaviorSubject<Int>?): Observable<Int> {
         val timestamp: Long = when (mode) {
             LoadLikesMode.RELOAD_ALL -> 1
             LoadLikesMode.SINCE_LAST -> Math.max(1L, appDataRepository.getLastLikeTime())
@@ -37,8 +37,8 @@ class GetLikesUseCaseImpl @Inject constructor(private val appDataRepository: App
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { isNew(it) }
                 .map(photoDataRepository::storePhotos)
-                .map {
-                    Timber.d { "loadAllLikes: ${it.size} photos stored" }
+                .map { loadedPhotos ->
+                    Timber.d { "loadAllLikes: ${loadedPhotos.size} photos stored" }
 
                     if (likesDataRepository.lastLikeTime != 0L) {
                         appDataRepository.setLastLikeTime(likesDataRepository.lastLikeTime)
@@ -46,7 +46,7 @@ class GetLikesUseCaseImpl @Inject constructor(private val appDataRepository: App
 
                     appDataRepository.setLastCheckTime(currentTimeInMs)
 
-                    photoDataRepository.getPhotoCount()
+                    loadedPhotos.size
                 }
     }
 

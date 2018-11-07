@@ -61,7 +61,7 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
         }
     }
 
-    override fun showAllLikesLoaded(count: Long) {
+    override fun showAllLikesLoaded(count: Int) {
         imageCountText.text = getString(string.total_image_count, count)
         loadingText.text = getString(string.all_loaded)
     }

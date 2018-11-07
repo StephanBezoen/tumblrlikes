@@ -170,7 +170,16 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     }
 
     override fun showRefreshCompleteToast(success: Boolean, photoCount: Int) {
-        Toast.makeText(context, if (success) getString(R.string.refresh_success, photoCount.toString()) else getString(R.string.refresh_error), Toast.LENGTH_SHORT).show()
+        val message = if (success) {
+            if (photoCount == 0) {
+                getString(R.string.refresh_success_no_new_photos)
+            } else {
+                getString(R.string.refresh_success, photoCount.toString())
+            }
+        } else {
+            getString(R.string.refresh_error)
+        }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

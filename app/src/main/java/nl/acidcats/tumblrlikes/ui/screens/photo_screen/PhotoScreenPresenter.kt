@@ -224,10 +224,10 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
         getView()?.showRefreshCompleteToast(false)
     }
 
-    private fun handleLikesLoaded(photoCount: Long) {
+    private fun handleLikesLoaded(photoCount: Int) {
         getView()?.enableRefreshButton(true)
 
-        getView()?.showRefreshCompleteToast(true, photoCount.toInt())
+        getView()?.showRefreshCompleteToast(true, photoCount)
 
         if (photoCount > 0) {
             getView()?.sendBroadcast(Broadcasts.CACHE_SERVICE_REQUEST)

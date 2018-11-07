@@ -9,10 +9,8 @@ import org.greenrobot.greendao.query.QueryBuilder
  */
 abstract class AbstractFilterOptionImpl : FilterOption {
 
-    private val countQuery: CountQuery<PhotoEntity> by lazy { queryBuilder.buildCount() }
-
     override val count
-        get() = countQuery.count().toInt()
+        get() = queryBuilder.count().toInt()
 
     override fun getPhoto(index: Int): PhotoEntity = queryBuilder.limit(1).offset(index).build().forCurrentThread().unique()
 

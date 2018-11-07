@@ -65,7 +65,7 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
         )
     }
 
-    private fun handleLikesLoaded(totalPhotoCount: Long) {
+    private fun handleLikesLoaded(totalPhotoCount: Int) {
         if (isLoadingCancelled) {
             notifyLoadingComplete()
         } else {

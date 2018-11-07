@@ -25,7 +25,7 @@ interface LoadLikesScreenContract {
 
         fun showErrorAlert(errorStringId: Int)
 
-        fun showAllLikesLoaded(count: Long)
+        fun showAllLikesLoaded(count: Int)
 
         fun showLoadingCancelled()
     }
