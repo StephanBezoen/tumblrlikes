@@ -60,7 +60,7 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
 
         registerSubscription(
                 getLikesUseCase
-                        .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor, pageProgress)
+                        .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor, Date().time, pageProgress)
                         .subscribe({ handleLikesLoaded(it) }, { handleLoadPageError(it) })
         )
     }
@@ -71,11 +71,7 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
         } else {
             getView()?.showAllLikesLoaded(totalPhotoCount)
 
-            registerSubscription(
-                    checkTimeUseCase
-                            .setLastCheckTime(Date().time)
-                            .subscribe { Handler().postDelayed({ notifyLoadingComplete() }, 500) }
-            )
+            Handler().postDelayed({ notifyLoadingComplete() }, 500)
         }
     }
 

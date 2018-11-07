@@ -16,6 +16,7 @@ import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoViewViewModel
 import rx.Observable
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -212,7 +213,7 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
 
         registerSubscription(
                 getLikesUseCase
-                        .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor)
+                        .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor, Date().time)
                         .subscribe({ handleLikesLoaded(it) }, { handleLoadPageError(it) })
         )
     }

@@ -16,11 +16,6 @@ class CheckTimeUseCaseImpl @Inject constructor(val appDataRepository: AppDataRep
         return Observable.just(timeSinceLastCheck > TIME_BETWEEN_CHECKS_MS)
     }
 
-    override fun setLastCheckTime(currentTimeInMs: Long): Observable<Long> {
-        appDataRepository.setLastCheckTime(currentTimeInMs)
-        return Observable.just(currentTimeInMs)
-    }
-
     override fun resetCheckTime(): Observable<Long> {
         appDataRepository.setLastLikeTime(0L)
 

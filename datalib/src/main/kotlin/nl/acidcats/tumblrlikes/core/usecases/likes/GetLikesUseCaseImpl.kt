@@ -20,11 +20,13 @@ class GetLikesUseCaseImpl @Inject constructor(private val appDataRepository: App
                                               private val photoDataRepository: PhotoDataRepository,
                                               private val likesDataRepository: LikesDataRepository) : GetLikesUseCase {
 
-    override fun loadAllLikes(mode: LoadLikesMode, loadingInterruptor: List<Boolean>, pageProgress: BehaviorSubject<Int>?): Observable<Long> {
+    override fun loadAllLikes(mode: LoadLikesMode,
+                              loadingInterruptor: List<Boolean>,
+                              currentTimeInMs:Long,
+                              pageProgress: BehaviorSubject<Int>?): Observable<Long> {
         val timestamp: Long = when (mode) {
             LoadLikesMode.RELOAD_ALL -> 1
             LoadLikesMode.SINCE_LAST -> Math.max(1L, appDataRepository.getLastLikeTime())
-            LoadLikesMode.NEXT_PAGE -> return error(Exception("Don't call this method with NEXT_PAGE"))
         }
 
         val blog = appDataRepository.getTumblrBlog() ?: return error(Exception("Blog has not been set"))
@@ -41,6 +43,8 @@ class GetLikesUseCaseImpl @Inject constructor(private val appDataRepository: App
                     if (likesDataRepository.lastLikeTime != 0L) {
                         appDataRepository.setLastLikeTime(likesDataRepository.lastLikeTime)
                     }
+
+                    appDataRepository.setLastCheckTime(currentTimeInMs)
 
                     photoDataRepository.getPhotoCount()
                 }
