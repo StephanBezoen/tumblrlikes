@@ -8,12 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.DrawableImageViewTarget
-import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.fragment_photo.*
 import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
@@ -25,6 +21,7 @@ import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsVi
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
 import nl.acidcats.tumblrlikes.util.GlideApp
+import nl.acidcats.tumblrlikes.util.GlideRequest
 import javax.inject.Inject
 
 /**
@@ -100,29 +97,19 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         handler.removeCallbacks(uiHider)
     }
 
-    override fun loadPhoto(url: String?, notifyOnError: Boolean) {
+    override fun loadPhoto(url: String, fallbackUrl: String) {
         if (context == null) return
 
-        var listener: RequestListener<Drawable>? = null
-        if (notifyOnError) {
-            listener = object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    if (activity != null) {
-                        activity!!.runOnUiThread { presenter.onImageLoadFailed() }
-                    }
-                    return true
-                }
+        getGlideRequest(url)
+                .error(getGlideRequest(fallbackUrl))
+                .into(DrawableImageViewTarget(photoView))
+    }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean = false
-            }
-        }
-
-        GlideApp.with(context!!)
+    private fun getGlideRequest(url: String): GlideRequest<Drawable> {
+        return GlideApp.with(context!!)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
-                .listener(listener)
-                .into(DrawableImageViewTarget(photoView))
     }
 
     override fun resetPhotoScale() = photoView.resetScale()

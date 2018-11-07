@@ -17,7 +17,7 @@ data class PhotoViewViewModel(
 ) : Parcelable {
     companion object {
         fun isValid(viewModel: PhotoViewViewModel?): Boolean {
-            return viewModel?.url != null && !viewModel.url.isEmpty()
+            return viewModel != null && !viewModel.url.isNullOrEmpty() && !viewModel.fallbackUrl.isNullOrEmpty()
         }
     }
 }

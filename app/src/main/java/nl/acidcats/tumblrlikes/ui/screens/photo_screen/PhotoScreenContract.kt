@@ -21,8 +21,6 @@ interface PhotoScreenContract {
     interface Presenter : BasePresenter<View>, PhotoActionListener, GestureListener, NavBarListener {
         fun onViewCreated()
 
-        fun onImageLoadFailed()
-
         fun onFilterSelected(filter: FilterType)
 
         fun saveState(outState: Bundle)
@@ -35,7 +33,7 @@ interface PhotoScreenContract {
     }
 
     interface View : BaseView {
-        fun loadPhoto(url: String?, notifyOnError: Boolean)
+        fun loadPhoto(url: String, fallbackUrl:String)
 
         fun resetPhotoScale()
 

@@ -72,7 +72,7 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
                 .map { createViewModel(it) }
                 .filter { PhotoViewViewModel.isValid(it) }
                 .flatMap {
-                    getView()?.loadPhoto(it!!.url, true)
+                    getView()?.loadPhoto(it!!.url!!, it.fallbackUrl!!)
 
                     Observable.just(it)
                 }
@@ -105,18 +105,15 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
         }
     }
 
-    override fun onImageLoadFailed() {
-        if (PhotoViewViewModel.isValid(viewModel)) {
-            getView()?.loadPhoto(viewModel!!.fallbackUrl, false)
-        }
-    }
-
     override fun onFilterSelected(filter: FilterType) {
         registerSubscription(
                 photoFilterUseCase
                         .storeFilterSelection(filter)
-                        .subscribe { showNextPhoto() }
+                        .subscribe {
+                            showNextPhoto()
 
+                            getView()?.hideUI()
+                        }
         )
     }
 
