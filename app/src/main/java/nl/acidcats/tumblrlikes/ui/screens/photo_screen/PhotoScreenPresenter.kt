@@ -188,13 +188,13 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
     override fun onSwipe() = showNextPhoto()
 
     override fun onTap() {
-        getView()?.showUI()
-    }
-
-    override fun onLongPress() {
         if (PhotoViewViewModel.isValid(viewModel)) {
             getView()?.showPhotoActionDialog(createPhotoOptionsViewModel(viewModel!!))
         }
+    }
+
+    override fun onLongPress() {
+        getView()?.showUI()
     }
 
     override fun onDoubleTap() {
