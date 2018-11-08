@@ -198,7 +198,13 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
     }
 
     override fun onDoubleTap() {
-        getView()?.resetPhotoScale()
+        getView()?.let {view ->
+            if (view.isPhotoScaled()) {
+                view.resetPhotoScale()
+            } else {
+                view.scalePhotoToView()
+            }
+        }
     }
 
     override fun onSettingsRequested() {

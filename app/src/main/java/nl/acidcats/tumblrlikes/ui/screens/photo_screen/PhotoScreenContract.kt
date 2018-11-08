@@ -33,9 +33,13 @@ interface PhotoScreenContract {
     }
 
     interface View : BaseView {
-        fun loadPhoto(url: String, fallbackUrl:String)
+        fun loadPhoto(url: String, fallbackUrl: String)
+
+        fun isPhotoScaled(): Boolean
 
         fun resetPhotoScale()
+
+        fun scalePhotoToView()
 
         fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow)
 
@@ -53,7 +57,7 @@ interface PhotoScreenContract {
 
         fun enableRefreshButton(enabled: Boolean)
 
-        fun showRefreshCompleteToast(success:Boolean, photoCount:Int = 0)
+        fun showRefreshCompleteToast(success: Boolean, photoCount: Int = 0)
     }
 
     interface PhotoActionListener {

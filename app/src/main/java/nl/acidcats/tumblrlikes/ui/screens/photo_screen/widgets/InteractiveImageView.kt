@@ -3,13 +3,14 @@ package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Point
 import android.graphics.PointF
-import androidx.core.view.GestureDetectorCompat
-import androidx.appcompat.widget.AppCompatImageView
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.view.GestureDetectorCompat
 
 /**
  * Created on 01/11/2018.
@@ -33,11 +34,21 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
     private var lastTouchY: Float = 1f
     private var translateX: Float = 0f
     private var translateY: Float = 0f
+    private var screenWidth: Float = 0f
+    private var screenHeight: Float = 0f
+    private var screenAspectRatio: Float = 0f
     private var activePointerId: Int = 0
     private var hasScaled: Boolean = false
 
-    private val isScaled: Boolean
+    val isScaled: Boolean
         get() = Math.abs(scale - 1.0f) > .00001
+
+    var screenSize: Point = Point()
+        set(value) {
+            screenWidth = value.x.toFloat()
+            screenHeight = value.y.toFloat()
+            screenAspectRatio = screenWidth / screenHeight
+        }
 
     init {
         density = resources.displayMetrics.density
@@ -170,6 +181,20 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         }
     }
 
+    fun scaleToView() {
+        if (isScaled) return
+
+        val imageAspectRatio = drawable.intrinsicWidth.toFloat() / drawable.intrinsicHeight.toFloat()
+
+        if (imageAspectRatio > screenAspectRatio) {
+            // wide image, scale height up to screen height
+            setScale(imageAspectRatio / screenAspectRatio)
+        } else {
+            // high image, scale width up to screen width
+            setScale(screenAspectRatio / imageAspectRatio)
+        }
+    }
+
     fun resetScale() {
         scale = 1f
         translateX = 0f
@@ -184,7 +209,7 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         invalidate()
     }
 
-    fun setGestureListener(listener:(InteractiveImageView.Gesture) -> Unit) {
+    fun setGestureListener(listener: (InteractiveImageView.Gesture) -> Unit) {
         gestureListener = listener
     }
 

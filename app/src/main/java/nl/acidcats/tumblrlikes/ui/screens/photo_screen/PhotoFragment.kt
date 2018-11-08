@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
+import android.graphics.Point
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -65,6 +66,9 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         presenter.onViewCreated()
 
         photoView.setGestureListener { onGesture(it) }
+        val point = Point()
+        activity?.windowManager?.defaultDisplay?.getRealSize(point)
+        photoView.screenSize = point
 
         photoActionDialog.setPhotoActionListener(presenter)
 
@@ -113,6 +117,12 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     }
 
     override fun resetPhotoScale() = photoView.resetScale()
+
+    override fun scalePhotoToView() = photoView.scaleToView()
+
+    override fun isPhotoScaled(): Boolean {
+        return photoView.isScaled
+    }
 
     override fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow) = photoActionDialog.hide(hideFlow)
 
