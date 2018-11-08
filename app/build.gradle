@@ -46,7 +46,7 @@ android {
         buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
         buildConfigField "String", "PRIVACY_URL", "\"" + config.privacy_url + "\""
         buildConfigField "Boolean", "USE_STETHO", "false"
-        buildConfigField "Boolean", "DEMO", "true"
+        buildConfigField "Boolean", "DEMO", "false"
         if (config.has('blog')) {
             buildConfigField "String", "BLOG", "\"" + config.blog + "\""
         } else {
