@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.GestureDetectorCompat
+import nl.acidcats.tumblrlikes.util.clamp
 
 /**
  * Created on 01/11/2018.
@@ -39,10 +40,11 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
     private var screenAspectRatio: Float = 0f
     private var activePointerId: Int = 0
     private var hasScaled: Boolean = false
+    private var maxTranslateX: Float = 0f
+    private var maxTranslateY: Float = 0f
 
     val isScaled: Boolean
         get() = Math.abs(scale - 1.0f) > .00001
-
     var screenSize: Point = Point()
         set(value) {
             screenWidth = value.x.toFloat()
@@ -109,7 +111,10 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
     override fun onDraw(canvas: Canvas) {
         canvas.save()
 
-        canvas.translate(translateX + 0.5f * (1.0f - scale) * width, translateY + 0.5f * (1.0f - scale) * height)
+        val dx = (translateX + 0.5f * (1.0f - scale) * width)
+        val dy = translateY + 0.5f * (1.0f - scale) * height
+
+        canvas.translate(dx, dy)
 
         canvas.scale(scale, scale)
 
@@ -161,10 +166,17 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         translateX += (x - lastTouchX)
         translateY += (y - lastTouchY)
 
+        clampTranslation()
+
         invalidate()
 
         lastTouchX = x
         lastTouchY = y
+    }
+
+    private fun clampTranslation() {
+        translateX = translateX.clamp(-maxTranslateX, maxTranslateX)
+        translateY = translateY.clamp(-maxTranslateY, maxTranslateY)
     }
 
     private fun checkDragEnd(event: MotionEvent) {
@@ -184,8 +196,10 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
     fun scaleToView() {
         if (isScaled) return
 
-        val imageAspectRatio = drawable.intrinsicWidth.toFloat() / drawable.intrinsicHeight.toFloat()
+        val imWidth = drawable.intrinsicWidth.toFloat()
+        val imHeight = drawable.intrinsicHeight.toFloat()
 
+        val imageAspectRatio = imWidth / imHeight
         if (imageAspectRatio > screenAspectRatio) {
             // wide image, scale height up to screen height
             setScale(imageAspectRatio / screenAspectRatio)
@@ -199,12 +213,28 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         scale = 1f
         translateX = 0f
         translateY = 0f
+        maxTranslateX = 0f
+        maxTranslateY = 0f
 
         invalidate()
     }
 
     private fun setScale(scale: Float) {
         this.scale = scale
+
+        val imageWidth = drawable.intrinsicWidth.toFloat()
+        val imageHeight = drawable.intrinsicHeight.toFloat()
+
+        val imageAspectRatio = imageWidth / imageHeight
+        if (imageAspectRatio > screenAspectRatio) {
+            maxTranslateX = Math.max(0f, (scale - 1) * screenWidth / 2)
+            maxTranslateY = Math.max(0f, ((scale - imageAspectRatio / screenAspectRatio) * (screenWidth / imageAspectRatio)) / 2)
+        } else {
+            maxTranslateX = Math.max(0f, ((scale - screenAspectRatio / imageAspectRatio) * (screenHeight * imageAspectRatio)) / 2)
+            maxTranslateY = Math.max(0f, (scale - 1) * screenHeight / 2)
+        }
+
+        clampTranslation()
 
         invalidate()
     }
