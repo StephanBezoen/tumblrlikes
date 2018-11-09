@@ -110,6 +110,8 @@ dependencies {
 
     // Timber
     implementation libs.timber
+
+    testImplementation libs.test_junit
 }
 
 repositories {
