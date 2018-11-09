@@ -11,6 +11,8 @@ import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenPresenter
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenPresenter
+import nl.acidcats.tumblrlikes.ui.screens.settingsscreen.SettingsScreenContract
+import nl.acidcats.tumblrlikes.ui.screens.settingsscreen.SettingsScreenPresenter
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupScreenPresenter
 import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
@@ -41,6 +43,9 @@ class AppModule constructor(private val application: LikesApplication, private v
 
     @Provides
     fun providePhotoScreenPresenter(presenter: PhotoScreenPresenter): PhotoScreenContract.Presenter = presenter
+
+    @Provides
+    fun provideSettingsScreenPresenter(presenter: SettingsScreenPresenter): SettingsScreenContract.Presenter = presenter
 
     @Provides
     @Singleton

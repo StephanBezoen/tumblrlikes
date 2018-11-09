@@ -17,4 +17,12 @@
         <item name="android:drawablePadding">@dimen/popup_list_item_icon_padding</item>
     </style>
 
+    <style name="TextOnlyButton">
+        <item name="android:textColor">@color/button_color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_margin">0dp</item>
+    </style>
+
 </resources>

@@ -50,7 +50,7 @@
             android:paddingEnd="16dp"
             android:tint="@color/white"
             android:background="@color/transparent"
-            />
+            android:contentDescription="@null"/>
 
         <ImageButton
             android:id="@+id/settingsButton"
@@ -62,7 +62,7 @@
             android:paddingEnd="16dp"
             android:tint="@color/white"
             android:background="@color/transparent"
-            />
+            android:contentDescription="@null"/>
 
     </LinearLayout>
 </FrameLayout>

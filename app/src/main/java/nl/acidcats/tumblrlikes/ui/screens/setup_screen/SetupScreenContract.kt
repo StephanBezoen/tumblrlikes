@@ -11,27 +11,15 @@ interface SetupScreenContract {
     interface Presenter : BasePresenter<View> {
         fun onViewCreated()
 
-        fun checkCache()
-
         fun onBlogTextChanged(blog: String)
 
         fun onSetupDone(blog: String)
-
-        fun exportPhotos(filename: String)
     }
 
     interface View : BaseView {
         fun setTumblrBlogText(tumblrBlog: String)
 
-        fun enableCacheCheckButton(enable: Boolean)
-
         fun enableOkButton(enable: Boolean)
-
-        fun showCacheMissToast(cacheMissCount: Int)
-
-        fun enableExportButton(enable: Boolean)
-
-        fun showExportCompleteToast(success: Boolean)
     }
 
     companion object {

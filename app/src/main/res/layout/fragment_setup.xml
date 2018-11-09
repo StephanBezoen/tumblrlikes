@@ -111,27 +111,4 @@
         app:layout_constraintBottom_toBottomOf="@+id/okButton"
         />
 
-    <TextView
-        android:id="@+id/exportButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/export_photos"
-        android:textColor="@color/button_color"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/checkCacheButton"
-        android:layout_marginBottom="8dp"
-        />
-
-    <TextView
-        android:id="@+id/checkCacheButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/check_cache"
-        android:textColor="@color/button_color"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/okButton"
-        />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.screens.setup_screen
 
-import android.os.Environment
-import com.github.ajalt.timberkt.Timber
 import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.core.usecases.appsetup.TumblrBlogUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.ExportPhotosUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase
 import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
 import javax.inject.Inject
@@ -16,11 +12,7 @@ import javax.inject.Inject
 class SetupScreenPresenter @Inject constructor() : BasePresenterImpl<SetupScreenContract.View>(), SetupScreenContract.Presenter {
 
     @Inject
-    lateinit var photoCacheUseCase: UpdatePhotoCacheUseCase
-    @Inject
     lateinit var tumblrBlogUseCase: TumblrBlogUseCase
-    @Inject
-    lateinit var exportPhotosUseCase: ExportPhotosUseCase
 
     override fun onViewCreated() {
         registerSubscription(
@@ -49,28 +41,6 @@ class SetupScreenPresenter @Inject constructor() : BasePresenterImpl<SetupScreen
         )
     }
 
-    override fun checkCache() {
-        getView()?.enableCacheCheckButton(false)
-
-        registerSubscription(
-                photoCacheUseCase
-                        .checkCachedPhotos()
-                        .subscribe({ onCacheChecked(it) }, { onCacheCheckError(it) })
-        )
-    }
-
-    private fun onCacheChecked(cacheMissCount: Int) {
-        getView()?.enableCacheCheckButton(true)
-
-        getView()?.showCacheMissToast(cacheMissCount)
-    }
-
-    private fun onCacheCheckError(throwable: Throwable) {
-        Timber.e { "onCacheCheckError: ${throwable.message}" }
-
-        getView()?.enableCacheCheckButton(true)
-    }
-
     override fun onBlogTextChanged(blog: String) {
         getView()?.enableOkButton(!blog.isEmpty())
     }
@@ -81,25 +51,5 @@ class SetupScreenPresenter @Inject constructor() : BasePresenterImpl<SetupScreen
         registerSubscription(
                 tumblrBlogUseCase.setTumblrBlog(blog).subscribe { notify(Broadcasts.SETUP_COMPLETE) }
         )
-    }
-
-    override fun exportPhotos(filename: String) {
-        getView()?.enableExportButton(false)
-
-        exportPhotosUseCase
-                .exportPhotos(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path, filename)
-                .subscribe({ onExportComplete(it) }, { onExportError(it) })
-    }
-
-    private fun onExportError(throwable: Throwable) {
-        Timber.e { "onExportError: ${throwable.message}" }
-
-        getView()?.enableExportButton(true)
-        getView()?.showExportCompleteToast(false)
-    }
-
-    private fun onExportComplete(isExported: Boolean) {
-        getView()?.enableExportButton(true)
-        getView()?.showExportCompleteToast(isExported)
     }
 }

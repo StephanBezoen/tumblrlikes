@@ -17,6 +17,7 @@ import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesFragment
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginFragment
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoFragment
+import nl.acidcats.tumblrlikes.ui.screens.settingsscreen.SettingsFragment
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupFragment
 import nl.acidcats.tumblrlikes.util.broadcast.BroadcastReceiver
 import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
@@ -120,8 +121,14 @@ class MainActivity : AppCompatActivity() {
         appLifecycleUseCase.get().setAppStopped(System.currentTimeMillis()).subscribe()
     }
 
-    private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
+    private fun showFragment(fragment: Fragment, addToBackStack: Boolean = false) {
+        val transaction = supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+
+        if (addToBackStack) {
+            transaction.addToBackStack(null)
+        }
+
+        transaction.commit()
     }
 
     private fun checkLogin() {
@@ -145,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onSettingsRequested() {
-        showFragment(SetupFragment.newInstance())
+        showFragment(SettingsFragment.newInstance(), true)
     }
 
     private fun onRefreshRequested() {
