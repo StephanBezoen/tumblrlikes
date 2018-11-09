@@ -4,6 +4,7 @@ import android.os.Environment
 import com.github.ajalt.timberkt.Timber
 import nl.acidcats.tumblrlikes.core.usecases.photos.ExportPhotosUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase
+import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
 import javax.inject.Inject
 
@@ -61,5 +62,9 @@ class SettingsScreenPresenter @Inject constructor() : BasePresenterImpl<Settings
     private fun onExportComplete(isExported: Boolean) {
         getView()?.enableExportButton(true)
         getView()?.showExportCompleteToast(isExported)
+    }
+
+    override fun refreshAllLikes() {
+        getView()?.sendBroadcast(Broadcasts.REFRESH_ALL_REQUEST)
     }
 }

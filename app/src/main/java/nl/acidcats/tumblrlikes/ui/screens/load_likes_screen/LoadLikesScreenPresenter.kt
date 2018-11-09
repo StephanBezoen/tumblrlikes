@@ -32,17 +32,20 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
     private var isLoadingCancelled = false
     private val loadingInterruptor: MutableList<Boolean> = ArrayList()
     private val pageProgress: BehaviorSubject<Int> = BehaviorSubject.create()
+    private lateinit var mode: LoadLikesMode
 
-    override fun onViewCreated() {
+    override fun onViewCreated(mode:LoadLikesMode) {
+        this.mode = mode
+
         registerSubscription(
                 updatePhotoCacheUseCase
                         .removeCachedHiddenPhotos()
                         .subscribe({
-                            startLoadingLikes()
+                            startLoadingLikes(mode)
                         }, {
                             Timber.e { "removeCachedHiddenPhotos: ${it.message}" }
 
-                            startLoadingLikes()
+                            startLoadingLikes(mode)
                         })
         )
 
@@ -53,14 +56,14 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
         }
     }
 
-    private fun startLoadingLikes() {
+    private fun startLoadingLikes(mode:LoadLikesMode) {
         loadingInterruptor.clear()
 
         pageCount = 0
 
         registerSubscription(
                 getLikesUseCase
-                        .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor, Date().time, pageProgress)
+                        .loadAllLikes(mode, loadingInterruptor, Date().time, pageProgress)
                         .subscribe({ handleLikesLoaded(it) }, { handleLoadPageError(it) })
         )
     }
@@ -102,7 +105,7 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
 
     override fun skipLoading() = notifyLoadingComplete()
 
-    override fun retryLoading() = startLoadingLikes()
+    override fun retryLoading() = startLoadingLikes(mode)
 
     override fun showSettings() = notify(Broadcasts.SETTINGS_REQUEST)
 

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import dagger.Lazy
 import nl.acidcats.tumblrlikes.LikesApplication
 import nl.acidcats.tumblrlikes.R
+import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
 import nl.acidcats.tumblrlikes.core.usecases.appsetup.AppSetupUseCase
 import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase
 import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCase
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { showPhotoScreen(false) }
         receiver.addActionHandler(Broadcasts.DATABASE_RESET) { onDatabaseReset() }
         receiver.addActionHandler(Broadcasts.SETUP_COMPLETE) { onSetupComplete() }
-        receiver.addActionHandler(Broadcasts.REFRESH_REQUEST) { onRefreshRequested() }
+        receiver.addActionHandler(Broadcasts.REFRESH_ALL_REQUEST) { onRefreshAllRequested() }
         receiver.addActionHandler(Broadcasts.SETTINGS_REQUEST) { onSettingsRequested() }
         receiver.addActionHandler(Broadcasts.CACHE_SERVICE_REQUEST) { startCacheService() }
 
@@ -155,8 +156,8 @@ class MainActivity : AppCompatActivity() {
         showFragment(SettingsFragment.newInstance(), true)
     }
 
-    private fun onRefreshRequested() {
-        showFragment(LoadLikesFragment.newInstance())
+    private fun onRefreshAllRequested() {
+        showFragment(LoadLikesFragment.newInstance(LoadLikesMode.RELOAD_ALL))
     }
 
     private fun onSetupComplete() {

@@ -11,7 +11,7 @@ object Broadcasts {
     val ALL_LIKES_LOADED = "$PREFIX.allLikesLoaded"
     val DATABASE_RESET = "$PREFIX.databaseReset"
     val SETUP_COMPLETE = "$PREFIX.setupComplete"
-    val REFRESH_REQUEST = "$PREFIX.refreshRequest"
+    val REFRESH_ALL_REQUEST = "$PREFIX.refreshAllRequest"
     val SETTINGS_REQUEST = "$PREFIX.settingsRequest"
     val CACHE_SERVICE_REQUEST = "$PREFIX.cacheServiceRequest"
 }

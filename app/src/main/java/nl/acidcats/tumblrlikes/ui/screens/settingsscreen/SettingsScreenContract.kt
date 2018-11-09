@@ -14,6 +14,8 @@ interface SettingsScreenContract {
         fun checkCache()
 
         fun exportPhotos(filename: String)
+
+        fun refreshAllLikes()
     }
 
     interface View : BaseView {

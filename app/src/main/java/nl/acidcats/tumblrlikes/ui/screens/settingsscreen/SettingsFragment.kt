@@ -50,6 +50,12 @@ class SettingsFragment : BaseFragment(), SettingsScreenContract.View {
 
         exportButton.setOnClickListener { checkExportPhotos() }
 
+        refreshAllButton.setOnClickListener {
+            fragmentManager?.popBackStack()
+
+            presenter.refreshAllLikes()
+        }
+
         closeButton.setOnClickListener { activity?.onBackPressed() }
 
         permissionHelper.addPermissionListener(storagePermissionListener)

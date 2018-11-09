@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.load_likes_screen
 
+import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenter
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseView
 
@@ -8,8 +9,12 @@ import nl.acidcats.tumblrlikes.ui.screens.base.BaseView
  */
 interface LoadLikesScreenContract {
 
+    object Keys {
+        const val KEY_MODE = "mode"
+    }
+
     interface Presenter : BasePresenter<LoadLikesScreenContract.View> {
-        fun onViewCreated()
+        fun onViewCreated(mode:LoadLikesMode = LoadLikesMode.SINCE_LAST)
 
         fun cancelLoading()
 

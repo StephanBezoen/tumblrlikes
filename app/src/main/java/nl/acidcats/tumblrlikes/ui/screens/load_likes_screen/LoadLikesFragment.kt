@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import kotlinx.android.synthetic.main.fragment_loadlikes.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.R.color
 import nl.acidcats.tumblrlikes.R.string
+import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
 import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
+import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesScreenContract.Keys.KEY_MODE
 import javax.inject.Inject
 
 /**
@@ -24,7 +27,11 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
     lateinit var presenter: LoadLikesScreenContract.Presenter
 
     companion object {
-        fun newInstance() = LoadLikesFragment()
+        fun newInstance(mode: LoadLikesMode = LoadLikesMode.SINCE_LAST): LoadLikesFragment {
+            val fragment = LoadLikesFragment()
+            fragment.arguments = bundleOf(KEY_MODE to mode)
+            return fragment
+        }
     }
 
     override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
@@ -35,7 +42,7 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         presenter.setView(this)
-        presenter.onViewCreated()
+        presenter.onViewCreated(arguments!![KEY_MODE] as LoadLikesMode)
 
         context?.let {
             spinner.indeterminateDrawable.setColorFilter(ContextCompat.getColor(it, color.colorPrimaryDark), PorterDuff.Mode.SRC_IN)

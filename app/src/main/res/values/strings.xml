@@ -57,4 +57,5 @@
     <string name="refresh_error">Refresh failed</string>
     <string name="refresh_success_no_new_photos">No new photos found</string>
     <string name="dataActionHeader">Data actions</string>
+    <string name="refresh_all_likes">Refresh all likes</string>
 </resources>
