@@ -11,6 +11,7 @@
     <color name="body_text">#FF222222</color>
     <color name="red">#FFFF0000</color>
     <color name="bg_overlay">#88000000</color>
+    <color name="action_menu_bg">#DDFFFFFF</color>
     <color name="transparent">#00000000</color>
 
     <color name="disabled_button">#33000000</color>

@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewPropertyAnimator
-import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.popup_photo_menu.view.*
 import nl.acidcats.tumblrlikes.R
@@ -30,7 +29,7 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     private var showDuration = 0L
 
     init {
-        LayoutInflater.from(context).inflate(layout.popup_photo_menu, this, true)
+        LayoutInflater.from(context).inflate(R.layout.popup_photo_menu, this, true)
 
         favoriteButton.setOnClickListener { photoActionListener?.onUpdatePhotoFavorite(viewModel.photoId, !viewModel.isPhotoFavorite) }
         likeButton.setOnClickListener { photoActionListener?.onUpdatePhotoLike(viewModel.photoId, true) }

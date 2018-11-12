@@ -54,75 +54,76 @@ ext {
     ]
 
     Versions = [
-            minSdk     : 21,
-            targetSdk  : 28,
-            compileSdk : 28,
+            minSdk    : 21,
+            targetSdk : 28,
+            compileSdk: 28,
 
             // AndroidX
-            androidx   : '1.0.0',
+            androidx  : '1.0.0',
 
             // Library versions
-            dagger     : '2.11',
-            okHttp     : '3.9.1',
-            retrofit   : '2.3.0',
-            glide      : '4.8.0'
+            dagger    : '2.11',
+            okHttp    : '3.9.1',
+            retrofit  : '2.3.0',
+            glide     : '4.8.0'
     ]
 
     Libraries = [
             // Kotlin
-            kotlin                        : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
-            android_ktx                 : "androidx.core:core-ktx:1.0.1",
+            kotlin                   : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
+            android_ktx              : "androidx.core:core-ktx:1.0.1",
 
             // AndroidX
-            androidx_appCompat             : "androidx.appcompat:appcompat:${Versions.androidx}",
-            androidx_annotations           : "androidx.annotation:annotation:${Versions.androidx}",
-            androidx_constraintLayout      : 'androidx.constraintlayout:constraintlayout:1.1.2',
+            androidx_appCompat       : "androidx.appcompat:appcompat:${Versions.androidx}",
+            androidx_cardView        : "androidx.cardview:cardview:${Versions.androidx}",
+            androidx_annotations     : "androidx.annotation:annotation:${Versions.androidx}",
+            androidx_constraintLayout: 'androidx.constraintlayout:constraintlayout:1.1.2',
 
             // testing
-            test_espresso                 : 'androidx.test.espresso:espresso-core:3.1.0',
-            test_junit                    : 'junit:junit:4.12',
-            test_runner                   : 'androidx.test.runner.AndroidJUnitRunner',
+            test_espresso            : 'androidx.test.espresso:espresso-core:3.1.0',
+            test_junit               : 'junit:junit:4.12',
+            test_runner              : 'androidx.test.runner.AndroidJUnitRunner',
 
             // Dagger
-            dagger                        : "com.google.dagger:dagger:${Versions.dagger}",
-            annotationProcessorDagger     : "com.google.dagger:dagger-compiler:${Versions.dagger}",
+            dagger                   : "com.google.dagger:dagger:${Versions.dagger}",
+            annotationProcessorDagger: "com.google.dagger:dagger-compiler:${Versions.dagger}",
 
             // RetroFit
-            retrofit                      : "com.squareup.retrofit2:retrofit:${Versions.retrofit}",
-            retrofit_moshiConverter       : "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}",
-            retrofit_rxAdapter            : "com.squareup.retrofit2:adapter-rxjava:${Versions.retrofit}",
+            retrofit                 : "com.squareup.retrofit2:retrofit:${Versions.retrofit}",
+            retrofit_moshiConverter  : "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}",
+            retrofit_rxAdapter       : "com.squareup.retrofit2:adapter-rxjava:${Versions.retrofit}",
 
             // Rx
-            rxAndroid                     : "io.reactivex:rxandroid:1.2.1",
-            rxKotlin                      : "io.reactivex:rxkotlin:1.0.0",
+            rxAndroid                : "io.reactivex:rxandroid:1.2.1",
+            rxKotlin                 : "io.reactivex:rxkotlin:1.0.0",
 
             // Stetho
-            stetho                        : "com.facebook.stetho:stetho:1.5.0",
+            stetho                   : "com.facebook.stetho:stetho:1.5.0",
 
             // OkHttp
-            okHttp                        : "com.squareup.okhttp3:okhttp:${Versions.okHttp}",
-            okHttp_loggingInterceptor     : "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}",
+            okHttp                   : "com.squareup.okhttp3:okhttp:${Versions.okHttp}",
+            okHttp_loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}",
 
             // GreenDAO
-            greenDAO                      : 'org.greenrobot:greendao:3.2.2',
-            sqlCipher                     : 'net.zetetic:android-database-sqlcipher:3.5.6@aar',
+            greenDAO                 : 'org.greenrobot:greendao:3.2.2',
+            sqlCipher                : 'net.zetetic:android-database-sqlcipher:3.5.6@aar',
 
             //Image loading
-            glide                         : "com.github.bumptech.glide:glide:${Versions.glide}",
-            annotationProcessorGlide      : "com.github.bumptech.glide:compiler:${Versions.glide}",
+            glide                    : "com.github.bumptech.glide:glide:${Versions.glide}",
+            annotationProcessorGlide : "com.github.bumptech.glide:compiler:${Versions.glide}",
 
             // Fabric
-            fabric                        : 'com.crashlytics.sdk.android:crashlytics:2.9.5@aar',
+            fabric                   : 'com.crashlytics.sdk.android:crashlytics:2.9.5@aar',
 
             // Firebase
-            firebase                      : 'com.google.firebase:firebase-core:16.0.3',
+            firebase                 : 'com.google.firebase:firebase-core:16.0.3',
 
             // Moshi
-            moshi                         : 'com.squareup.moshi:moshi:1.6.0',
-            moshi_kotlin                  : "com.squareup.moshi:moshi-kotlin:1.7.0",
-            moshi_codegen                 : "com.squareup.moshi:moshi-kotlin-codegen:1.7.0",
+            moshi                    : 'com.squareup.moshi:moshi:1.6.0',
+            moshi_kotlin             : "com.squareup.moshi:moshi-kotlin:1.7.0",
+            moshi_codegen            : "com.squareup.moshi:moshi-kotlin-codegen:1.7.0",
 
             // Timber
-            timber                        : "com.github.ajalt:timberkt:1.5.1"
+            timber                   : "com.github.ajalt:timberkt:1.5.1"
     ]
 }
