@@ -39,6 +39,7 @@ android {
         testInstrumentationRunner libs.test_runner
 
         buildConfigField "String", "CONSUMER_KEY", "\"" + config.consumer_key + "\""
+        buildConfigField "Boolean", "HTTP_FULL_LOG", "false"
     }
 
     buildTypes {

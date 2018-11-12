@@ -87,10 +87,14 @@ class NetLikesDataGateway(context: Context) : LikesDataGateway {
         val LOG_CHUNK_SIZE = 4000
 
         override fun log(message: String) {
-            val len = message.length
-            for (i in 0..len step LOG_CHUNK_SIZE) {
-                val end = Math.min(len, i + LOG_CHUNK_SIZE)
-                Log.d("Http", message.substring(i, end))
+            if (BuildConfig.HTTP_FULL_LOG) {
+                val len = message.length
+                for (i in 0..len step LOG_CHUNK_SIZE) {
+                    val end = Math.min(len, i + LOG_CHUNK_SIZE)
+                    Log.d("Http", message.substring(i, end))
+                }
+            } else {
+                Log.d("Http", message)
             }
         }
     }
