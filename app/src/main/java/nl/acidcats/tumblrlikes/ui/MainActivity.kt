@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         receiver = BroadcastReceiver(applicationContext)
         receiver.addActionHandler(Broadcasts.PINCODE_OK) { enterApp() }
+        receiver.addActionHandler(Broadcasts.PINCODE_SETUP_OK) { onPincodeSetupOk() }
         receiver.addActionHandler(Broadcasts.ALL_LIKES_LOADED) { showPhotoScreen(false) }
         receiver.addActionHandler(Broadcasts.DATABASE_RESET) { onDatabaseReset() }
         receiver.addActionHandler(Broadcasts.SETUP_COMPLETE) { onSetupComplete() }
@@ -73,6 +74,10 @@ class MainActivity : AppCompatActivity() {
                         showFragment(SetupFragment.newInstance())
                     }
                 }
+    }
+
+    private fun onPincodeSetupOk() {
+        showFragment(LoadLikesFragment.newInstance(LoadLikesMode.RELOAD_ALL))
     }
 
     override fun onRestart() {

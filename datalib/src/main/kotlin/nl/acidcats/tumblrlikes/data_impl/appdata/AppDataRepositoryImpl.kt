@@ -1,7 +1,6 @@
 package nl.acidcats.tumblrlikes.data_impl.appdata
 
 import android.content.Context
-import android.util.Log
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository
 import nl.acidcats.tumblrlikes.datalib.BuildConfig
 import nl.acidcats.tumblrlikes.util.prefs.PrefsHelper
@@ -11,6 +10,7 @@ import javax.inject.Inject
  * Created on 25/10/2018.
  */
 class AppDataRepositoryImpl @Inject constructor(context: Context) : AppDataRepository {
+
     private val prefsHelper = PrefsHelper(context, context.packageName)
 
     private enum class Keys(val value: String) {
@@ -43,5 +43,4 @@ class AppDataRepositoryImpl @Inject constructor(context: Context) : AppDataRepos
     override fun getLastCheckTime(): Long = prefsHelper.getLong(Keys.KEY_LATEST_CHECK_TIMESTAMP.value)
 
     override fun setLastCheckTime(time: Long) = prefsHelper.putLong(Keys.KEY_LATEST_CHECK_TIMESTAMP.value, time)
-
 }

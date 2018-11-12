@@ -7,12 +7,16 @@ import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikeVO
  */
 class TransformerProvider {
     private val transformers: MutableList<Transformer> = ArrayList()
+    private val emptyTransformer = EmptyTransformer()
 
     init {
         transformers += TumblrLikePhotoTransformer()
         transformers += TumblrLikeTextTransformer()
-        transformers += EmptyTransformer()
     }
 
-    fun getTransformer(likeVO: TumblrLikeVO):Transformer = transformers.find { it.accepts(likeVO) }!!
+    fun getTransformer(likeVO: TumblrLikeVO):Transformer {
+        val transformer = transformers.find { it.accepts(likeVO) }
+
+        return transformer ?: emptyTransformer
+    }
 }

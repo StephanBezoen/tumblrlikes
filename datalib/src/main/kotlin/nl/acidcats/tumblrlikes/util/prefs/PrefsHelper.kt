@@ -15,4 +15,8 @@ class PrefsHelper constructor(context: Context, name: String) {
     fun putLong(key: String, value: Long) = prefs.edit().putLong(key, value).apply()
 
     fun getLong(key: String, defValue:Long = 0): Long = prefs.getLong(key, defValue)
+
+    fun putBoolean(key:String, value:Boolean) = prefs.edit().putBoolean(key, value).apply()
+
+    fun getBoolean(key:String, defValue:Boolean = false):Boolean = prefs.getBoolean(key, defValue)
 }

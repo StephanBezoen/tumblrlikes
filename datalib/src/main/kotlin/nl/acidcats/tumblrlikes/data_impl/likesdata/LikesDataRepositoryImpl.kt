@@ -3,6 +3,7 @@ package nl.acidcats.tumblrlikes.data_impl.likesdata
 import nl.acidcats.tumblrlikes.core.models.Photo
 import nl.acidcats.tumblrlikes.core.repositories.LikesDataRepository
 import nl.acidcats.tumblrlikes.data_impl.likesdata.gateway.LikesDataGateway
+import nl.acidcats.tumblrlikes.data_impl.likesdata.models.TumblrLikeVO
 import nl.acidcats.tumblrlikes.data_impl.likesdata.transformers.TransformerProvider
 import retrofit2.HttpException
 import rx.Observable
@@ -30,10 +31,7 @@ class LikesDataRepositoryImpl @Inject constructor(private val likesDataGateway: 
             likesDataGateway.getLikesPage(blogName = blogName, afterTime = time)
                     .doOnError { LoadLikesException((it as HttpException).code()) }
                     .subscribe({ likes ->
-                        allPhotos.addAll(
-                                likes
-                                        .map { transformerProvider.getTransformer(it).transform(it) }
-                                        .flatten())
+                        allPhotos.addAll(transformLikesToPhotos(likes, transformerProvider))
 
                         pageProgress?.onNext(allPhotos.size)
 
@@ -44,5 +42,12 @@ class LikesDataRepositoryImpl @Inject constructor(private val likesDataGateway: 
         } while (!isLoadComplete && (loadingInterruptor.isEmpty()))
 
         return allPhotos
+    }
+
+    private fun transformLikesToPhotos(likes: List<TumblrLikeVO>, transformerProvider: TransformerProvider): List<Photo> {
+        val photosLists = likes.map {
+            transformerProvider.getTransformer(it).transform(it)
+        }
+        return photosLists.flatten()
     }
 }

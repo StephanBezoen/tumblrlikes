@@ -8,6 +8,7 @@ object Broadcasts {
     private val PREFIX = Broadcasts::class.java.canonicalName
 
     val PINCODE_OK = "$PREFIX.pincodeOk"
+    val PINCODE_SETUP_OK = "$PREFIX.pincodeSetupOk"
     val ALL_LIKES_LOADED = "$PREFIX.allLikesLoaded"
     val DATABASE_RESET = "$PREFIX.databaseReset"
     val SETUP_COMPLETE = "$PREFIX.setupComplete"

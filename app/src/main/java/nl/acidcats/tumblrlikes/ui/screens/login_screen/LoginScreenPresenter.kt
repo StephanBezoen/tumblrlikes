@@ -47,7 +47,7 @@ class LoginScreenPresenter @Inject constructor() : BasePresenterImpl<LoginScreen
         }
     }
 
-    override fun skipLogin() = notify(Broadcasts.PINCODE_OK)
+    override fun skipLogin() = notify(Broadcasts.PINCODE_SETUP_OK)
 
     override fun onPincodeInputChanged(pincode: String) {
         getView()?.setPincodeDoesntMatchViewVisible(false)
@@ -86,7 +86,7 @@ class LoginScreenPresenter @Inject constructor() : BasePresenterImpl<LoginScreen
         registerSubscription(
                 authenticator.subscribe { isAuthenticated ->
                     if (isAuthenticated) {
-                        notify(Broadcasts.PINCODE_OK)
+                        notify(if (mode == REPEAT_PINCODE) Broadcasts.PINCODE_SETUP_OK else Broadcasts.PINCODE_OK)
                     }
                 }
         )
