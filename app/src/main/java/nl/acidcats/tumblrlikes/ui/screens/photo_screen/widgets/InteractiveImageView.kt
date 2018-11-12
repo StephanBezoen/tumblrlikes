@@ -27,7 +27,7 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
 
     private var gestureDetector: GestureDetectorCompat
     private var scaleDetector: ScaleGestureDetector
-    private var gestureListener: ((InteractiveImageView.Gesture) -> Unit)? = null
+    private var gestureListener: ImageGestureListener? = null
     private var density: Float = 0f
     private var startScale: Float = 1f
     private var scale: Float = 1f
@@ -56,14 +56,14 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         density = resources.displayMetrics.density
 
         gestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
-                gestureListener?.invoke(Gesture.DOUBLE_TAP)
+            override fun onDoubleTap(e: MotionEvent): Boolean {
+                gestureListener?.invoke(Gesture.DOUBLE_TAP, PointF(e.x, e.y))
 
                 return false
             }
 
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                gestureListener?.invoke(Gesture.TAP)
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                gestureListener?.invoke(Gesture.TAP, PointF(e.x, e.y))
 
                 return false
             }
@@ -78,16 +78,16 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
                 if ((angle < SWIPE_DETECTION_ANG_THRESHOLD && angle > -SWIPE_DETECTION_ANG_THRESHOLD)
                         || angle > (180 - SWIPE_DETECTION_ANG_THRESHOLD)
                         || angle < -(180 - SWIPE_DETECTION_ANG_THRESHOLD)) {
-                    gestureListener?.invoke(Gesture.SIDE_SWIPE)
+                    gestureListener?.invoke(Gesture.SIDE_SWIPE, null)
                 }
 
                 return false
             }
 
-            override fun onLongPress(e: MotionEvent?) {
+            override fun onLongPress(e: MotionEvent) {
                 if (isScaled) return
 
-                gestureListener?.invoke(Gesture.LONG_PRESS)
+                gestureListener?.invoke(Gesture.LONG_PRESS, null)
             }
         })
 
@@ -239,7 +239,7 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         invalidate()
     }
 
-    fun setGestureListener(listener: (InteractiveImageView.Gesture) -> Unit) {
+    fun setGestureListener(listener: ImageGestureListener) {
         gestureListener = listener
     }
 

@@ -1,6 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
 import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -65,10 +66,13 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         presenter.setView(this)
         presenter.onViewCreated()
 
-        photoView.setGestureListener { onGesture(it) }
+        photoView.setGestureListener { gesture, point ->
+             onGesture(gesture, point)
+        }
         val point = Point()
         activity?.windowManager?.defaultDisplay?.getRealSize(point)
         photoView.screenSize = point
+        photoActionDialog.screenSize = point
 
         photoActionDialog.setPhotoActionListener(presenter)
 
@@ -78,10 +82,10 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         if (isTest) photoView.alpha = .05f
     }
 
-    private fun onGesture(gesture: InteractiveImageView.Gesture?) {
+    private fun onGesture(gesture: InteractiveImageView.Gesture, point: PointF?) {
         when (gesture) {
             SIDE_SWIPE -> presenter.onSwipe()
-            TAP -> presenter.onTap()
+            TAP -> presenter.onTap(point!!)
             LONG_PRESS -> presenter.onLongPress()
             DOUBLE_TAP -> presenter.onDoubleTap()
         }
@@ -126,7 +130,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     override fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow) = photoActionDialog.hide(hideFlow)
 
-    override fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel) = photoActionDialog.show(viewModel)
+    override fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel, point: PointF) = photoActionDialog.show(viewModel, point)
 
     override fun setFilter(filter: FilterType) = photoNavBar.setFilter(filter)
 

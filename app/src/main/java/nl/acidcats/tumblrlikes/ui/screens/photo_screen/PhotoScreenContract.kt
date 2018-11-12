@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
+import android.graphics.PointF
 import android.os.Bundle
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenter
@@ -43,7 +44,7 @@ interface PhotoScreenContract {
 
         fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow)
 
-        fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel)
+        fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel, point:PointF)
 
         fun setFilter(filter: FilterType)
 
@@ -77,7 +78,7 @@ interface PhotoScreenContract {
     interface GestureListener {
         fun onSwipe()
 
-        fun onTap()
+        fun onTap(point:PointF)
 
         fun onLongPress()
 

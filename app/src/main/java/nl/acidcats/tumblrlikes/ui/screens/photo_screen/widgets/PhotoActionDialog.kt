@@ -3,6 +3,8 @@ package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.graphics.Point
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +12,8 @@ import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.popup_photo_menu.view.*
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.R.*
+import nl.acidcats.tumblrlikes.R.drawable
+import nl.acidcats.tumblrlikes.R.string
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.HideFlow.ANIMATED
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.HideFlow.INSTANT
@@ -27,6 +30,14 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     private var showAnimator: ViewPropertyAnimator? = null
     private var hideDuration = 0L
     private var showDuration = 0L
+    private var screenWidth: Float = 0f
+    private var screenHeight: Float = 0f
+
+    var screenSize: Point = Point()
+        set(value) {
+            screenWidth = value.x.toFloat()
+            screenHeight = value.y.toFloat()
+        }
 
     init {
         LayoutInflater.from(context).inflate(R.layout.popup_photo_menu, this, true)
@@ -41,10 +52,11 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
         hideDuration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
         showDuration = hideDuration
 
+
         hide(INSTANT)
     }
 
-    fun show(viewModel: PhotoOptionsViewModel) {
+    fun show(viewModel: PhotoOptionsViewModel, point: PointF) {
         updateViewModel(viewModel)
 
         if (hideAnimator != null) {
@@ -52,8 +64,10 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
             hideAnimator = null
         }
 
-        visibility = View.VISIBLE
+        cardContainer.x = Math.min(point.x, screenWidth - cardContainer.width)
+        cardContainer.y = Math.min(point.y, screenHeight - cardContainer.height)
 
+        visibility = View.VISIBLE
         showAnimator ?: startShowAnimation()
     }
 

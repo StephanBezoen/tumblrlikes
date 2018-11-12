@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
+import android.graphics.PointF
 import android.os.Bundle
 import android.os.SystemClock
 import com.github.ajalt.timberkt.Timber
@@ -187,9 +188,9 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
 
     override fun onSwipe() = showNextPhoto()
 
-    override fun onTap() {
+    override fun onTap(point:PointF) {
         if (PhotoViewViewModel.isValid(viewModel)) {
-            getView()?.showPhotoActionDialog(createPhotoOptionsViewModel(viewModel!!))
+            getView()?.showPhotoActionDialog(createPhotoOptionsViewModel(viewModel!!), point)
         }
     }
 

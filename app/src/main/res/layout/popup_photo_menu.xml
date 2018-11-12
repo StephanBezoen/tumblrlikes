@@ -11,9 +11,9 @@
     >
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         app:cardCornerRadius="8dp"
         app:cardBackgroundColor="@color/action_menu_bg"
         app:cardElevation="8dp"
