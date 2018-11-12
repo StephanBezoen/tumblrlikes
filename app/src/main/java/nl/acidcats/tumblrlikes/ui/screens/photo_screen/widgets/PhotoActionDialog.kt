@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewPropertyAnimator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.popup_photo_menu.view.*
 import nl.acidcats.tumblrlikes.R
@@ -24,7 +25,9 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     private var photoActionListener: PhotoScreenContract.PhotoActionListener? = null
     private lateinit var viewModel: PhotoOptionsViewModel
     private var hideAnimator: ViewPropertyAnimator? = null
+    private var showAnimator: ViewPropertyAnimator? = null
     private var hideDuration = 0L
+    private var showDuration = 0L
 
     init {
         LayoutInflater.from(context).inflate(layout.popup_photo_menu, this, true)
@@ -37,6 +40,7 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
         container.setOnClickListener { hide(ANIMATED) }
 
         hideDuration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+        showDuration = hideDuration
 
         hide(INSTANT)
     }
@@ -44,8 +48,14 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     fun show(viewModel: PhotoOptionsViewModel) {
         updateViewModel(viewModel)
 
+        if (hideAnimator != null) {
+            hideAnimator!!.cancel()
+            hideAnimator = null
+        }
+
         visibility = View.VISIBLE
-        alpha = 1f
+
+        showAnimator ?: startShowAnimation()
     }
 
     fun updateViewModel(viewModel: PhotoOptionsViewModel) {
@@ -70,8 +80,16 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     fun hide(hideFlow: PhotoScreenContract.HideFlow) {
+        if (showAnimator != null) {
+            showAnimator!!.cancel()
+            showAnimator = null
+        }
+
         when (hideFlow) {
-            INSTANT -> visibility = View.GONE
+            INSTANT -> {
+                visibility = View.GONE
+                alpha = 0f
+            }
             ANIMATED -> hideAnimator ?: startHideAnimation()
         }
     }
@@ -85,6 +103,17 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
                         visibility = View.GONE
 
                         hideAnimator = null
+                    }
+                })
+    }
+
+    private fun startShowAnimation() {
+        showAnimator = animate()
+                .alpha(1f)
+                .setDuration(showDuration)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        showAnimator = null
                     }
                 })
     }
