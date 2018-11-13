@@ -105,6 +105,10 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
                         hideAnimator = null
                     }
                 })
+
+        cardContainer.animate()
+                .translationY(20f)
+                .setDuration(showDuration)
     }
 
     private fun startShowAnimation() {
@@ -116,6 +120,11 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
                         showAnimator = null
                     }
                 })
+
+        cardContainer.translationY = -20f
+        cardContainer.animate()
+                .translationY(0f)
+                .setDuration(showDuration)
     }
 
     fun setPhotoActionListener(listener: PhotoScreenContract.PhotoActionListener) {
