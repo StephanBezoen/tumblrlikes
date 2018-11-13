@@ -72,7 +72,6 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         val point = Point()
         activity?.windowManager?.defaultDisplay?.getRealSize(point)
         photoView.screenSize = point
-        photoActionDialog.screenSize = point
 
         photoActionDialog.setPhotoActionListener(presenter)
 
@@ -130,7 +129,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     override fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow) = photoActionDialog.hide(hideFlow)
 
-    override fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel, point: PointF) = photoActionDialog.show(viewModel, point)
+    override fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel, point: PointF) = photoActionDialog.show(viewModel)
 
     override fun setFilter(filter: FilterType) = photoNavBar.setFilter(filter)
 
