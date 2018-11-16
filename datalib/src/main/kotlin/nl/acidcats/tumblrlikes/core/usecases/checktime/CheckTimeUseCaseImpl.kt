@@ -9,7 +9,9 @@ import javax.inject.Inject
  */
 class CheckTimeUseCaseImpl @Inject constructor(val appDataRepository: AppDataRepository) : CheckTimeUseCase {
 
-    private val TIME_BETWEEN_CHECKS_MS = 24L * 60L * 60L * 1000L
+    companion object {
+        private const val TIME_BETWEEN_CHECKS_MS = 60L * 60L * 1000L
+    }
 
     override fun isTimeToCheck(currentTimeInMs: Long): Observable<Boolean> {
         val timeSinceLastCheck = currentTimeInMs - appDataRepository.getLastCheckTime()

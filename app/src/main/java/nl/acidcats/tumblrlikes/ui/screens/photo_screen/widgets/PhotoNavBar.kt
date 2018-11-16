@@ -1,5 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -7,7 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.navbar.view.*
-import nl.acidcats.tumblrlikes.R.layout
+import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
 
@@ -20,7 +22,7 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
     var navBarListener: PhotoScreenContract.NavBarListener? = null
 
     init {
-        LayoutInflater.from(context).inflate(layout.navbar, this, true)
+        LayoutInflater.from(context).inflate(R.layout.navbar, this, true)
 
         filterButton.setOnClickListener { filterDropdown.show() }
         settingsButton.setOnClickListener { navBarListener?.onSettingsRequested() }
@@ -28,17 +30,36 @@ class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
         filterDropdown.filterTypeSelectedListener = { setFilter(it, true) }
 
-        hide()
+        visibility = View.GONE
     }
 
     fun show() {
         visibility = View.VISIBLE
+
+        if (height == 0) {
+
+        }
+
+        translationY = -height.toFloat()
+        animate()
+                .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+                .translationY(0f)
+                .setListener(null)
     }
 
     fun hide() {
-        visibility = View.GONE
+        Timber.d { "hide: " }
 
         filterDropdown.hide()
+
+        animate()
+                .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+                .translationY(-height.toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        visibility = View.GONE
+                    }
+                })
     }
 
     fun setFilter(filterType: FilterType) = setFilter(filterType, false)

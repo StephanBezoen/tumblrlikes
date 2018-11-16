@@ -55,7 +55,7 @@
     <string name="export_error">Export failed</string>
     <string name="refresh_success">Latest likes loaded, %s photos stored</string>
     <string name="refresh_error">Refresh failed</string>
-    <string name="refresh_success_no_new_photos">Refreshed, no new photos found</string>
+    <string name="refresh_success_no_new_photos">Refreshed</string>
     <string name="dataActionHeader">Data actions</string>
     <string name="refresh_all_likes">Refresh all likes</string>
 </resources>
