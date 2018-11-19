@@ -7,9 +7,7 @@
     <string name="loading">Loading likes…</string>
     <string name="photo_action_favourite">Favourite</string>
     <string name="photo_action_like">Like</string>
-    <string name="photo_action_like_count">Like (%d)</string>
-    <string name="photo_action_unlike">Unlike</string>
-    <string name="photo_action_unlike_count">Unlike (%d)</string>
+    <string name="photo_action_liked">Liked</string>
     <string name="photo_action_hide">Hide</string>
     <string name="introduction">This app allows you to view liked photo posts of a single Tumblr blog offline.
         \n\n

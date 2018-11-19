@@ -10,8 +10,6 @@ import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.popup_photo_menu.view.*
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.R.drawable
-import nl.acidcats.tumblrlikes.R.string
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.HideFlow.ANIMATED
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.HideFlow.INSTANT
@@ -33,8 +31,7 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
         LayoutInflater.from(context).inflate(R.layout.popup_photo_menu, this, true)
 
         favoriteButton.setOnClickListener { photoActionListener?.onUpdatePhotoFavorite(viewModel.photoId, !viewModel.isPhotoFavorite) }
-        likeButton.setOnClickListener { photoActionListener?.onUpdatePhotoLike(viewModel.photoId, true) }
-        unlikeButton.setOnClickListener { photoActionListener?.onUpdatePhotoLike(viewModel.photoId, false) }
+        likeButton.setOnClickListener { photoActionListener?.onUpdatePhotoLike(viewModel.photoId, !viewModel.isPhotoLiked) }
         hideButton.setOnClickListener { photoActionListener?.onHidePhoto(viewModel.photoId) }
 
         container.setOnClickListener { hide(ANIMATED) }
@@ -49,10 +46,8 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     fun show(viewModel: PhotoOptionsViewModel) {
         updateViewModel(viewModel)
 
-        if (hideAnimator != null) {
-            hideAnimator!!.cancel()
-            hideAnimator = null
-        }
+        hideAnimator?.cancel()
+        hideAnimator = null
 
         visibility = View.VISIBLE
         showAnimator ?: startShowAnimation()
@@ -65,25 +60,19 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun updateUI() {
-        val iconId = if (viewModel.isPhotoFavorite) drawable.ic_star_black_24dp else drawable.ic_star_border_black_24dp
-        favoriteButton.setCompoundDrawablesWithIntrinsicBounds(iconId, 0, 0, 0)
+        val favoriteIconId = if (viewModel.isPhotoFavorite) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+        favoriteButton.setCompoundDrawablesWithIntrinsicBounds(favoriteIconId, 0, 0, 0)
 
-        if (viewModel.isPhotoLiked) {
-            likeButton.text = context.getString(string.photo_action_like_count, 1)
-            unlikeButton.text = context.getString(string.photo_action_unlike)
-        } else {
-            likeButton.text = context.getString(string.photo_action_like)
-            unlikeButton.text = context.getString(string.photo_action_unlike)
-        }
+        val likedIconId = if (viewModel.isPhotoLiked) R.drawable.ic_thumb_up_black_24dp else R.drawable.ic_thumbs_up_down_black_24dp
+        likeButton.setCompoundDrawablesWithIntrinsicBounds(likedIconId, 0, 0, 0)
+        likeButton.text = context.getString(if (viewModel.isPhotoLiked) R.string.photo_action_liked else R.string.photo_action_like)
 
         viewCountText.text = context.getString(R.string.view_count, viewModel.viewCount)
     }
 
     fun hide(hideFlow: PhotoScreenContract.HideFlow) {
-        if (showAnimator != null) {
-            showAnimator!!.cancel()
-            showAnimator = null
-        }
+        showAnimator?.cancel()
+        showAnimator = null
 
         when (hideFlow) {
             INSTANT -> {
@@ -134,7 +123,6 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
     fun onDestroyView() {
         favoriteButton.setOnClickListener(null)
         likeButton.setOnClickListener(null)
-        unlikeButton.setOnClickListener(null)
         hideButton.setOnClickListener(null)
 
         hideAnimator = null

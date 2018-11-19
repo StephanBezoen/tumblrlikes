@@ -50,14 +50,6 @@
                 android:layout_height="@dimen/popup_list_item_height"/>
 
             <TextView
-                android:id="@+id/unlikeButton"
-                android:text="@string/photo_action_unlike"
-                style="@style/PopupListItem"
-                android:drawableStart="@drawable/ic_exposure_neg_1_black_24dp"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/popup_list_item_height"/>
-
-            <TextView
                 android:id="@+id/hideButton"
                 android:text="@string/photo_action_hide"
                 style="@style/PopupListItem"
