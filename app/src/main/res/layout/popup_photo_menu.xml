@@ -45,7 +45,7 @@
                 android:id="@+id/likeButton"
                 android:text="@string/photo_action_like"
                 style="@style/PopupListItem"
-                android:drawableStart="@drawable/ic_plus_one_black_24dp"
+                android:drawableStart="@drawable/ic_thumbs_up_down_black_24dp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/popup_list_item_height"/>
 
