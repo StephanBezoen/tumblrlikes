@@ -2,6 +2,7 @@ package nl.acidcats.tumblrlikes.ui.screens.base
 
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import nl.acidcats.tumblrlikes.LikesApplication
@@ -28,5 +29,15 @@ abstract class BaseFragment : Fragment(), BaseView {
 
     override fun clearArgument(key: String) {
         arguments?.remove(key)
+    }
+
+    override fun showToast(message: String?) {
+        if (context != null && message != null) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun getContext(): Context? {
+        return super.getContext()
     }
 }

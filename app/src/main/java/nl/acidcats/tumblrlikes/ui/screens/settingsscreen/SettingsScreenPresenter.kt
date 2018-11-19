@@ -2,6 +2,7 @@ package nl.acidcats.tumblrlikes.ui.screens.settingsscreen
 
 import android.os.Environment
 import com.github.ajalt.timberkt.Timber
+import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.usecases.photos.ExportPhotosUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase
 import nl.acidcats.tumblrlikes.ui.Broadcasts
@@ -35,13 +36,15 @@ class SettingsScreenPresenter @Inject constructor() : BasePresenterImpl<Settings
     private fun onCacheChecked(cacheMissCount: Int) {
         getView()?.enableCacheCheckButton(true)
 
-        getView()?.showCacheMissToast(cacheMissCount)
+        getView()?.showToast(getView()?.getContext()?.getString(R.string.cache_miss_count, Integer.toString(cacheMissCount)))
     }
 
     private fun onCacheCheckError(throwable: Throwable) {
         Timber.e { "onCacheCheckError: ${throwable.message}" }
 
         getView()?.enableCacheCheckButton(true)
+
+        getView()?.showToast(getView()?.getContext()?.getString(R.string.cache_check_error))
     }
 
     override fun exportPhotos(filename: String) {
@@ -56,12 +59,18 @@ class SettingsScreenPresenter @Inject constructor() : BasePresenterImpl<Settings
         Timber.e { "onExportError: ${throwable.message}" }
 
         getView()?.enableExportButton(true)
-        getView()?.showExportCompleteToast(false)
+
+        showExportCompleteToast(false)
+    }
+
+    private fun showExportCompleteToast(success: Boolean) {
+        getView()?.showToast(getView()?.getContext()?.getString(if (success) R.string.export_success else R.string.export_error))
     }
 
     private fun onExportComplete(isExported: Boolean) {
         getView()?.enableExportButton(true)
-        getView()?.showExportCompleteToast(isExported)
+
+        showExportCompleteToast(isExported)
     }
 
     override fun refreshAllLikes() {

@@ -19,6 +19,10 @@ interface PhotoScreenContract {
         const val REFRESH = "Refresh"
     }
 
+    enum class RefreshType {
+        AUTOMATIC, MANUAL
+    }
+
     interface Presenter : BasePresenter<View>, PhotoActionListener, GestureListener, NavBarListener {
         fun onViewCreated()
 
@@ -57,8 +61,6 @@ interface PhotoScreenContract {
         fun setPhotoVisible(visible: Boolean)
 
         fun enableRefreshButton(enabled: Boolean)
-
-        fun showRefreshCompleteToast(success: Boolean, photoCount: Int = 0)
     }
 
     interface PhotoActionListener {

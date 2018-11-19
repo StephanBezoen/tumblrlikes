@@ -8,7 +8,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
@@ -67,7 +66,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         presenter.onViewCreated()
 
         photoView.setGestureListener { gesture, point ->
-             onGesture(gesture, point)
+            onGesture(gesture, point)
         }
         val point = Point()
         activity?.windowManager?.defaultDisplay?.getRealSize(point)
@@ -167,19 +166,6 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     override fun enableRefreshButton(enabled: Boolean) {
         photoNavBar.enableRefreshButton(enabled)
-    }
-
-    override fun showRefreshCompleteToast(success: Boolean, photoCount: Int) {
-        val message = if (success) {
-            if (photoCount == 0) {
-                getString(R.string.refresh_success_no_new_photos)
-            } else {
-                getString(R.string.refresh_success, photoCount.toString())
-            }
-        } else {
-            getString(R.string.refresh_error)
-        }
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_settings.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.di.AppComponent
@@ -83,16 +82,8 @@ class SettingsFragment : BaseFragment(), SettingsScreenContract.View {
         checkCacheButton.isEnabled = enable
     }
 
-    override fun showCacheMissToast(cacheMissCount: Int) {
-        Toast.makeText(context, getString(R.string.cache_miss_count, Integer.toString(cacheMissCount)), Toast.LENGTH_SHORT).show()
-    }
-
     override fun enableExportButton(enable: Boolean) {
         exportButton.isEnabled = enable
-    }
-
-    override fun showExportCompleteToast(success: Boolean) {
-        Toast.makeText(context, getString(if (success) R.string.export_success else R.string.export_error), Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

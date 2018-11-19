@@ -4,6 +4,7 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.os.SystemClock
 import com.github.ajalt.timberkt.Timber
+import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
 import nl.acidcats.tumblrlikes.core.models.Photo
@@ -14,6 +15,7 @@ import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase
 import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.RefreshType.*
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoViewViewModel
 import rx.Observable
@@ -54,7 +56,7 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
 
             getView()?.clearArgument(PhotoScreenContract.Keys.REFRESH)
 
-            onRefreshRequested()
+            refreshLikes(AUTOMATIC)
         }
 
         showNextPhoto()
@@ -213,25 +215,48 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
     }
 
     override fun onRefreshRequested() {
+        refreshLikes(PhotoScreenContract.RefreshType.MANUAL)
+    }
+
+    private fun refreshLikes(refreshType: PhotoScreenContract.RefreshType) {
         getView()?.enableRefreshButton(false)
 
         registerSubscription(
                 getLikesUseCase
                         .loadAllLikes(LoadLikesMode.SINCE_LAST, loadingInterruptor, Date().time)
-                        .subscribe({ handleLikesLoaded(it) }, { handleLoadPageError(it) })
+                        .subscribe({ handleLikesLoaded(it, refreshType) }, { handleLoadPageError(it) })
         )
     }
 
     private fun handleLoadPageError(throwable: Throwable) {
         getView()?.enableRefreshButton(true)
 
-        getView()?.showRefreshCompleteToast(false)
+        showRefreshCompleteToast(false)
     }
 
-    private fun handleLikesLoaded(photoCount: Int) {
+    private fun showRefreshCompleteToast(success: Boolean, photoCount: Int = 0) {
+        val message = if (success) {
+            if (photoCount == 0) {
+                getView()?.getContext()?.getString(R.string.refresh_success_no_new_photos)
+            } else {
+                getView()?.getContext()?.getString(R.string.refresh_success, photoCount.toString())
+            }
+        } else {
+            getView()?.getContext()?.getString(R.string.refresh_error)
+        }
+
+        getView()?.showToast(message)
+    }
+
+    private fun handleLikesLoaded(photoCount: Int, refreshType: PhotoScreenContract.RefreshType) {
         getView()?.enableRefreshButton(true)
 
-        getView()?.showRefreshCompleteToast(true, photoCount)
+        when (refreshType) {
+            MANUAL -> showRefreshCompleteToast(true, photoCount)
+            AUTOMATIC -> if (photoCount > 0) {
+                showRefreshCompleteToast(true, photoCount)
+            }
+        }
 
         if (photoCount > 0) {
             getView()?.sendBroadcast(Broadcasts.CACHE_SERVICE_REQUEST)

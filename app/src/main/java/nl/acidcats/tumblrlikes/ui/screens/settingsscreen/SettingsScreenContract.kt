@@ -21,10 +21,6 @@ interface SettingsScreenContract {
     interface View : BaseView {
         fun enableCacheCheckButton(enable: Boolean)
 
-        fun showCacheMissToast(cacheMissCount: Int)
-
         fun enableExportButton(enable: Boolean)
-
-        fun showExportCompleteToast(success: Boolean)
     }
 }
