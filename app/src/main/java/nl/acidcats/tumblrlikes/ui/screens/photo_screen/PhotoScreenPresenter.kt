@@ -11,20 +11,14 @@ import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
 import nl.acidcats.tumblrlikes.core.models.Photo
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.GetFilteredPhotoUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoFilterUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.PhotoViewUseCase
-import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoPropertyUseCase
+import nl.acidcats.tumblrlikes.core.usecases.photos.*
 import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.base.BasePresenterImpl
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.RefreshType.*
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.RefreshType.AUTOMATIC
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.RefreshType.MANUAL
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoViewViewModel
 import rx.Observable
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -45,6 +39,8 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
     lateinit var getFilteredPhotoUseCase: GetFilteredPhotoUseCase
     @Inject
     lateinit var getLikesUseCase: GetLikesUseCase
+    @Inject
+    lateinit var saveScreenshotUseCase: SaveScreenshotUseCase
 
     private var viewModel: PhotoViewViewModel? = null
     private val loadingInterruptor: MutableList<Boolean> = ArrayList()
@@ -196,7 +192,7 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
 
     override fun onSwipe() = showNextPhoto()
 
-    override fun onTap(point:PointF) {
+    override fun onTap(point: PointF) {
         if (PhotoViewViewModel.isValid(viewModel)) {
             getView()?.showPhotoActionDialog(createPhotoOptionsViewModel(viewModel!!), point)
         }
@@ -207,7 +203,7 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
     }
 
     override fun onDoubleTap() {
-        getView()?.let {view ->
+        getView()?.let { view ->
             if (view.isPhotoScaled()) {
                 view.resetPhotoScale()
             } else {
@@ -276,25 +272,21 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
     }
 
     override fun saveBitmap(bitmap: Bitmap) {
+        val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/tumblrlikes"
         val filename = Date().time.toString() + ".jpg"
 
-        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/tumblrlikes"
-        val dirFile = File(directory)
-        if (!dirFile.exists()) {
-            dirFile.mkdir()
-        }
-
-        val outputStream = BufferedOutputStream(FileOutputStream(File(dirFile.path, filename)))
-        try {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-
-            getView()?.showToast(getView()?.getContext()?.getString(R.string.photo_saved, filename))
-        } catch (e: Exception) {
-            Timber.e { "savePhoto: " + e.message }
-
-            getView()?.showToast(getView()?.getContext()?.getString(R.string.photo_save_error))
-        } finally {
-            outputStream.close()
-        }
+        registerSubscription(
+                saveScreenshotUseCase
+                        .saveScreenshot(bitmap, path, filename)
+                        .subscribe({ isSaved ->
+                            if (isSaved) {
+                                getView()?.showToast(getView()?.getContext()?.getString(R.string.photo_saved, filename))
+                            } else {
+                                getView()?.showToast(getView()?.getContext()?.getString(R.string.photo_save_error))
+                            }
+                        }, {
+                            getView()?.showToast(getView()?.getContext()?.getString(R.string.photo_save_error))
+                        })
+        )
     }
 }

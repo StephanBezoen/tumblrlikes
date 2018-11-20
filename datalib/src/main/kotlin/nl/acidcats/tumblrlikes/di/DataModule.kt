@@ -124,4 +124,9 @@ class DataModule(private val context: Context) {
     internal fun provideExportPhotosUseCase(impl: ExportPhotosUseCaseImpl): ExportPhotosUseCase {
         return impl
     }
+
+    @Provides
+    internal fun provideSaveScreenshotUseCase(impl: SaveScreenshotUseCaseImpl): SaveScreenshotUseCase {
+        return impl
+    }
 }
