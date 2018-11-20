@@ -33,6 +33,7 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
         favoriteButton.setOnClickListener { photoActionListener?.onUpdatePhotoFavorite(viewModel.photoId, !viewModel.isPhotoFavorite) }
         likeButton.setOnClickListener { photoActionListener?.onUpdatePhotoLike(viewModel.photoId, !viewModel.isPhotoLiked) }
         hideButton.setOnClickListener { photoActionListener?.onHidePhoto(viewModel.photoId) }
+        cameraButton.setOnClickListener { photoActionListener?.onSavePhoto() }
 
         container.setOnClickListener { hide(ANIMATED) }
 

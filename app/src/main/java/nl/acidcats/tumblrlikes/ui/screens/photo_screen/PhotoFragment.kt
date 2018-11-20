@@ -1,9 +1,12 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +14,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
+import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.fragment_photo.*
 import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
@@ -21,8 +25,16 @@ import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.Keys.
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
+import nl.acidcats.tumblrlikes.util.DeviceUtil
 import nl.acidcats.tumblrlikes.util.GlideApp
 import nl.acidcats.tumblrlikes.util.GlideRequest
+import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
+import nl.acidcats.tumblrlikes.util.permissions.PermissionListener
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -32,10 +44,18 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
     @Inject
     lateinit var presenter: PhotoScreenContract.Presenter
+    @Inject
+    lateinit var permissionHelper: PermissionHelper
 
     private val handler: Handler = Handler()
     private val uiHider: Runnable = Runnable { hideUI() }
-    private val isTest: Boolean = BuildConfig.DEMO
+    private val isTest: Boolean = DeviceUtil.isEmulator
+    private val storagePermissionListener: PermissionListener = { permission, isGranted ->
+        if (permission == PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE && isGranted) {
+            savePhoto()
+        }
+    }
+    private val screenSize = Point()
 
     companion object {
         private const val HIDE_UI_DELAY_MS = 2000L
@@ -68,14 +88,16 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         photoView.setGestureListener { gesture, point ->
             onGesture(gesture, point)
         }
-        val point = Point()
-        activity?.windowManager?.defaultDisplay?.getRealSize(point)
-        photoView.screenSize = point
+
+        activity?.windowManager?.defaultDisplay?.getRealSize(screenSize)
+        photoView.screenSize = screenSize
 
         photoActionDialog.setPhotoActionListener(presenter)
 
         photoNavBar.filterTypeSelectedListener = { presenter.onFilterSelected(it) }
         photoNavBar.navBarListener = presenter
+
+        permissionHelper.addPermissionListener(storagePermissionListener)
 
         if (isTest) photoView.alpha = .05f
     }
@@ -168,7 +190,31 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         photoNavBar.enableRefreshButton(enabled)
     }
 
+    override fun checkSavePhoto() {
+        if (context == null || activity == null) return
+
+        if (permissionHelper.hasPermission(context!!, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE)) {
+            savePhoto()
+        } else {
+            permissionHelper.requestPermission(activity!!, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, "")
+        }
+    }
+
+    private fun savePhoto() {
+        val bitmap = Bitmap.createBitmap(screenSize.x, screenSize.y, Bitmap.Config.RGB_565)
+        val canvas = Canvas(bitmap)
+        photoView.draw(canvas)
+
+        presenter.saveBitmap(bitmap)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     override fun onDestroyView() {
+        permissionHelper.removePermissionListener(storagePermissionListener)
+
         photoActionDialog.onDestroyView()
         photoView.onDestroyView()
         photoNavBar.onDestroyView()

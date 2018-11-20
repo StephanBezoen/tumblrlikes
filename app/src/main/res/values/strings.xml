@@ -57,4 +57,7 @@
     <string name="refresh_success_no_new_photos">Refreshed</string>
     <string name="dataActionHeader">Data actions</string>
     <string name="refresh_all_likes">Refresh all likes</string>
+    <string name="photo_action_screenshot">Save</string>
+    <string name="photo_saved">Saved to %s</string>
+    <string name="photo_save_error">Failed to save photo</string>
 </resources>

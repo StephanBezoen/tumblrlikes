@@ -11,6 +11,7 @@ import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.di.AppModule
 import nl.acidcats.tumblrlikes.di.DaggerAppComponent
 import nl.acidcats.tumblrlikes.di.DataModule
+import nl.acidcats.tumblrlikes.util.DeviceUtil
 
 /**
  * Created on 05/11/2018.
@@ -37,6 +38,9 @@ class LikesApplication : Application() {
                 .appModule(AppModule(this, FirebaseAnalytics.getInstance(this)))
                 .dataModule(DataModule(this))
                 .build()
+
+        val isEmulator = DeviceUtil.isEmulator
+        Timber.d { "onCreate: isEmulator = $isEmulator" }
     }
 
     fun clearFreshRun() {

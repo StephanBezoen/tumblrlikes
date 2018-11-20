@@ -1,5 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
+import android.graphics.Bitmap
 import android.graphics.PointF
 import android.os.Bundle
 import nl.acidcats.tumblrlikes.core.constants.FilterType
@@ -35,6 +36,8 @@ interface PhotoScreenContract {
         fun onPause()
 
         fun onResume()
+
+        fun saveBitmap(bitmap: Bitmap)
     }
 
     interface View : BaseView {
@@ -61,6 +64,8 @@ interface PhotoScreenContract {
         fun setPhotoVisible(visible: Boolean)
 
         fun enableRefreshButton(enabled: Boolean)
+
+        fun checkSavePhoto()
     }
 
     interface PhotoActionListener {
@@ -69,6 +74,8 @@ interface PhotoScreenContract {
         fun onUpdatePhotoLike(id: Long, isLiked: Boolean)
 
         fun onUpdatePhotoFavorite(id: Long, isFavorite: Boolean)
+
+        fun onSavePhoto()
     }
 
     interface NavBarListener {

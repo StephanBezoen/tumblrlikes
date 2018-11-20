@@ -1,7 +1,9 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
+import android.graphics.Bitmap
 import android.graphics.PointF
 import android.os.Bundle
+import android.os.Environment
 import android.os.SystemClock
 import com.github.ajalt.timberkt.Timber
 import nl.acidcats.tumblrlikes.R
@@ -19,6 +21,10 @@ import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.Refre
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoViewViewModel
 import rx.Observable
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -260,6 +266,35 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
 
         if (photoCount > 0) {
             getView()?.sendBroadcast(Broadcasts.CACHE_SERVICE_REQUEST)
+        }
+    }
+
+    override fun onSavePhoto() {
+        getView()?.hidePhotoActionDialog(PhotoScreenContract.HideFlow.ANIMATED)
+
+        getView()?.checkSavePhoto()
+    }
+
+    override fun saveBitmap(bitmap: Bitmap) {
+        val filename = Date().time.toString() + ".jpg"
+
+        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).path + "/tumblrlikes"
+        val dirFile = File(directory)
+        if (!dirFile.exists()) {
+            dirFile.mkdir()
+        }
+
+        val outputStream = BufferedOutputStream(FileOutputStream(File(dirFile.path, filename)))
+        try {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+
+            getView()?.showToast(getView()?.getContext()?.getString(R.string.photo_saved, filename))
+        } catch (e: Exception) {
+            Timber.e { "savePhoto: " + e.message }
+
+            getView()?.showToast(getView()?.getContext()?.getString(R.string.photo_save_error))
+        } finally {
+            outputStream.close()
         }
     }
 }
