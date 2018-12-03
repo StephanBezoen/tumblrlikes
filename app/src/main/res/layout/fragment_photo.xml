@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         />
 
-    <nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoActionDialog
-        android:id="@+id/photoActionDialog"
+    <nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.photooptions.PhotoOptionsView
+        android:id="@+id/photoOptionsView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.github.ajalt.timberkt.Timber
 import dagger.Lazy
 import nl.acidcats.tumblrlikes.LikesApplication
 import nl.acidcats.tumblrlikes.R
@@ -14,6 +15,7 @@ import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase
 import nl.acidcats.tumblrlikes.core.usecases.lifecycle.AppLifecycleUseCase
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase
 import nl.acidcats.tumblrlikes.data.services.CacheService
+import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesFragment
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginFragment
 import nl.acidcats.tumblrlikes.ui.screens.login_screen.LoginScreenContract
@@ -119,6 +121,18 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
 
         receiver.onPause()
+
+        val transaction = supportFragmentManager.beginTransaction()
+        for (fragment in supportFragmentManager.fragments) {
+            if (fragment is BaseFragment) {
+                transaction.remove(fragment)
+            }
+        }
+        transaction.commitAllowingStateLoss()
+
+        for (i in 0..supportFragmentManager.backStackEntryCount) {
+            supportFragmentManager.popBackStackImmediate()
+        }
     }
 
     override fun onStop() {

@@ -1,4 +1,4 @@
-package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets
+package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.photooptions
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -8,45 +8,58 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.popup_photo_menu.view.*
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.HideFlow.ANIMATED
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.HideFlow.INSTANT
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
+import nl.acidcats.tumblrlikes.core.viewmodels.ValidPhotoViewModel
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.HideFlow
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenViewModel
 
 /**
- * Created on 01/11/2018.
+ * Created on 03/12/2018.
  */
-class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
-
-    private var photoActionListener: PhotoScreenContract.PhotoActionListener? = null
-    private lateinit var viewModel: PhotoOptionsViewModel
+class PhotoOptionsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        FrameLayout(context, attrs, defStyleAttr),
+        PhotoOptionsContract.View {
     private var hideAnimator: ViewPropertyAnimator? = null
     private var showAnimator: ViewPropertyAnimator? = null
     private var hideDuration = 0L
     private var showDuration = 0L
+    private lateinit var optionSelectedListener: OptionSelectedListener
 
     init {
         LayoutInflater.from(context).inflate(R.layout.popup_photo_menu, this, true)
 
-        favoriteButton.setOnClickListener { photoActionListener?.onUpdatePhotoFavorite(viewModel.photoId, !viewModel.isPhotoFavorite) }
-        likeButton.setOnClickListener { photoActionListener?.onUpdatePhotoLike(viewModel.photoId, !viewModel.isPhotoLiked) }
-        hideButton.setOnClickListener { photoActionListener?.onHidePhoto(viewModel.photoId) }
-        cameraButton.setOnClickListener { photoActionListener?.onSavePhoto() }
+        favoriteButton.setOnClickListener { optionSelectedListener.invoke(PhotoOptionsContract.Option.FAVORITE) }
+        likeButton.setOnClickListener { optionSelectedListener.invoke(PhotoOptionsContract.Option.LIKE) }
+        hideButton.setOnClickListener { optionSelectedListener.invoke(PhotoOptionsContract.Option.HIDE) }
+        cameraButton.setOnClickListener { optionSelectedListener.invoke(PhotoOptionsContract.Option.SAVE) }
 
-        container.setOnClickListener { hide(ANIMATED) }
+        container.setOnClickListener { hide(HideFlow.ANIMATED) }
 
         hideDuration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
         showDuration = hideDuration
 
-
-        hide(INSTANT)
+        hide(HideFlow.INSTANT)
     }
 
-    fun show(viewModel: PhotoOptionsViewModel) {
-        updateViewModel(viewModel)
+    override fun initViewModel(viewModel: PhotoScreenViewModel, lifecycleOwner: LifecycleOwner) {
+        viewModel.getPhoto().observe(lifecycleOwner, Observer { updateUI(it) })
+    }
 
+    private fun updateUI(viewModel: ValidPhotoViewModel) {
+        val favoriteIconId = if (viewModel.isFavorite) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+        favoriteButton.setCompoundDrawablesWithIntrinsicBounds(favoriteIconId, 0, 0, 0)
+
+        val likedIconId = if (viewModel.isLiked) R.drawable.ic_thumb_up_black_24dp else R.drawable.ic_thumbs_up_down_black_24dp
+        likeButton.setCompoundDrawablesWithIntrinsicBounds(likedIconId, 0, 0, 0)
+        likeButton.text = context.getString(if (viewModel.isLiked) R.string.photo_action_liked else R.string.photo_action_like)
+
+        viewCountText.text = context.getString(R.string.view_count, viewModel.viewCount)
+    }
+
+    override fun show() {
         hideAnimator?.cancel()
         hideAnimator = null
 
@@ -54,33 +67,16 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
         showAnimator ?: startShowAnimation()
     }
 
-    fun updateViewModel(viewModel: PhotoOptionsViewModel) {
-        this.viewModel = viewModel
-
-        updateUI()
-    }
-
-    private fun updateUI() {
-        val favoriteIconId = if (viewModel.isPhotoFavorite) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
-        favoriteButton.setCompoundDrawablesWithIntrinsicBounds(favoriteIconId, 0, 0, 0)
-
-        val likedIconId = if (viewModel.isPhotoLiked) R.drawable.ic_thumb_up_black_24dp else R.drawable.ic_thumbs_up_down_black_24dp
-        likeButton.setCompoundDrawablesWithIntrinsicBounds(likedIconId, 0, 0, 0)
-        likeButton.text = context.getString(if (viewModel.isPhotoLiked) R.string.photo_action_liked else R.string.photo_action_like)
-
-        viewCountText.text = context.getString(R.string.view_count, viewModel.viewCount)
-    }
-
-    fun hide(hideFlow: PhotoScreenContract.HideFlow) {
+    override fun hide(hideFlow: HideFlow) {
         showAnimator?.cancel()
         showAnimator = null
 
         when (hideFlow) {
-            INSTANT -> {
+            HideFlow.INSTANT -> {
                 visibility = View.GONE
                 alpha = 0f
             }
-            ANIMATED -> hideAnimator ?: startHideAnimation()
+            HideFlow.ANIMATED -> hideAnimator ?: startHideAnimation()
         }
     }
 
@@ -117,15 +113,17 @@ class PhotoActionDialog @JvmOverloads constructor(context: Context, attrs: Attri
                 .setDuration(showDuration)
     }
 
-    fun setPhotoActionListener(listener: PhotoScreenContract.PhotoActionListener) {
-        photoActionListener = listener
+    override fun setOptionSelectedListener(listener: OptionSelectedListener) {
+        optionSelectedListener = listener
     }
 
-    fun onDestroyView() {
+    override fun onDestroyView() {
         favoriteButton.setOnClickListener(null)
         likeButton.setOnClickListener(null)
         hideButton.setOnClickListener(null)
+        cameraButton.setOnClickListener(null)
 
         hideAnimator = null
+        showAnimator = null
     }
 }

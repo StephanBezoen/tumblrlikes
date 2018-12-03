@@ -5,7 +5,6 @@ import androidx.annotation.StringRes
 import com.github.ajalt.timberkt.Timber
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
-import nl.acidcats.tumblrlikes.core.usecases.checktime.CheckTimeUseCase
 import nl.acidcats.tumblrlikes.core.usecases.likes.GetLikesUseCase
 import nl.acidcats.tumblrlikes.core.usecases.photos.UpdatePhotoCacheUseCase
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LoadLikesException
@@ -25,8 +24,6 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
     lateinit var getLikesUseCase: GetLikesUseCase
     @Inject
     lateinit var updatePhotoCacheUseCase: UpdatePhotoCacheUseCase
-    @Inject
-    lateinit var checkTimeUseCase: CheckTimeUseCase
 
     private var pageCount: Int = 0
     private var isLoadingCancelled = false
@@ -34,7 +31,7 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
     private val pageProgress: BehaviorSubject<Int> = BehaviorSubject.create()
     private lateinit var mode: LoadLikesMode
 
-    override fun onViewCreated(mode:LoadLikesMode) {
+    override fun onViewCreated(mode: LoadLikesMode) {
         this.mode = mode
 
         registerSubscription(
@@ -56,7 +53,7 @@ class LoadLikesScreenPresenter @Inject constructor() : BasePresenterImpl<LoadLik
         }
     }
 
-    private fun startLoadingLikes(mode:LoadLikesMode) {
+    private fun startLoadingLikes(mode: LoadLikesMode) {
         loadingInterruptor.clear()
 
         pageCount = 0

@@ -106,6 +106,9 @@ dependencies {
     implementation libs.androidx_constraintLayout
     implementation libs.androidx_annotations
 
+    implementation libs.androidx_lifecycle_viewmodel
+    implementation libs.androidx_lifecycle_ext
+
     // Rx
     api libs.rxAndroid
 

@@ -6,35 +6,29 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.fragment_photo.*
-import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.FilterType
 import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.Keys.REFRESH
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.viewmodels.PhotoOptionsViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.photooptions.PhotoOptionsContract
 import nl.acidcats.tumblrlikes.util.DeviceUtil
 import nl.acidcats.tumblrlikes.util.GlideApp
 import nl.acidcats.tumblrlikes.util.GlideRequest
 import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
 import nl.acidcats.tumblrlikes.util.permissions.PermissionListener
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.lang.Exception
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -50,6 +44,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     private val handler: Handler = Handler()
     private val uiHider: Runnable = Runnable { hideUI() }
     private val isTest: Boolean = DeviceUtil.isEmulator
+    private lateinit var screenViewModel: PhotoScreenViewModel
     private val storagePermissionListener: PermissionListener = { permission, isGranted ->
         if (permission == PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE && isGranted) {
             savePhoto()
@@ -74,7 +69,11 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter.restoreState(savedInstanceState, arguments)
+        screenViewModel = ViewModelProviders.of(activity!!).get(PhotoScreenViewModel::class.java)
+
+        presenter.readArguments(arguments)
+
+        retainInstance = true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_photo, container, false)
@@ -83,7 +82,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         presenter.setView(this)
-        presenter.onViewCreated()
+        presenter.setScreenViewModel(screenViewModel)
 
         photoView.setGestureListener { gesture, point ->
             onGesture(gesture, point)
@@ -92,7 +91,15 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         activity?.windowManager?.defaultDisplay?.getRealSize(screenSize)
         photoView.screenSize = screenSize
 
-        photoActionDialog.setPhotoActionListener(presenter)
+        photoOptionsView.initViewModel(screenViewModel, this)
+        photoOptionsView.setOptionSelectedListener {
+            when (it) {
+                PhotoOptionsContract.Option.FAVORITE -> presenter.togglePhotoFavorite()
+                PhotoOptionsContract.Option.LIKE -> presenter.togglePhotoLike()
+                PhotoOptionsContract.Option.HIDE -> presenter.hidePhoto()
+                PhotoOptionsContract.Option.SAVE -> presenter.savePhoto()
+            }
+        }
 
         photoNavBar.filterTypeSelectedListener = { presenter.onFilterSelected(it) }
         photoNavBar.navBarListener = presenter
@@ -100,6 +107,8 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         permissionHelper.addPermissionListener(storagePermissionListener)
 
         if (isTest) photoView.alpha = .05f
+
+        presenter.onViewCreated()
     }
 
     private fun onGesture(gesture: InteractiveImageView.Gesture, point: PointF?) {
@@ -148,13 +157,11 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         return photoView.isScaled
     }
 
-    override fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow) = photoActionDialog.hide(hideFlow)
+    override fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow) = photoOptionsView.hide(hideFlow)
 
-    override fun showPhotoActionDialog(viewModel: PhotoOptionsViewModel, point: PointF) = photoActionDialog.show(viewModel)
+    override fun showPhotoActionDialog(point: PointF) = photoOptionsView.show()
 
     override fun setFilter(filter: FilterType) = photoNavBar.setFilter(filter)
-
-    override fun setPhotoOptionsViewModel(viewModel: PhotoOptionsViewModel) = photoActionDialog.updateViewModel(viewModel)
 
     override fun showUI() {
         photoView.systemUiVisibility = (
@@ -180,10 +187,6 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
                 )
 
         photoNavBar.hide()
-    }
-
-    override fun setPhotoVisible(visible: Boolean) {
-        photoView.visibility = if (visible) View.VISIBLE else View.INVISIBLE
     }
 
     override fun enableRefreshButton(enabled: Boolean) {
@@ -215,7 +218,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     override fun onDestroyView() {
         permissionHelper.removePermissionListener(storagePermissionListener)
 
-        photoActionDialog.onDestroyView()
+        photoOptionsView.onDestroyView()
         photoView.onDestroyView()
         photoNavBar.onDestroyView()
 
