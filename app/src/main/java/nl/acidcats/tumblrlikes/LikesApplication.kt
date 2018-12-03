@@ -41,6 +41,8 @@ class LikesApplication : Application() {
 
         val isEmulator = DeviceUtil.isEmulator
         Timber.d { "onCreate: isEmulator = $isEmulator" }
+
+        DeviceUtil.listSecurityProviders()
     }
 
     fun clearFreshRun() {

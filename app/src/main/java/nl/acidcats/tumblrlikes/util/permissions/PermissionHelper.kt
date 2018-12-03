@@ -43,6 +43,8 @@ interface PermissionHelper {
         RECEIVE_WAP_PUSH(Manifest.permission.RECEIVE_WAP_PUSH),
         RECEIVE_MMS(Manifest.permission.RECEIVE_MMS),
 
+        USE_FINGERPRINT(Manifest.permission.USE_FINGERPRINT),
+
         READ_EXTERNAL_STORAGE(Manifest.permission.READ_EXTERNAL_STORAGE),
         WRITE_EXTERNAL_STORAGE(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 

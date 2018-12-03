@@ -1,6 +1,9 @@
 package nl.acidcats.tumblrlikes.util
 
 import android.os.Build
+import com.github.ajalt.timberkt.Timber
+import java.security.KeyStore
+import java.security.Security
 
 /**
  * Created on 20/11/2018.
@@ -27,5 +30,16 @@ class DeviceUtil {
                 return Build.DEVICE.contains("generic")
             }
 
+        fun listSecurityProviders() {
+            for (provider in Security.getProviders()) {
+                Timber.d { "listSecurityProviders: ${provider.name} -> ${provider.info}" }
+            }
+
+            val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+            Timber.d { "listSecurityProviders: ${keyStore.aliases()}" }
+            for (alias in keyStore.aliases()) {
+                Timber.d { "listSecurityProviders: $alias" }
+            }
+        }
     }
 }
