@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import nl.acidcats.tumblrlikes.core.viewmodels.ValidPhotoViewModel
+import javax.inject.Inject
 
 /**
  * Created on 30/10/2018.
  */
-class PhotoScreenViewModel : ViewModel() {
+class PhotoScreenViewModel @Inject constructor() : ViewModel() {
     private val validPhoto: MutableLiveData<ValidPhotoViewModel> = MutableLiveData()
 
     fun getPhoto(): LiveData<ValidPhotoViewModel> {

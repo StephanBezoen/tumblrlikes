@@ -7,10 +7,7 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import nl.acidcats.tumblrlikes.LikesApplication
 import nl.acidcats.tumblrlikes.di.DataModule
-import nl.acidcats.tumblrlikes.di.module.ActivityModule
-import nl.acidcats.tumblrlikes.di.module.AppModule
-import nl.acidcats.tumblrlikes.di.module.PresenterModule
-import nl.acidcats.tumblrlikes.di.module.ServiceModule
+import nl.acidcats.tumblrlikes.di.module.*
 import javax.inject.Singleton
 
 /**
@@ -24,7 +21,8 @@ import javax.inject.Singleton
     ServiceModule::class,
     DataModule::class,
     AndroidInjectionModule::class,
-    PresenterModule::class
+    PresenterModule::class,
+    ViewModelModule::class
 ])
 interface AppComponent {
     @Component.Builder

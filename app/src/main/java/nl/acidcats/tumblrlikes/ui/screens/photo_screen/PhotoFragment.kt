@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
@@ -38,6 +39,8 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     lateinit var presenter: PhotoScreenContract.Presenter
     @Inject
     lateinit var permissionHelper: PermissionHelper
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val handler: Handler = Handler()
     private val uiHider: Runnable = Runnable { hideUI() }
@@ -62,16 +65,12 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        screenViewModel = ViewModelProviders.of(activity!!).get(PhotoScreenViewModel::class.java)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_photo, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        screenViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(PhotoScreenViewModel::class.java)
 
         presenter.setView(this)
         presenter.readArguments(arguments)

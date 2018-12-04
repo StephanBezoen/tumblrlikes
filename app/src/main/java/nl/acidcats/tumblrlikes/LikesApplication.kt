@@ -48,7 +48,7 @@ class LikesApplication : Application(), HasActivityInjector, HasServiceInjector 
     }
 
     private fun initFabric() {
-//        Fabric.with(this, Crashlytics())
+        Fabric.with(this, Crashlytics())
     }
 
     private fun initTimber() {
