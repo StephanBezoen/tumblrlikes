@@ -199,11 +199,11 @@ class PhotoScreenPresenter @Inject constructor() : BasePresenterImpl<PhotoScreen
         }
     }
 
-    override fun onSettingsRequested() {
+    override fun goSettings() {
         getView()?.sendBroadcast(Broadcasts.SETTINGS_REQUEST)
     }
 
-    override fun onRefreshRequested() {
+    override fun refreshLikes() {
         refreshLikes(PhotoScreenContract.RefreshType.MANUAL)
     }
 

@@ -24,7 +24,7 @@ interface PhotoScreenContract {
         AUTOMATIC, MANUAL
     }
 
-    interface Presenter : BasePresenter<View>, PhotoActionListener, GestureListener, NavBarListener {
+    interface Presenter : BasePresenter<View>, PhotoActionListener, GestureListener {
         fun onViewCreated()
 
         fun setScreenViewModel(viewModel: PhotoScreenViewModel)
@@ -38,6 +38,10 @@ interface PhotoScreenContract {
         fun onResume()
 
         fun saveBitmap(bitmap: Bitmap)
+
+        fun goSettings()
+
+        fun refreshLikes()
     }
 
     interface View : BaseView {

@@ -72,8 +72,6 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         screenViewModel = ViewModelProviders.of(activity!!).get(PhotoScreenViewModel::class.java)
 
         presenter.readArguments(arguments)
-
-        retainInstance = true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_photo, container, false)
@@ -102,7 +100,15 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         }
 
         photoNavBar.filterTypeSelectedListener = { presenter.onFilterSelected(it) }
-        photoNavBar.navBarListener = presenter
+        photoNavBar.navBarListener = object : PhotoScreenContract.NavBarListener {
+            override fun onRefreshRequested() {
+                presenter.refreshLikes()
+            }
+
+            override fun onSettingsRequested() {
+                presenter.goSettings()
+            }
+        }
 
         permissionHelper.addPermissionListener(storagePermissionListener)
 
