@@ -2,15 +2,21 @@ package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.PointF
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.GestureDetectorCompat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.DrawableImageViewTarget
+import nl.acidcats.tumblrlikes.util.GlideApp
+import nl.acidcats.tumblrlikes.util.GlideRequest
 import nl.acidcats.tumblrlikes.util.clamp
 
 /**
@@ -22,8 +28,10 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         TAP, DOUBLE_TAP, SIDE_SWIPE, LONG_PRESS
     }
 
-    val SWIPE_DETECTION_DIST_THRESHOLD: Int = 30
-    val SWIPE_DETECTION_ANG_THRESHOLD = 45
+    companion object {
+        private const val SWIPE_DETECTION_DIST_THRESHOLD: Int = 30
+        private const val SWIPE_DETECTION_ANG_THRESHOLD = 45
+    }
 
     private var gestureDetector: GestureDetectorCompat
     private var scaleDetector: ScaleGestureDetector
@@ -57,13 +65,13 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
 
         gestureDetector = GestureDetectorCompat(context, object : GestureDetector.SimpleOnGestureListener() {
             override fun onDoubleTap(e: MotionEvent): Boolean {
-                gestureListener?.invoke(Gesture.DOUBLE_TAP, PointF(e.x, e.y))
+                gestureListener?.invoke(Gesture.DOUBLE_TAP)
 
                 return false
             }
 
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                gestureListener?.invoke(Gesture.TAP, PointF(e.x, e.y))
+                gestureListener?.invoke(Gesture.TAP)
 
                 return false
             }
@@ -78,7 +86,7 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
                 if ((angle < SWIPE_DETECTION_ANG_THRESHOLD && angle > -SWIPE_DETECTION_ANG_THRESHOLD)
                         || angle > (180 - SWIPE_DETECTION_ANG_THRESHOLD)
                         || angle < -(180 - SWIPE_DETECTION_ANG_THRESHOLD)) {
-                    gestureListener?.invoke(Gesture.SIDE_SWIPE, null)
+                    gestureListener?.invoke(Gesture.SIDE_SWIPE)
                 }
 
                 return false
@@ -87,7 +95,7 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
             override fun onLongPress(e: MotionEvent) {
                 if (isScaled) return
 
-                gestureListener?.invoke(Gesture.LONG_PRESS, null)
+                gestureListener?.invoke(Gesture.LONG_PRESS)
             }
         })
 
@@ -106,6 +114,23 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
                 return false
             }
         })
+    }
+
+    fun loadPhoto(url: String, fallbackUrl: String) {
+        if (context == null) return
+
+        resetScale()
+
+        getGlideRequest(url)
+                .error(getGlideRequest(fallbackUrl))
+                .into(DrawableImageViewTarget(this))
+    }
+
+    private fun getGlideRequest(url: String): GlideRequest<Drawable> {
+        return GlideApp.with(context!!)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -193,7 +218,15 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         }
     }
 
-    fun scaleToView() {
+    fun toggleScaling() {
+        if (isScaled) {
+            resetScale()
+        } else {
+            scaleToView()
+        }
+    }
+
+    private fun scaleToView() {
         if (isScaled) return
 
         val imWidth = drawable.intrinsicWidth.toFloat()
@@ -209,7 +242,7 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
         }
     }
 
-    fun resetScale() {
+    private fun resetScale() {
         scale = 1f
         translateX = 0f
         translateY = 0f
@@ -241,6 +274,15 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
 
     fun setGestureListener(listener: ImageGestureListener) {
         gestureListener = listener
+    }
+
+    fun getBitmapSnapshot(): Bitmap {
+        val bitmap = Bitmap.createBitmap(screenSize.x, screenSize.y, Bitmap.Config.RGB_565)
+        val canvas = Canvas(bitmap)
+
+        draw(canvas)
+
+        return bitmap
     }
 
     fun onDestroyView() {

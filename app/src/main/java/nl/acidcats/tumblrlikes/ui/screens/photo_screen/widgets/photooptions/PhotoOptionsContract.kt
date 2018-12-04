@@ -1,7 +1,6 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.photooptions
 
 import androidx.lifecycle.LifecycleOwner
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenViewModel
 
 /**
@@ -15,10 +14,14 @@ interface PhotoOptionsContract {
         FAVORITE, LIKE, HIDE, SAVE
     }
 
+    enum class HideFlow {
+        INSTANT, ANIMATED
+    }
+
     interface View {
         fun show()
 
-        fun hide(hideFlow: PhotoScreenContract.HideFlow)
+        fun hide(hideFlow: HideFlow)
 
         fun setOptionSelectedListener(listener: OptionSelectedListener)
 

@@ -11,15 +11,21 @@ import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.navbar.view.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.FilterType
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract
 
 /**
  * Created on 31/10/2018.
  */
 class PhotoNavBar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
 
+
+    interface NavBarListener {
+        fun onSettingsRequested()
+
+        fun onRefreshRequested()
+    }
+
     var filterTypeSelectedListener: FilterTypeSelectedListener? = null
-    var navBarListener: PhotoScreenContract.NavBarListener? = null
+    var navBarListener: NavBarListener? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.navbar, this, true)

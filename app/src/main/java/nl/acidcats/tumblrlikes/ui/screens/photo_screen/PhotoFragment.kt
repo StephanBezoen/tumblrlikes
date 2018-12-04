@@ -1,31 +1,24 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Point
-import android.graphics.PointF
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.DrawableImageViewTarget
 import kotlinx.android.synthetic.main.fragment_photo.*
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.core.constants.FilterType
+import nl.acidcats.tumblrlikes.ui.Broadcasts
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.Keys.REFRESH
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView.Gesture.*
+import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.PhotoNavBar
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.photooptions.PhotoOptionsContract
 import nl.acidcats.tumblrlikes.util.DeviceUtil
-import nl.acidcats.tumblrlikes.util.GlideApp
-import nl.acidcats.tumblrlikes.util.GlideRequest
 import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
 import nl.acidcats.tumblrlikes.util.permissions.PermissionListener
 import javax.inject.Inject
@@ -46,12 +39,12 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
     private val uiHider: Runnable = Runnable { hideUI() }
     private val isTest: Boolean = DeviceUtil.isEmulator
     private lateinit var screenViewModel: PhotoScreenViewModel
+    private val screenSize = Point()
     private val storagePermissionListener: PermissionListener = { permission, isGranted ->
         if (permission == PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE && isGranted) {
-            savePhoto()
+            checkSavePhoto()
         }
     }
-    private val screenSize = Point()
 
     companion object {
         private const val HIDE_UI_DELAY_MS = 2000L
@@ -74,109 +67,76 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
 
         presenter.setView(this)
         presenter.readArguments(arguments)
-        presenter.setScreenViewModel(screenViewModel)
-
-        photoView.setGestureListener { gesture, point ->
-            onGesture(gesture, point)
-        }
 
         activity?.windowManager?.defaultDisplay?.getRealSize(screenSize)
         photoView.screenSize = screenSize
-
-        photoOptionsView.initViewModel(screenViewModel, this)
-        photoOptionsView.setOptionSelectedListener {
+        photoView.setGestureListener {
             when (it) {
-                PhotoOptionsContract.Option.FAVORITE -> presenter.togglePhotoFavorite()
-                PhotoOptionsContract.Option.LIKE -> presenter.togglePhotoLike()
-                PhotoOptionsContract.Option.HIDE -> presenter.hidePhoto()
-                PhotoOptionsContract.Option.SAVE -> presenter.savePhoto()
+                SIDE_SWIPE -> screenViewModel.getNextPhoto()
+                TAP -> photoOptionsView.show()
+                LONG_PRESS -> showUI()
+                DOUBLE_TAP -> photoView.toggleScaling()
             }
         }
 
-        photoNavBar.filterTypeSelectedListener = { presenter.onFilterSelected(it) }
-        photoNavBar.navBarListener = object : PhotoScreenContract.NavBarListener {
+        photoOptionsView.initViewModel(screenViewModel, this)
+        photoOptionsView.setOptionSelectedListener {
+            photoOptionsView.hide(PhotoOptionsContract.HideFlow.ANIMATED)
+
+            when (it) {
+                PhotoOptionsContract.Option.FAVORITE -> screenViewModel.togglePhotoFavorite()
+                PhotoOptionsContract.Option.LIKE -> screenViewModel.togglePhotoLike()
+                PhotoOptionsContract.Option.HIDE -> screenViewModel.hidePhoto()
+                PhotoOptionsContract.Option.SAVE -> checkSavePhoto()
+            }
+        }
+
+        photoNavBar.filterTypeSelectedListener = { screenViewModel.storeFilterSelection(it) }
+        photoNavBar.navBarListener = object : PhotoNavBar.NavBarListener {
             override fun onRefreshRequested() {
                 presenter.refreshLikes()
             }
 
             override fun onSettingsRequested() {
-                presenter.goSettings()
+                sendBroadcast(Broadcasts.SETTINGS_REQUEST)
             }
         }
 
         permissionHelper.addPermissionListener(storagePermissionListener)
 
-        if (isTest) photoView.alpha = .05f
+        if (isTest) photoView.alpha = .1f
 
         presenter.onViewCreated()
-    }
 
-    private fun onGesture(gesture: InteractiveImageView.Gesture, point: PointF?) {
-        when (gesture) {
-            SIDE_SWIPE -> presenter.onSwipe()
-            TAP -> presenter.onTap(point!!)
-            LONG_PRESS -> presenter.onLongPress()
-            DOUBLE_TAP -> presenter.onDoubleTap()
-        }
+        screenViewModel.getPhoto().observe(this, Observer { photoView.loadPhoto(it.url, it.fallbackUrl) })
+
+        screenViewModel.getFilterType().observe(this, Observer { photoNavBar.setFilter(it) })
     }
 
     override fun onResume() {
         super.onResume()
 
-        presenter.onResume()
+        hideUI()
+
+        screenViewModel.startPhotoView()
     }
 
     override fun onPause() {
         super.onPause()
 
-        presenter.onPause()
+        screenViewModel.endPhotoView()
 
         handler.removeCallbacks(uiHider)
     }
 
-    override fun loadPhoto(url: String, fallbackUrl: String) {
-        if (context == null) return
-
-        getGlideRequest(url)
-                .error(getGlideRequest(fallbackUrl))
-                .into(DrawableImageViewTarget(photoView))
-    }
-
-    private fun getGlideRequest(url: String): GlideRequest<Drawable> {
-        return GlideApp.with(context!!)
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-    }
-
-    override fun resetPhotoScale() = photoView.resetScale()
-
-    override fun scalePhotoToView() = photoView.scaleToView()
-
-    override fun isPhotoScaled(): Boolean {
-        return photoView.isScaled
-    }
-
-    override fun hidePhotoActionDialog(hideFlow: PhotoScreenContract.HideFlow) = photoOptionsView.hide(hideFlow)
-
-    override fun showPhotoActionDialog(point: PointF) = photoOptionsView.show()
-
-    override fun setFilter(filter: FilterType) = photoNavBar.setFilter(filter)
-
-    override fun showUI() {
-        photoView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                )
-
+    private fun showUI() {
         handler.removeCallbacks(uiHider)
         handler.postDelayed(uiHider, HIDE_UI_DELAY_MS)
 
         photoNavBar.show()
     }
 
-    override fun hideUI() {
+    private fun hideUI() {
         photoView.systemUiVisibility = (
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -193,22 +153,14 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         photoNavBar.enableRefreshButton(enabled)
     }
 
-    override fun checkSavePhoto() {
+    private fun checkSavePhoto() {
         if (context == null || activity == null) return
 
         if (permissionHelper.hasPermission(context!!, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE)) {
-            savePhoto()
+            presenter.saveBitmap(photoView.getBitmapSnapshot())
         } else {
             permissionHelper.requestPermission(activity!!, PermissionHelper.Permission.WRITE_EXTERNAL_STORAGE, "")
         }
-    }
-
-    private fun savePhoto() {
-        val bitmap = Bitmap.createBitmap(screenSize.x, screenSize.y, Bitmap.Config.RGB_565)
-        val canvas = Canvas(bitmap)
-        photoView.draw(canvas)
-
-        presenter.saveBitmap(bitmap)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

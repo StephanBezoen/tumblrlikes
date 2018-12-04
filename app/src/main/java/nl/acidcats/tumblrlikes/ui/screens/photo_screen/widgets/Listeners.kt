@@ -8,4 +8,4 @@ import nl.acidcats.tumblrlikes.core.constants.FilterType
  */
 typealias FilterTypeSelectedListener = (FilterType) -> Unit
 
-typealias ImageGestureListener = (InteractiveImageView.Gesture, PointF?) -> Unit
+typealias ImageGestureListener = (InteractiveImageView.Gesture) -> Unit
