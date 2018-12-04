@@ -103,7 +103,7 @@ dependencies {
 
     // Dagger
     implementation libs.dagger
-    kapt libs.annotationProcessorDagger
+    kapt libs.dagger_kapt
 
     // Moshi
     implementation libs.moshi_kotlin

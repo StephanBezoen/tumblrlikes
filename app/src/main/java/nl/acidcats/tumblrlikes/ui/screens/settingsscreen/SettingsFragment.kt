@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_settings.*
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.ui.screens.setup_screen.SetupFragment
 import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
@@ -31,10 +30,6 @@ class SettingsFragment : BaseFragment(), SettingsScreenContract.View {
 
     companion object {
         fun newInstance() = SettingsFragment()
-    }
-
-    override fun injectFrom(appComponent: AppComponent) {
-        appComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_settings, container, false)

@@ -14,11 +14,9 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.DrawableImageViewTarget
-import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.fragment_photo.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.FilterType
-import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenContract.Keys.REFRESH
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.InteractiveImageView
@@ -64,14 +62,10 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         }
     }
 
-    override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         screenViewModel = ViewModelProviders.of(activity!!).get(PhotoScreenViewModel::class.java)
-
-        presenter.readArguments(arguments)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_photo, container, false)
@@ -80,6 +74,7 @@ class PhotoFragment : BaseFragment(), PhotoScreenContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         presenter.setView(this)
+        presenter.readArguments(arguments)
         presenter.setScreenViewModel(screenViewModel)
 
         photoView.setGestureListener { gesture, point ->

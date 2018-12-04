@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import kotlinx.android.synthetic.main.fragment_login.*
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter
 import javax.inject.Inject
@@ -35,14 +34,6 @@ class LoginFragment : BaseFragment(), LoginScreenContract.View {
         }
     }
 
-    override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        presenter.restoreState(savedInstanceState, arguments)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         presenter.saveState(outState)
 
@@ -55,6 +46,7 @@ class LoginFragment : BaseFragment(), LoginScreenContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         presenter.setView(this)
+        presenter.restoreState(savedInstanceState, arguments)
         presenter.onViewCreated()
 
         passwordInput.filters = arrayOf(InputFilter.LengthFilter(LoginScreenContract.PINCODE_LENGTH))

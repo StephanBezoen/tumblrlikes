@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.widget.Toast
 import com.github.ajalt.timberkt.Timber
+import dagger.android.AndroidInjection
 import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.LikesApplication
 import nl.acidcats.tumblrlikes.R
@@ -42,7 +43,7 @@ class CacheService : Service() {
 
         serviceBinder = ServiceBinder(this)
 
-        (application as LikesApplication).appComponent.inject(this)
+        AndroidInjection.inject(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

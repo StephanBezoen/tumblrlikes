@@ -17,11 +17,12 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * Created on 25/10/2018.
  */
-class NetLikesDataGateway(context: Context) : LikesDataGateway {
+class NetLikesDataGateway @Inject constructor(context: Context) : LikesDataGateway {
     override var isLoadComplete: Boolean = false
         private set
 

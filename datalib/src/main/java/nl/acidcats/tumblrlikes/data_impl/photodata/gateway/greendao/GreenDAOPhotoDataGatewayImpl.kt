@@ -13,11 +13,12 @@ import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.greendao.iterators.Ra
 import nl.acidcats.tumblrlikes.db_impl_greendao.DaoMaster
 import nl.acidcats.tumblrlikes.db_impl_greendao.PhotoEntityDao
 import org.greenrobot.greendao.query.QueryBuilder
+import javax.inject.Inject
 
 /**
  * Created on 25/10/2018.
  */
-class GreenDAOPhotoDataGatewayImpl constructor(context: Context) : PhotoDataGateway {
+class GreenDAOPhotoDataGatewayImpl @Inject constructor(context: Context) : PhotoDataGateway {
 
     val DATABASE_NAME = "photos.db"
 

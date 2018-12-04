@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.github.ajalt.timberkt.Timber
 import dagger.Lazy
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import nl.acidcats.tumblrlikes.LikesApplication
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
@@ -30,7 +32,7 @@ import javax.inject.Inject
 /**
  * Created on 02/11/2018.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     @Inject
     lateinit var pincodeUseCase: Lazy<PincodeUseCase>
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var appSetupUseCase: Lazy<AppSetupUseCase>
     @Inject
     lateinit var permissionHelper: Lazy<PermissionHelper>
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
     private lateinit var receiver: BroadcastReceiver
     private var isRestarted: Boolean = false
@@ -51,7 +55,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        (application as LikesApplication).appComponent.inject(this)
 
         receiver = BroadcastReceiver(applicationContext)
         receiver.addActionHandler(Broadcasts.PINCODE_OK) { enterApp() }
@@ -208,6 +211,8 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         permissionHelper.get().onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = dispatchingAndroidInjector
 
     override fun onDestroy() {
         receiver.onDestroy()

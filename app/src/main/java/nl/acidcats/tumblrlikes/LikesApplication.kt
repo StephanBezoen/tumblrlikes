@@ -1,24 +1,29 @@
 package nl.acidcats.tumblrlikes
 
+import android.app.Activity
 import android.app.Application
+import android.app.Service
 import com.crashlytics.android.Crashlytics
 import com.facebook.stetho.Stetho
 import com.github.ajalt.timberkt.Timber
 import com.github.ajalt.timberkt.Timber.DebugTree
-import com.google.firebase.analytics.FirebaseAnalytics
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
+import dagger.android.HasServiceInjector
 import io.fabric.sdk.android.Fabric
-import nl.acidcats.tumblrlikes.di.AppComponent
-import nl.acidcats.tumblrlikes.di.AppModule
-import nl.acidcats.tumblrlikes.di.DaggerAppComponent
-import nl.acidcats.tumblrlikes.di.DataModule
-import nl.acidcats.tumblrlikes.util.DeviceUtil
+import nl.acidcats.tumblrlikes.di.AppInjector
+import javax.inject.Inject
 
 /**
  * Created on 05/11/2018.
  */
-class LikesApplication : Application() {
-    lateinit var appComponent: AppComponent
-        private set
+class LikesApplication : Application(), HasActivityInjector, HasServiceInjector {
+
+    @Inject
+    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+    @Inject
+    lateinit var serviceInjector: DispatchingAndroidInjector<Service>
 
     var isFreshRun = true
         private set
@@ -26,24 +31,35 @@ class LikesApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Timber.plant(DebugTree())
+        initDagger()
+        initTimber()
+        initFabric()
+        initStetho()
+    }
 
-        Fabric.with(this, Crashlytics())
+    private fun initDagger() {
+        AppInjector.init(this)
+    }
 
+    private fun initStetho() {
         if (BuildConfig.DEBUG && BuildConfig.USE_STETHO) {
             Stetho.initializeWithDefaults(this)
         }
+    }
 
-        appComponent = DaggerAppComponent.builder()
-                .appModule(AppModule(this, FirebaseAnalytics.getInstance(this)))
-                .dataModule(DataModule(this))
-                .build()
+    private fun initFabric() {
+//        Fabric.with(this, Crashlytics())
+    }
 
-        val isEmulator = DeviceUtil.isEmulator
-        Timber.d { "onCreate: isEmulator = $isEmulator" }
+    private fun initTimber() {
+        Timber.plant(DebugTree())
     }
 
     fun clearFreshRun() {
         isFreshRun = false
     }
+
+    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
+
+    override fun serviceInjector(): AndroidInjector<Service> = serviceInjector
 }

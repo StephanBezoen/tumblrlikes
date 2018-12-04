@@ -1,6 +1,5 @@
 package nl.acidcats.tumblrlikes.di
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import nl.acidcats.tumblrlikes.core.repositories.AppDataRepository
@@ -21,6 +20,7 @@ import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCase
 import nl.acidcats.tumblrlikes.core.usecases.pincode.PincodeUseCaseImpl
 import nl.acidcats.tumblrlikes.data_impl.appdata.AppDataRepositoryImpl
 import nl.acidcats.tumblrlikes.data_impl.likesdata.LikesDataRepositoryImpl
+import nl.acidcats.tumblrlikes.data_impl.likesdata.gateway.LikesDataGateway
 import nl.acidcats.tumblrlikes.data_impl.likesdata.gateway.NetLikesDataGateway
 import nl.acidcats.tumblrlikes.data_impl.photodata.PhotoDataRepositoryImpl
 import nl.acidcats.tumblrlikes.data_impl.photodata.gateway.PhotoDataGateway
@@ -33,13 +33,15 @@ import javax.inject.Singleton
  * Created on 30/07/2018.
  */
 @Module
-class DataModule(private val context: Context) {
+class DataModule {
 
     @Provides
     @Singleton
-    internal fun provideLikesDataRepository(): LikesDataRepository {
-        return LikesDataRepositoryImpl(NetLikesDataGateway(context))
-    }
+    internal fun provideLikesDataRepository(impl: LikesDataRepositoryImpl): LikesDataRepository = impl
+
+    @Provides
+    @Singleton
+    fun provideLikesDataGateway(impl: NetLikesDataGateway): LikesDataGateway = impl
 
     @Provides
     @Singleton
@@ -49,9 +51,7 @@ class DataModule(private val context: Context) {
 
     @Provides
     @Singleton
-    internal fun providePhotoDataGateway(): PhotoDataGateway {
-        return GreenDAOPhotoDataGatewayImpl(context)
-    }
+    fun providePhotoDataGateway(impl: GreenDAOPhotoDataGatewayImpl): PhotoDataGateway = impl
 
     @Provides
     @Singleton

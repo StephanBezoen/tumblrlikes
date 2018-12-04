@@ -122,8 +122,12 @@ dependencies {
 
     // Dagger
     implementation libs.dagger
-    annotationProcessor libs.annotationProcessorDagger
-    kapt libs.annotationProcessorDagger
+    kapt libs.dagger_kapt
+    implementation libs.dagger_android
+    implementation libs.dagger_android_support
+    kapt libs.dagger_android_kapt
+    compileOnly libs.annotation_jsr250
+    implementation libs.annotation_inject
 
     // Stetho
     implementation libs.stetho

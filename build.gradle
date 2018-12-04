@@ -89,7 +89,12 @@ ext {
 
             // Dagger
             dagger                      : "com.google.dagger:dagger:${Versions.dagger}",
-            annotationProcessorDagger   : "com.google.dagger:dagger-compiler:${Versions.dagger}",
+            dagger_kapt                 : "com.google.dagger:dagger-compiler:${Versions.dagger}",
+            dagger_android              : "com.google.dagger:dagger-android:${Versions.dagger}",
+            dagger_android_support      : "com.google.dagger:dagger-android-support:${Versions.dagger}",
+            dagger_android_kapt         : "com.google.dagger:dagger-android-processor:${Versions.dagger}",
+            annotation_jsr250           : "javax.annotation:jsr250-api:1.0",
+            annotation_inject           : "javax.inject:javax.inject:1",
 
             // RetroFit
             retrofit                    : "com.squareup.retrofit2:retrofit:${Versions.retrofit}",

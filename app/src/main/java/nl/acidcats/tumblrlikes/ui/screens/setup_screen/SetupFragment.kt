@@ -6,15 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_setup.*
 import nl.acidcats.tumblrlikes.BuildConfig
 import nl.acidcats.tumblrlikes.R
-import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.util.TextWatcherAdapter
-import nl.acidcats.tumblrlikes.util.permissions.PermissionHelper
-import nl.acidcats.tumblrlikes.util.permissions.PermissionListener
 import javax.inject.Inject
 
 /**
@@ -32,8 +28,6 @@ class SetupFragment : BaseFragment(), SetupScreenContract.View {
 
         fun newInstance(): SetupFragment = SetupFragment()
     }
-
-    override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_setup, container, false)
 

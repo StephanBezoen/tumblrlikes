@@ -13,7 +13,6 @@ import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.R.color
 import nl.acidcats.tumblrlikes.R.string
 import nl.acidcats.tumblrlikes.core.constants.LoadLikesMode
-import nl.acidcats.tumblrlikes.di.AppComponent
 import nl.acidcats.tumblrlikes.ui.screens.base.BaseFragment
 import nl.acidcats.tumblrlikes.ui.screens.load_likes_screen.LoadLikesScreenContract.Keys.KEY_MODE
 import javax.inject.Inject
@@ -33,8 +32,6 @@ class LoadLikesFragment : BaseFragment(), LoadLikesScreenContract.View {
             return fragment
         }
     }
-
-    override fun injectFrom(appComponent: AppComponent) = appComponent.inject(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_loadlikes, container, false)
 
