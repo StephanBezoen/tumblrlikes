@@ -1,7 +1,7 @@
 package nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.photooptions
 
 import androidx.lifecycle.LifecycleOwner
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenViewModel
+import nl.acidcats.tumblrlikes.ui.viewmodels.PhotoScreenViewModel
 
 /**
  * Created on 03/12/2018.

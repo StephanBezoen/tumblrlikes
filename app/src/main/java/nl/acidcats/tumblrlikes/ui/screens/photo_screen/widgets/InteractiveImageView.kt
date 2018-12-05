@@ -53,12 +53,6 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
 
     val isScaled: Boolean
         get() = Math.abs(scale - 1.0f) > .00001
-    var screenSize: Point = Point()
-        set(value) {
-            screenWidth = value.x.toFloat()
-            screenHeight = value.y.toFloat()
-            screenAspectRatio = screenWidth / screenHeight
-        }
 
     init {
         density = resources.displayMetrics.density
@@ -114,6 +108,12 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
                 return false
             }
         })
+    }
+
+    fun setScreenSize(size: Point) {
+        screenWidth = size.x.toFloat()
+        screenHeight = size.y.toFloat()
+        screenAspectRatio = screenWidth / screenHeight
     }
 
     fun loadPhoto(url: String, fallbackUrl: String) {
@@ -277,7 +277,7 @@ class InteractiveImageView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     fun getBitmapSnapshot(): Bitmap {
-        val bitmap = Bitmap.createBitmap(screenSize.x, screenSize.y, Bitmap.Config.RGB_565)
+        val bitmap = Bitmap.createBitmap(screenWidth.toInt(), screenHeight.toInt(), Bitmap.Config.RGB_565)
         val canvas = Canvas(bitmap)
 
         draw(canvas)

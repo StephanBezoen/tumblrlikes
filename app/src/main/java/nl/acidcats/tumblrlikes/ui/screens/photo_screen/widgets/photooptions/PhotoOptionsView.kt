@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.popup_photo_menu.view.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.core.viewmodels.ValidPhotoViewModel
 import nl.acidcats.tumblrlikes.ui.screens.photo_screen.widgets.photooptions.PhotoOptionsContract.HideFlow
-import nl.acidcats.tumblrlikes.ui.screens.photo_screen.PhotoScreenViewModel
+import nl.acidcats.tumblrlikes.ui.viewmodels.PhotoScreenViewModel
 
 /**
  * Created on 03/12/2018.
