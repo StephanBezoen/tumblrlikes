@@ -26,10 +26,14 @@ class LikesDataRepositoryImpl @Inject constructor(private val likesDataGateway: 
 
         val allPhotos: MutableList<Photo> = ArrayList()
         var time = afterTime
+        var hasError = false
 
         do {
             likesDataGateway.getLikesPage(blogName = blogName, afterTime = time)
-                    .doOnError { LoadLikesException((it as HttpException).code()) }
+                    .doOnError {
+                        hasError = true
+                        throw LoadLikesException((it as HttpException).code())
+                    }
                     .subscribe({ likes ->
                         allPhotos.addAll(transformLikesToPhotos(likes, transformerProvider))
 
@@ -37,9 +41,9 @@ class LikesDataRepositoryImpl @Inject constructor(private val likesDataGateway: 
 
                         time = lastLikeTime
                     }, {
-                        Observable.error<Throwable>(it)
+                        throw it
                     })
-        } while (!isLoadComplete && (loadingInterruptor.isEmpty()))
+        } while (!isLoadComplete && !hasError && (loadingInterruptor.isEmpty()))
 
         return allPhotos
     }

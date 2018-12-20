@@ -10,7 +10,6 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.github.ajalt.timberkt.Timber
 import kotlinx.android.synthetic.main.fragment_photo.*
 import nl.acidcats.tumblrlikes.R
 import nl.acidcats.tumblrlikes.ui.Broadcasts
@@ -141,8 +140,6 @@ class PhotoFragment : BaseFragment() {
     }
 
     private fun onLikesLoadingStateChanged(loadingState: LikesViewModel.LoadingState) {
-        Timber.d { "onLikesLoadingStateChanged: $loadingState" }
-
         when (loadingState) {
             is LoadingState.IDLE -> enableRefreshButton(true)
             is LoadingState.LOADING -> enableRefreshButton(false)
@@ -232,8 +229,6 @@ class PhotoFragment : BaseFragment() {
     }
 
     private fun onPhotoSaveStateChanged(saveState: PhotoScreenViewModel.SaveState) {
-        Timber.d { "onPhotoSaveStateChanged: $saveState" }
-
         when (saveState) {
             is SaveState.SUCCESS -> onPhotoSaved(saveState)
             is SaveState.ERROR -> onPhotoSaveError()

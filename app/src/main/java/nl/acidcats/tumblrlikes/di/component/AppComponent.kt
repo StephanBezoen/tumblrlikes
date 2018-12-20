@@ -13,7 +13,6 @@ import javax.inject.Singleton
 /**
  * Created by stephan on 28/03/2017.
  */
-
 @Singleton
 @Component(modules = [
     AppModule::class,
