@@ -1,16 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.3.0'
+    ext.kotlin_version = '1.3.21'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
-        classpath 'com.google.gms:google-services:4.1.0'
+        classpath 'com.google.gms:google-services:4.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "de.mannodermaus.gradle.plugins:android-junit5:1.4.0.0"
     }
 }
 
@@ -40,7 +41,7 @@ ext {
 
     ClassPaths = [
             greenDAO: 'org.greenrobot:greendao-gradle-plugin:3.2.2',
-            fabric  : 'io.fabric.tools:gradle:1.25.4'
+            fabric  : 'io.fabric.tools:gradle:1.25.4',
     ]
 
     Plugins = [
@@ -50,7 +51,8 @@ ext {
             fabric     : 'io.fabric',
             kotlin     : 'kotlin-android',
             kotlin_ext : 'kotlin-android-extensions',
-            kotlin_kapt: 'kotlin-kapt'
+            kotlin_kapt: 'kotlin-kapt',
+            junit5     : "de.mannodermaus.android-junit5"
     ]
 
     Versions = [
@@ -62,10 +64,13 @@ ext {
             androidx  : '1.0.0',
 
             // Library versions
-            dagger    : '2.11',
+            dagger    : '2.21',
             okHttp    : '3.9.1',
             retrofit  : '2.3.0',
-            glide     : '4.8.0'
+            glide     : '4.8.0',
+
+            // Testing
+            junit     : '5.3.1'
     ]
 
     Libraries = [
@@ -77,14 +82,16 @@ ext {
             androidx_appCompat          : "androidx.appcompat:appcompat:${Versions.androidx}",
             androidx_cardView           : "androidx.cardview:cardview:${Versions.androidx}",
             androidx_annotations        : "androidx.annotation:annotation:${Versions.androidx}",
-            androidx_constraintLayout   : 'androidx.constraintlayout:constraintlayout:1.1.2',
+            androidx_constraintLayout   : 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2',
 
             androidx_lifecycle_viewmodel: "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0",
             androidx_lifecycle_ext      : "androidx.lifecycle:lifecycle-extensions:2.0.0",
 
             // testing
             test_espresso               : 'androidx.test.espresso:espresso-core:3.1.0',
-            test_junit                  : 'junit:junit:4.12',
+            test_junit_jupiter          : "org.junit.jupiter:junit-jupiter-api:${Versions.junit}",
+            test_junit_params           : "org.junit.jupiter:junit-jupiter-params:${Versions.junit}",
+            test_junit_engine           : "org.junit.jupiter:junit-jupiter-engine:${Versions.junit}",
             test_runner                 : 'androidx.test.runner.AndroidJUnitRunner',
 
             // Dagger

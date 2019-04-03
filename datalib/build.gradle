@@ -21,6 +21,7 @@ apply plugin: plugins.android_lib
 apply plugin: plugins.greenDAO
 apply plugin: plugins.kotlin
 apply plugin: plugins.kotlin_kapt
+apply plugin: plugins.junit5
 
 apply from: "$rootDir/config/config.gradle", to: config
 
@@ -52,8 +53,24 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    testOptions {
+        junitPlatform {
+            configurationParameter "junit.jupiter.testinstance.lifecycle.default", "PER_CLASS"
+        }
+    }
 }
 
+/*
 afterEvaluate {
     if (project.plugins.hasPlugin('org.greenrobot.greendao')) {
         def taskGraph = project.getGradle().getTaskGraph()
@@ -74,6 +91,7 @@ afterEvaluate {
         }
     }
 }
+*/
 
 greendao {
     schemaVersion 8
@@ -112,7 +130,9 @@ dependencies {
     // Timber
     implementation libs.timber
 
-    testImplementation libs.test_junit
+    testImplementation libs.test_junit_jupiter
+    testImplementation libs.test_junit_params
+    testRuntimeOnly libs.test_junit_engine
 }
 
 repositories {

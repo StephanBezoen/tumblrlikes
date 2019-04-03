@@ -98,7 +98,8 @@ dependencies {
 
     // testing
     androidTestImplementation libs.test_espresso
-    testImplementation libs.test_junit
+    testImplementation libs.test_junit_jupiter
+    testRuntimeOnly libs.test_junit_engine
 
     // AndroidX
     implementation libs.androidx_appCompat
